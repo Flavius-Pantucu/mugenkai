@@ -1,0 +1,60 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Runtime
+dist/
+build/
+tmp/
+temp/
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Env files
+.env
+.env.*
+
+# Prisma
+prisma/migrations/
+*.db
+
+# TypeScript
+*.tsbuildinfo
+
+# VSCode / JetBrains
+.vscode/
+.idea/
+
+# OS / Misc
+.DS_Store
+Thumbs.db
+
+# Docker
+**/Dockerfile
+docker-compose.override.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
+
+# Nginx
+nginx.conf
+nginx/*
+
+# Angular
+.angular/
+coverage/
+karma-coverage/
+
+# E2E tests
+e2e-tests/allure-results/
+e2e-tests/allure-report/
+e2e-tests/output/
+
+# TurboRepo / Nx
+.turbo/
+turbo/
+nx-cache/
