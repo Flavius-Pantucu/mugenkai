@@ -1,4 +1,3 @@
-
 # 📺 Anime & Manga Platform (Microservices-based)
 
 A full-stack anime/manga streaming and reading platform using modern web technologies, microservices architecture, event-driven communication (Kafka), and centralized E2E testing.
@@ -8,10 +7,12 @@ A full-stack anime/manga streaming and reading platform using modern web technol
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - **Angular** – UI framework for building the platform's frontend.
 - **WebDriverIO** – E2E UI testing framework.
 
 ### Backend
+
 - **NestJS** – Microservices-based architecture using HTTP & Kafka.
 - **Prisma** – ORM for PostgreSQL.
 - **Kafka** – Event-driven communication between microservices.
@@ -20,6 +21,7 @@ A full-stack anime/manga streaming and reading platform using modern web technol
 - **Docker Compose** – Local orchestration of services for development.
 
 ### DevOps
+
 - **TurboRepo** / Nx – Monorepo management tool.
 - **GitHub Actions** – CI/CD pipeline to automate testing, building, and deployment.
 - **Docker** – Containerization for all services.
@@ -32,33 +34,33 @@ The project is structured using a monorepo, with multiple microservices and shar
 
 ```
 📁 apps/
-  📁 frontend/                 # Angular app
-  📁 api-gateway/              # NestJS BFF or GraphQL Gateway
+  📁 frontend/                 # Angular
+  📁 api-gateway/              # NestJS
+   📁 prisma/                   # Prisma client
   📁 services/
     📁 auth-service/           # Authentication + JWT management
+      📁 prisma/                   # Prisma client
     📁 user-service/           # User profiles, favorites, history
+      📁 prisma/                   # Prisma client
     📁 anime-service/          # Anime metadata, episodes
+      📁 prisma/                   # Prisma client
     📁 manga-service/          # Manga metadata, chapters
-    📁 media-service/          # Uploading, video/CDN handling
-    📁 notification-service/   # Kafka consumer for alerts, emails
-    📁 analytics-service/      # Kafka consumer for tracking views
+      📁 prisma/                   # Prisma client
   📁 e2e-tests/                # Centralized WebDriverIO-based E2E tests
     📁 tests/
-      🗋 login.spec.ts
-      🗋 watch-anime.spec.ts
     🗋 wdio.conf.ts
 
 📁 libs/
   📁 kafka/                    # Kafka client abstraction
-  📁 prisma/                   # Shared Prisma client
   📁 common/                   # Shared DTOs, event types, interfaces
 
 📁 docker/
-  📄 docker-compose.yml        # For local dev with all services
+  📄 docker-compose.prod.yml       # For prod with all services
+  📄 docker-compose.dev.yml        # For dev with all services
 
 📄 .github/workflows/ci.yml    # CI/CD for all services
 📄 package.json
-📄 turbo.json or nx.json
+📄 turbo.json
 ```
 
 ---
@@ -66,28 +68,31 @@ The project is structured using a monorepo, with multiple microservices and shar
 ## 🧪 Testing Strategy
 
 ### ✅ Microservices (`apps/services/*`)
+
 - **Unit Tests**: Services, guards, resolvers, and other isolated components.
 - **Integration Tests**: Integration with the database, Kafka messaging, and inter-service communication.
-- **Run tests**: 
-    ```bash
-    pnpm --filter=auth-service test
-    ```
+- **Run tests**:
+  ```bash
+  pnpm --filter=auth-service test
+  ```
 
 ### ✅ Frontend (`apps/frontend`)
+
 - **Unit Tests**: Angular components and services.
 - **Component Tests**: Rendering Angular components in isolation.
 - **Run tests**:
-    ```bash
-    pnpm --filter=frontend test
-    ```
+  ```bash
+  pnpm --filter=frontend test
+  ```
 
 ### ✅ E2E Tests (`apps/e2e-tests`)
+
 - **End-to-End Tests**: Full user flows from frontend to backend and across microservices.
 - **Real browser interactions** using WebDriverIO, simulating real user interactions.
 - **Run tests**:
-    ```bash
-    pnpm --filter=e2e-tests test
-    ```
+  ```bash
+  pnpm --filter=e2e-tests test
+  ```
 
 ---
 
@@ -96,13 +101,24 @@ The project is structured using a monorepo, with multiple microservices and shar
 All services, databases, and Kafka are started via Docker Compose:
 
 ```bash
-docker-compose -f docker/docker-compose.yml up
+# To start the services
+pnpm run docker:dev:up
+pnpm run docker:prod:up
+
+# To stop the services
+pnpm run docker:dev:down
+pnpm run docker:prod:down
+
+# To show logs
+pnpm run docker:dev:logs
+pnpm run docker:prod:logs
 ```
 
 The following services are exposed:
 
 - `localhost:4200` – Angular frontend
 - `localhost:3000` – API Gateway (NestJS)
+- `localhost:3001-3004` – Microservices (auth, user, anime, manga)
 - `localhost:9092` – Kafka broker
 - `localhost:5432` – PostgreSQL database
 
@@ -111,6 +127,7 @@ The following services are exposed:
 ## ⚙️ CI/CD with GitHub Actions
 
 Each push to the `main` branch will:
+
 - Lint, test, and build each app/service in parallel using a matrix build.
 - Run DB + Kafka services in CI using Docker containers.
 - Deploy to production once all tests are successfully passed.
@@ -140,27 +157,32 @@ Each push to the `main` branch will:
 ### Step-by-Step Guide
 
 1. **Clone the repository**:
+
    ```bash
-   git clone https://github.com/your-username/anime-manga-platform.git
-   cd anime-manga-platform
+   git clone https://github.com/Flavius-Pantucu/mugenkai.git
+   cd mugenkai
    ```
 
 2. **Install dependencies**:
+
    ```bash
    pnpm install
    ```
 
 3. **Start all services with Docker Compose**:
+
    ```bash
-   docker-compose -f docker/docker-compose.yml up -d
+   pnpm run docker:dev:up
    ```
 
 4. **Start the frontend**:
+
    ```bash
    pnpm --filter=frontend dev
    ```
 
 5. **Run E2E tests** (optional):
+
    ```bash
    pnpm --filter=e2e-tests test
    ```
