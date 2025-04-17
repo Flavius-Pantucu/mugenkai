@@ -20,13 +20,7 @@ jobs:
           ]
 
     services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
+      # Kafka services (shared)
       kafka:
         image: confluentinc/cp-kafka:7.4.0
         ports:
@@ -35,6 +29,7 @@ jobs:
           KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
           KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
           KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
       zookeeper:
         image: confluentinc/cp-zookeeper:7.4.0
         ports:
@@ -46,6 +41,21 @@ jobs:
         with:
           version: 8
       - run: pnpm install
+
+      # Start the corresponding PostgreSQL container manually
+      - name: Start PostgreSQL (per service)
+        run: |
+          if [ "${{ matrix.service }}" = "auth-service" ]; then
+            docker run -d --name postgres-auth-service -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=secretpassword -e POSTGRES_DB=auth_db -p 5432:5432 postgres:17;
+          elif [ "${{ matrix.service }}" = "user-service" ]; then
+            docker run -d --name postgres-user-service -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=secretpassword -e POSTGRES_DB=users_db -p 5433:5432 postgres:17;
+          elif [ "${{ matrix.service }}" = "anime-service" ]; then
+            docker run -d --name postgres-anime-service -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=secretpassword -e POSTGRES_DB=anime_db -p 5434:5432 postgres:17;
+          elif [ "${{ matrix.service }}" = "manga-service" ]; then
+            docker run -d --name postgres-manga-service -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=secretpassword -e POSTGRES_DB=manga_db -p 5435:5432 postgres:17;
+          fi
+
+      # Run linter, tests, and build for each service
       - run: pnpm --filter=${{ matrix.service }} run lint || true
       - run: pnpm --filter=${{ matrix.service }} run test || true
       - run: pnpm --filter=${{ matrix.service }} run build || true
