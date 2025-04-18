@@ -23,7 +23,7 @@
     "docker:prod:up": "docker-compose -f docker/docker-compose.prod.yml up -d",
     "docker:prod:down": "docker-compose -f docker/docker-compose.prod.yml down",
     "docker:prod:logs": "docker-compose -f docker/docker-compose.prod.yml logs -f",
-    "docker:dev:up": "docker-compose -f docker/docker-compose.dev.prod.yml up -d",
+    "docker:dev:up": "docker-compose -f docker/docker-compose.dev.yml up -d",
     "docker:dev:down": "docker-compose -f docker/docker-compose.dev.yml down",
     "docker:dev:logs": "docker-compose -f docker/docker-compose.dev.yml logs -f"
   },

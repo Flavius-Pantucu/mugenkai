@@ -1,3 +1,17 @@
 packages:
-  - "apps/**/*"
-  - "libs/*"
+  - apps/**/*
+  - libs/*
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@swc/core'
+  - edgedriver
+  - esbuild
+  - geckodriver
+  - lmdb
+  - msgpackr-extract
+  - nx
+  - prisma
