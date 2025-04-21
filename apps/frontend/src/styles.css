@@ -1,10 +1,24 @@
 @import "tailwindcss";
 
+@import "primeicons/primeicons.css";
+
+@font-face {
+  font-family: "Osake";
+  src: url("assets/fonts/osake/Osake.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --font-osake: "Osake", "sans-serif";
+  --color-mugen-red: #d94025;
+  --color-mugen-white: #fcfcfb;
+}
+
 html,
 body {
   height: 100%;
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

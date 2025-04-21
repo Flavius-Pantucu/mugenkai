@@ -1,6 +1,6 @@
 # 📺 Anime & Manga Platform (Microservices-based)
 
-A full-stack anime/manga streaming and reading platform using modern web technologies, microservices architecture, event-driven communication (Kafka), and centralized E2E testing.
+A full-stack anime/manga streaming and reading platform using modern web technologies, microservices architecture, event-driven communication and centralized E2E testing.
 
 ---
 
@@ -22,7 +22,7 @@ A full-stack anime/manga streaming and reading platform using modern web technol
 
 ### DevOps
 
-- **TurboRepo** / Nx – Monorepo management tool.
+- **TurboRepo** – Monorepo management tool.
 - **GitHub Actions** – CI/CD pipeline to automate testing, building, and deployment.
 - **Docker** – Containerization for all services.
 
@@ -36,28 +36,16 @@ The project is structured using a monorepo, with multiple microservices and shar
 📁 apps/
   📁 frontend/                 # Angular
   📁 api-gateway/              # NestJS
-   📁 prisma/                   # Prisma client
   📁 services/
     📁 auth-service/           # Authentication + JWT management
-      📁 prisma/                   # Prisma client
     📁 user-service/           # User profiles, favorites, history
-      📁 prisma/                   # Prisma client
     📁 anime-service/          # Anime metadata, episodes
-      📁 prisma/                   # Prisma client
     📁 manga-service/          # Manga metadata, chapters
-      📁 prisma/                   # Prisma client
   📁 e2e-tests/                # Centralized WebDriverIO-based E2E tests
     📁 tests/
-    🗋 wdio.conf.ts
-
-📁 libs/
-  📁 kafka/                    # Kafka client abstraction
-  📁 common/                   # Shared DTOs, event types, interfaces
-
 📁 docker/
   📄 docker-compose.prod.yml       # For prod with all services
   📄 docker-compose.dev.yml        # For dev with all services
-
 📄 .github/workflows/ci.yml    # CI/CD for all services
 📄 package.json
 📄 turbo.json
@@ -120,7 +108,7 @@ The following services are exposed:
 - `localhost:3000` – API Gateway (NestJS)
 - `localhost:3001-3004` – Microservices (auth, user, anime, manga)
 - `localhost:9092` – Kafka broker
-- `localhost:5432` – PostgreSQL database
+- `localhost:5432-5435` – PostgreSQL database
 
 ---
 
@@ -133,16 +121,6 @@ Each push to the `main` branch will:
 - Deploy to production once all tests are successfully passed.
 
 **GitHub Actions Configuration** is located at `.github/workflows/ci.yml`.
-
----
-
-## 🧠 Future Ideas
-
-- **Authentication**: Implement OAuth, JWT, and roles-based access control.
-- **SSR (Server-Side Rendering)**: Add Angular Universal for SEO optimization.
-- **Media Streaming**: Implement optimized video streaming for anime/manga episodes.
-- **Real-Time Updates**: Use WebSockets or Kafka to push updates to clients in real-time.
-- **Monitoring**: Implement Prometheus & Grafana for system metrics.
 
 ---
 

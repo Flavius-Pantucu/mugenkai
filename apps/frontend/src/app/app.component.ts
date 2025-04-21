@@ -1,26 +1,18 @@
 import { Component, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet,
-    NavbarComponent,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatIconModule,
-  ],
+  imports: [RouterOutlet, NavbarComponent, SidenavComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  @ViewChild('sidenav') sidenav!: MatSidenav;
+  @ViewChild(SidenavComponent, { static: false }) sidenav!: SidenavComponent;
 
-  openSidebar() {
-    this.sidenav.open();
+  toggleSidebar() {
+    this.sidenav.toggle();
   }
 }

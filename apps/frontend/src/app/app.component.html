@@ -1,18 +1,12 @@
-<mat-sidenav-container class="!bg-[#223A5E] w-full h-[200vh]">
-  <mat-sidenav
-    #sidenav
-    mode="over"
-    class="w-64 !bg-[#223A5E]/80 backdrop-blur-xs"
-    [disableClose]="false"
-  >
-    <div class="p-4 text-white">
-      <p class="text-lg font-semibold mb-2">Sidebar</p>
-      <button (click)="sidenav.close()">Close</button>
-    </div>
-  </mat-sidenav>
+<div class="relative">
+  <app-sidenav></app-sidenav>
 
-  <mat-sidenav-content>
-    <app-navbar [sidenav]="sidenav"></app-navbar>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  <div class="bg-[#213448]">
+    <app-navbar (menuClicked)="toggleSidebar()"></app-navbar>
+
+    <div class="h-[200vh]"></div>
+    <main class="">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
