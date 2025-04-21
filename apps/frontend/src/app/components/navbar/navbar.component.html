@@ -1,62 +1,56 @@
 <nav
-  class="w-[70%] h-14 flex items-center justify-between p-2 rounded-4xl border-gray-200 bg-white sticky top-3 mx-auto z-50"
+  class="w-full h-16 flex items-center justify-between px-6 backdrop-blur-xs sticky top-0 z-50"
 >
   <!-- Left Section -->
-  <div class="flex">
-    <a routerLink="/" class="text-xl font-bold text-blue-600">Mugenkai</a>
+  <div class="flex w-1/4 h-10 justify-start items-center gap-2">
+    <mat-icon class="!text-white cursor-pointer" (click)="toggleMenu()"
+      >menu</mat-icon
+    >
+    <a routerLink="/" class="text-xl font-semibold text-gray-200">Mugenkai</a>
   </div>
 
   <!-- Center Search -->
-  <div class="hidden md:flex flex-1 justify-center">
-    <!-- Hamburger Icon -->
-    <button class="md:hidden text-2xl" (click)="toggleMenu()">☰</button>
-
-    <!-- Navigation Links -->
-    <div class="hidden md:flex items-center gap-4">
-      <a routerLink="/" class="hover:text-blue-600">Home</a>
-      <a routerLink="/explore" class="hover:text-blue-600">Explore</a>
-      <a routerLink="/tags" class="hover:text-blue-600">Tags</a>
+  <div class="flex-1 w-1/2 h-10 justify-center items-center hidden lg:flex">
+    <div class="relative w-1/2">
+      <input
+        type="search"
+        id="search"
+        class="block w-full px-4 h-10 text-sm text-gray-600 border border-gray-300 rounded-lg bg-gray-50"
+        placeholder="Search"
+        required
+      />
+      <button class="absolute end-18 bottom-0.5 cursor-pointer">
+        <mat-icon class="!text-gray-600">search</mat-icon>
+      </button>
+      <button
+        type="submit"
+        class="text-white absolute end-1.5 bottom-1 bg-[#0077b6] hover:bg-[#023e8a] transition-all duration-200 ease-in-out focus:outline-none font-medium rounded-lg text-xs px-4 py-2 cursor-pointer"
+      >
+        Filter
+      </button>
     </div>
   </div>
 
   <!-- Right Section -->
-  <div class="flex">
-    @if (isLoggedIn){
+  <div class="flex w-1/4 h-10 justify-end items-center">
+    <button
+      class="flex lg:hidden w-10 h-10 items-center justify-center cursor-pointer"
+    >
+      <mat-icon class="!text-gray-200">search</mat-icon>
+    </button>
+    @if (!isLoggedIn){
     <div class="relative">
       <img
-        src="https://i.pravatar.cc/40"
+        src="https://github.com/shadcn.png"
         class="w-10 h-10 rounded-full cursor-pointer"
       />
-      <div class="absolute right-0 mt-2 w-40 bg-white rounded shadow-md z-50">
-        <a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-100"
-          >Profile</a
-        >
-        <button class="block w-full text-left px-4 py-2 hover:bg-gray-100">
-          Logout
-        </button>
-      </div>
     </div>
     }@else{
     <button
-      class="text-sm px-6 h-10 shadow-md border border-gray-400 text-gray-700 bg-white rounded-4xl cursor-pointer"
+      class="text-sm px-4 h-10 shadow-md text-gray-700 hover:bg-gray-200 transition-all duration-200 ease-in-out bg-white rounded-lg cursor-pointer"
     >
       Sign in
     </button>
     }
   </div>
 </nav>
-
-<!-- Mobile Menu -->
-<div
-  *ngIf="isMenuOpen"
-  class="md:hidden flex flex-col gap-2 px-4 py-2 bg-white border-b border-gray-200"
->
-  <a routerLink="/" class="hover:text-blue-600">Home</a>
-  <a routerLink="/explore" class="hover:text-blue-600">Explore</a>
-  <a routerLink="/tags" class="hover:text-blue-600">Tags</a>
-  <input
-    type="text"
-    placeholder="Search anime or manga..."
-    class="w-full px-3 py-1 rounded-md border border-gray-300"
-  />
-</div>

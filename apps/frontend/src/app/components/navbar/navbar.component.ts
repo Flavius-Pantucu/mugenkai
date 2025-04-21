@@ -1,18 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, MatIconModule],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
-  isMenuOpen = false;
+  @Input() sidenav?: MatSidenav;
+
   isLoggedIn = false;
 
   toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
+    this.sidenav?.toggle();
   }
 }
