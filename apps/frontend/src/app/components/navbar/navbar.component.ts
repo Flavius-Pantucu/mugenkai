@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { BadgeModule } from 'primeng/badge';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, BadgeModule, OverlayBadgeModule],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
@@ -15,5 +17,5 @@ export class NavbarComponent {
     this.menuClicked.emit();
   }
 
-  isLoggedIn = false;
+  isLoggedIn = true;
 }

@@ -1,59 +1,69 @@
 <nav
-  class="w-full h-16 flex items-center justify-between px-6 bg-transparent backdrop-blur-xs sticky top-1 z-50"
+  class="w-full h-16 flex items-center justify-between px-2 lg:px-6 bg-transparent backdrop-blur-xs sticky top-1 z-50"
 >
   <!-- Left Section -->
-  <div class="flex w-1/4 h-full justify-start items-center gap-4">
+  <div class="flex w-3/4 lg:w-1/3 h-full justify-start items-center gap-4">
     <span
       class="pi pi-bars text-mugen-white cursor-pointer !font-semibold !text-xl"
       (click)="triggerMenu()"
     ></span>
-    <div class="flex flex-row gap-2 items-center">
-      <img src="logo.png" alt="logo" class="size-14" />
-      <a routerLink="/" class="text-2xl font-semibold font-osake">
+    <div class="flex flex-row lg:hidden gap-2 items-center">
+      <img src="logo.png" alt="logo" class="size-12" />
+      <a
+        routerLink="/"
+        class="hidden lg:flex text-3xl font-semibold font-osake"
+      >
         <span class="text-mugen-white">MUGEN</span>
         <span class="text-mugen-red">KAI</span>
       </a>
     </div>
   </div>
 
-  <!-- Center Search -->
-  <div class="flex-1 w-1/2 h-full justify-center items-center hidden lg:flex">
-    <div class="relative w-1/2">
-      <input
-        type="search"
-        id="search"
-        class="block w-full px-4 h-10 text-sm text-gray-600 border border-gray-300 rounded-lg bg-gray-50"
-        placeholder="Search"
-        required
-      />
-      <button class="absolute end-18 bottom-0 h-10 cursor-pointer">
-        <span class="pi pi-search text-gray-600 !text-lg"></span>
-      </button>
-      <button
-        class="text-white absolute end-1.5 bottom-1 bg-[#0077b6] hover:bg-[#023e8a] transition-all duration-200 ease-in-out focus:outline-none font-medium rounded-lg text-xs px-4 py-2 cursor-pointer"
-      >
-        Filter
-      </button>
-    </div>
+  <!-- Center Section -->
+  <div
+    class="hidden w-0 lg:flex lg:w-1/3 h-full justify-center items-center gap-4"
+  >
+    <a routerLink="/" class="flex justify-center items-center gap-2">
+      <img src="logo.png" alt="logo" class="size-14" />
+      <div class="text-4xl font-osake font-semibold pt-2">
+        <span class="text-mugen-white">MUGEN</span>
+        <span class="text-mugen-red">KAI</span>
+      </div>
+    </a>
   </div>
 
   <!-- Right Section -->
-  <div class="flex w-1/4 h-full justify-end items-center">
-    <button
-      class="flex lg:hidden w-10 h-10 items-center justify-center cursor-pointer"
+  <div class="flex w-3/4 lg:w-1/3 h-full justify-end items-center gap-2">
+    <div
+      class="relative group size-10 hover:w-64 focus-within:w-64 transition-all duration-300"
     >
-      <span class="pi pi-search text-gray-200"></span>
-    </button>
-    @if (!isLoggedIn){
-    <div class="relative">
-      <img
-        src="https://github.com/shadcn.png"
-        class="w-10 h-10 rounded-full cursor-pointer"
+      <input
+        type="text"
+        placeholder="Search"
+        class="w-full pl-10 py-2 hover:bg-mugen-white focus-within:bg-mugen-white hover:text-gray-500 focus-within:text-gray-500 text-white rounded-lg focus:outline-none"
       />
+      <span
+        class="pi pi-search absolute left-[10px] top-[6px] !text-xl group-hover:text-gray-500 group-focus-within:text-gray-500 text-gray-300 pointer-events-none"
+      >
+      </span>
+    </div>
+    @if (!isLoggedIn){
+    <div class="flex gap-4 items-center">
+      <div
+        class="relative inline-block cursor-pointer !text-gray-300 hover:!text-mugen-white transition-all duration-150 ease-in-out"
+      >
+        <i class="pi pi-bell !text-xl"></i>
+        <p-badge
+          class="absolute -top-0.5 -right-0.5 !size-1.5 !min-w-1.5 !bg-mugen-red"
+        ></p-badge>
+      </div>
+      <i
+        class="pi pi-user !text-xl cursor-pointer !text-gray-300 hover:!text-mugen-white transition-all duration-150 ease-in-out"
+      ></i>
     </div>
     }@else{
     <button
-      class="text-sm px-4 h-10 shadow-md text-gray-700 hover:bg-gray-200 transition-all duration-200 ease-in-out bg-white rounded-lg cursor-pointer"
+      class="text-sm px-4 min-w-20 h-10 shadow-md hover:bg-mugen-red-hover bg-mugen-red text-mugen-white transition-all duration-300 ease-in-out rounded-lg cursor-pointer"
     >
       Sign in
     </button>
