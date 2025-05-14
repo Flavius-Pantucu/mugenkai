@@ -1,5 +1,6 @@
 <nav
-  class="w-full h-16 flex items-center justify-between px-2 lg:px-6 bg-transparent backdrop-blur-xs sticky top-1 z-50"
+  class="w-full h-18 flex items-center justify-between py-2 px-2 lg:px-6 bg-transparent transition-colors duration-500 ease-in-out backdrop-blur-xs top-0 sticky z-50"
+  id="navbar"
 >
   <!-- Left Section -->
   <div class="flex w-3/4 lg:w-1/3 h-full justify-start items-center gap-4">
@@ -13,7 +14,10 @@
         routerLink="/"
         class="hidden lg:flex text-3xl font-semibold font-osake"
       >
-        <span class="text-mugen-white">MUGEN</span>
+        <span
+          class="text-mugen-w @HostListener('window:scroll', ['$event']) onWindowScroll() { const navbar = document.getElementById('navbar'); // Check if scroll is greater than 50px if (window.scrollY > 50) { this.renderer.removeClass(navbar, 'bg-transparent'); this.renderer.addClass(navbar, 'bg-gray-800'); // Change this to any color you prefer } else { this.renderer.removeClass(navbar, 'bg-gray-800'); this.renderer.addClass(navbar, 'bg-transparent'); } }hite"
+          >MUGEN</span
+        >
         <span class="text-mugen-red">KAI</span>
       </a>
     </div>

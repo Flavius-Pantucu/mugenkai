@@ -22,7 +22,7 @@
     "@tailwindcss/postcss": "^4.1.4",
     "pnpm": "^10.8.1",
     "primeicons": "^7.0.0",
-    "primeng": "^19.1.0",
+    "primeng": "^19.1.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
