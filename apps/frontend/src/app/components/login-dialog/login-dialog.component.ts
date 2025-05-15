@@ -1,0 +1,40 @@
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { DialogModule } from 'primeng/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-login-dialog',
+  imports: [DialogModule, ReactiveFormsModule],
+  templateUrl: './login-dialog.component.html',
+})
+export class LoginDialogComponent {
+  @Output() close = new EventEmitter<void>();
+
+  loginForm: FormGroup;
+
+  constructor(private fb: FormBuilder, private authService: AuthService) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
+  }
+
+  hide() {
+    this.close.emit();
+  }
+
+  submit() {
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      const success = this.authService.login(email, password);
+
+      if (success) {
+        this.close.emit();
+      } else {
+        alert('Invalid credentials');
+      }
+    }
+  }
+}
