@@ -1,14 +1,14 @@
 <div
-  class="absolute top-0 left-0 w-full h-[100vh] bg-mugen-dark-blue/70 flex items-center justify-center"
+  class="absolute top-0 left-0 w-full h-[100vh] bg-black/40 flex items-center justify-center"
 >
   <div
-    class="w-full relative max-w-lg bg-mugen-dark-blue text-white border border-gray-600 rounded-xl shadow py-6 px-16"
+    class="w-full relative max-w-lg bg-mugen-dark-blue text-white border border-gray-600 rounded-lg shadow p-16"
   >
-    <div class="absolute top-2 right-3 cursor-pointer" (click)="hide()">
-      <span class="pi pi-times !text-sm text-gray-200"></span>
+    <div class="absolute top-4 right-5.5 cursor-pointer" (click)="closeModal()">
+      <span class="pi pi-times !text-xs text-gray-200"></span>
     </div>
     <div
-      class="flex flex-row gap-2 cursor-pointer select-none items-center justify-center mb-6"
+      class="flex flex-row gap-2 cursor-pointer select-none items-center justify-center mb-8"
     >
       <img src="logo.png" alt="logo" class="size-16" />
       <a routerLink="/" class="flex text-4xl font-semibold font-osake">
@@ -17,9 +17,8 @@
       </a>
     </div>
 
-    <!-- Login form -->
     <form
-      [formGroup]="loginForm"
+      [formGroup]="registerForm"
       (ngSubmit)="submit()"
       class="w-full space-y-4"
     >
@@ -39,20 +38,17 @@
         type="submit"
         class="w-full h-11 py-2 rounded-lg cursor-pointer text-white font-semibold hover:bg-mugen-red-hover bg-mugen-red duration-300 transition-colors ease-in-out"
       >
-        Login
+        Register
       </button>
       <div class="flex flex-col gap-y-1.5 justify-between items-center">
-        <div class="underline cursor-pointer text-xs text-gray-200">
-          Forgot password?
-        </div>
-        <div class="flex items-center text-gray-300 w-full">
-          <div class="flex-grow border-t border-gray-600"></div>
-          <span class="mx-2 text-sm font-medium">OR</span>
-          <div class="flex-grow border-t border-gray-600"></div>
-        </div>
         <div class="text-xs text-gray-300">
-          Don't have an account?
-          <span class="underline cursor-pointer text-gray-200"> Sign up </span>
+          Already have an account?
+          <span
+            class="underline cursor-pointer text-gray-200"
+            (click)="goToLogin()"
+          >
+            Login
+          </span>
         </div>
       </div>
     </form>

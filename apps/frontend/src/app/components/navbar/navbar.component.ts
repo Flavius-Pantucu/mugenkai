@@ -10,7 +10,9 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BadgeModule } from 'primeng/badge';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
-import { LoginDialogComponent } from '../login-dialog/login-dialog.component';
+import { LoginDialogComponent } from '../auth/login-dialog/login-dialog.component';
+import { RegisterDialogComponent } from '../auth/register-dialog/register-dialog.component';
+import { ForgotDialogComponent } from '../auth/forgot-dialog/forgot-dialog.component';
 
 @Component({
   selector: 'app-navbar',
@@ -21,6 +23,8 @@ import { LoginDialogComponent } from '../login-dialog/login-dialog.component';
     BadgeModule,
     OverlayBadgeModule,
     LoginDialogComponent,
+    RegisterDialogComponent,
+    ForgotDialogComponent,
   ],
   templateUrl: './navbar.component.html',
 })
@@ -29,14 +33,14 @@ export class NavbarComponent {
 
   @Output() menuClicked = new EventEmitter<void>();
 
-  loginDialog = false;
+  authModal: 'login' | 'register' | 'forgot' | null = null;
 
-  openLoginDialog() {
-    this.loginDialog = true;
+  openModal(type: 'login' | 'register' | 'forgot') {
+    this.authModal = type;
   }
 
-  closeLoginDialog() {
-    this.loginDialog = false;
+  closeModal() {
+    this.authModal = null;
   }
 
   triggerMenu() {
@@ -49,10 +53,17 @@ export class NavbarComponent {
 
     if (window.scrollY > 50) {
       this.renderer.removeClass(navbar, 'bg-transparent');
-      this.renderer.addClass(navbar, 'bg-mugen-gray/40'); // Change this to any color you prefer
+      this.renderer.addClass(navbar, 'bg-mugen-gray/40');
     } else {
-      this.renderer.removeClass(navbar, 'bg-mugen-gray/40'); // Change this to any color you prefer
+      this.renderer.removeClass(navbar, 'bg-mugen-gray/40');
       this.renderer.addClass(navbar, 'bg-transparent');
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  handleEsc() {
+    if (this.authModal !== null) {
+      this.closeModal();
     }
   }
 

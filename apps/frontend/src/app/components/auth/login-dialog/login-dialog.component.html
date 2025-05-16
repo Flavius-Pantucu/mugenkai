@@ -1,0 +1,67 @@
+<div
+  class="absolute top-0 left-0 w-full h-[100vh] bg-black/40 flex items-center justify-center"
+>
+  <div
+    class="w-full relative max-w-lg bg-mugen-dark-blue text-white border border-gray-600 rounded-lg shadow p-16"
+  >
+    <div class="absolute top-4 right-5.5 cursor-pointer" (click)="closeModal()">
+      <span class="pi pi-times !text-xs text-gray-200"></span>
+    </div>
+    <div
+      class="flex flex-row gap-2 cursor-pointer select-none items-center justify-center mb-8"
+    >
+      <img src="logo.png" alt="logo" class="size-16" />
+      <a routerLink="/" class="flex text-4xl font-semibold font-osake">
+        <span class="text-mugen-white">MUGEN</span>
+        <span class="text-mugen-red">KAI</span>
+      </a>
+    </div>
+
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="submit()"
+      class="w-full space-y-4"
+    >
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        class="w-full h-11 px-4 py-2 text-sm border text-gray-300 placeholder-gray-400 border-gray-600 rounded-lg focus:outline-none focus:border-gray-400 transition-colors duration-300 ease-in-out"
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        class="w-full h-11 px-4 py-2 text-sm border text-gray-200 placeholder-gray-400 border-gray-600 rounded-lg focus:outline-none focus:border-gray-400 transition-colors duration-300 ease-in-out"
+      />
+      <button
+        type="submit"
+        class="w-full h-11 py-2 rounded-lg cursor-pointer text-white font-semibold hover:bg-mugen-red-hover bg-mugen-red duration-300 transition-colors ease-in-out"
+      >
+        Login
+      </button>
+      <div class="flex flex-col gap-y-1.5 justify-between items-center">
+        <div
+          class="underline cursor-pointer text-xs text-gray-200"
+          (click)="goToForgot()"
+        >
+          Forgot password?
+        </div>
+        <div class="flex items-center text-gray-300 w-full">
+          <div class="flex-grow border-t border-gray-600"></div>
+          <span class="mx-2 text-sm font-medium">OR</span>
+          <div class="flex-grow border-t border-gray-600"></div>
+        </div>
+        <div class="text-xs text-gray-300">
+          Don't have an account?
+          <span
+            class="underline cursor-pointer text-gray-200"
+            (click)="goToRegister()"
+          >
+            Sign up
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

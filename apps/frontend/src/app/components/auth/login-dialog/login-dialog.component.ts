@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import { DialogModule } from 'primeng/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -10,7 +10,20 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './login-dialog.component.html',
 })
 export class LoginDialogComponent {
+  @Output() navigate = new EventEmitter<'login' | 'register' | 'forgot'>();
   @Output() close = new EventEmitter<void>();
+
+  goToRegister() {
+    this.navigate.emit('register');
+  }
+
+  goToForgot() {
+    this.navigate.emit('forgot');
+  }
+
+  closeModal() {
+    this.close.emit();
+  }
 
   loginForm: FormGroup;
 
@@ -19,10 +32,6 @@ export class LoginDialogComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
-  }
-
-  hide() {
-    this.close.emit();
   }
 
   submit() {
