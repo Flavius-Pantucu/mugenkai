@@ -3,15 +3,36 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { DialogModule } from 'primeng/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login-dialog',
-  imports: [DialogModule, ReactiveFormsModule],
+  imports: [DialogModule, ReactiveFormsModule, CommonModule],
   templateUrl: './login-dialog.component.html',
 })
 export class LoginDialogComponent {
   @Output() navigate = new EventEmitter<'login' | 'register' | 'forgot'>();
   @Output() close = new EventEmitter<void>();
+
+  loginForm: FormGroup;
+  simplePasswordRegex = /^(?=.*[A-Z]).{8,}$/;
+
+  constructor(private fb: FormBuilder, private authService: AuthService) {
+    this.loginForm = this.fb.group({
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(20),
+        ],
+      ],
+      password: [
+        '',
+        [Validators.required, Validators.pattern(this.simplePasswordRegex)],
+      ],
+    });
+  }
 
   goToRegister() {
     this.navigate.emit('register');
@@ -25,19 +46,11 @@ export class LoginDialogComponent {
     this.close.emit();
   }
 
-  loginForm: FormGroup;
-
-  constructor(private fb: FormBuilder, private authService: AuthService) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-    });
-  }
-
   submit() {
+    this.loginForm.markAllAsTouched();
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
-      const success = this.authService.login(email, password);
+      const { username, password } = this.loginForm.value;
+      const success = this.authService.login(username, password);
 
       if (success) {
         this.close.emit();

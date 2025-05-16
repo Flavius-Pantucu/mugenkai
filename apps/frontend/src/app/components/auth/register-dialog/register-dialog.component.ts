@@ -26,8 +26,10 @@ export class RegisterDialogComponent {
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registerForm = this.fb.group({
+      username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
+      passord_confirm: ['', [Validators.required]],
     });
   }
 
