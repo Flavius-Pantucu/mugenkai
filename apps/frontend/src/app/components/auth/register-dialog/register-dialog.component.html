@@ -22,29 +22,153 @@
       (ngSubmit)="submit()"
       class="w-full space-y-4"
     >
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        class="w-full h-11 px-4 py-2 text-sm border text-gray-300 placeholder-gray-400 border-gray-600 rounded-lg focus:outline-none focus:border-gray-400 transition-colors duration-300 ease-in-out"
-      />
-      <input
-        type="text"
-        name="email"
-        placeholder="Email"
-        class="w-full h-11 px-4 py-2 text-sm border text-gray-300 placeholder-gray-400 border-gray-600 rounded-lg focus:outline-none focus:border-gray-400 transition-colors duration-300 ease-in-out"
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        class="w-full h-11 px-4 py-2 text-sm border text-gray-200 placeholder-gray-400 border-gray-600 rounded-lg focus:outline-none focus:border-gray-400 transition-colors duration-300 ease-in-out"
-      /><input
-        type="password"
-        name="password"
-        placeholder="Confirm password"
-        class="w-full h-11 px-4 py-2 text-sm border text-gray-200 placeholder-gray-400 border-gray-600 rounded-lg focus:outline-none focus:border-gray-400 transition-colors duration-300 ease-in-out"
-      />
+      <div class="relative group">
+        <input
+          type="text"
+          formControlName="username"
+          id="username"
+          placeholder=" "
+          class="peer block appearance-none w-full border-gray-600 focus:border-gray-400 h-12 px-4 pt-3 text-sm border text-gray-300 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              registerForm.get('username')?.invalid &&
+              registerForm.get('username')?.touched
+          }"
+        />
+        <label
+          for="username"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          Username
+        </label>
+        <div
+          *ngIf="
+            registerForm.get('username')?.touched &&
+            registerForm.get('username')?.invalid
+          "
+          class="text-mugen-red text-xs m-1"
+        >
+          <div *ngIf="registerForm.get('username')?.errors?.['required']">
+            Username is required.
+          </div>
+          <div *ngIf="registerForm.get('username')?.errors?.['minlength']">
+            Username must be at least 4 characters.
+          </div>
+          <div *ngIf="registerForm.get('username')?.errors?.['maxlength']">
+            Username must be at most 20 characters.
+          </div>
+        </div>
+      </div>
+      <div class="relative group">
+        <input
+          type="text"
+          formControlName="email"
+          id="email"
+          placeholder=" "
+          class="peer block appearance-none w-full border-gray-600 focus:border-gray-400 h-12 px-4 pt-3 text-sm border text-gray-300 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              registerForm.get('email')?.invalid &&
+              registerForm.get('email')?.touched
+          }"
+        />
+        <label
+          for="email"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          Email
+        </label>
+        <div
+          *ngIf="
+            registerForm.get('email')?.touched &&
+            registerForm.get('email')?.invalid
+          "
+          class="text-mugen-red text-xs m-1"
+        >
+          <div *ngIf="registerForm.get('email')?.errors?.['required']">
+            Email is required.
+          </div>
+          <div *ngIf="registerForm.get('email')?.errors?.['email']">
+            Email not valid.
+          </div>
+        </div>
+      </div>
+      <div class="relative group">
+        <input
+          type="password"
+          formControlName="password"
+          id="password"
+          placeholder=" "
+          class="peer block appearance-none border-gray-600 focus:border-gray-400 w-full h-12 px-4 pt-3 text-sm border text-gray-200 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              registerForm.get('password')?.invalid &&
+              registerForm.get('password')?.touched
+          }"
+        />
+        <label
+          for="password"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          Password
+        </label>
+        <div
+          *ngIf="
+            registerForm.get('password')?.touched &&
+            registerForm.get('password')?.invalid
+          "
+          class="text-mugen-red text-xs m-1"
+        >
+          <div *ngIf="registerForm.get('password')?.errors?.['required']">
+            Password is required.
+          </div>
+          <div *ngIf="registerForm.get('password')?.errors?.['pattern']">
+            At least 8 characters with one uppercase letter.
+          </div>
+        </div>
+      </div>
+      <div class="relative group">
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          id="confirmPassword"
+          placeholder=" "
+          class="peer block appearance-none border-gray-600 focus:border-gray-400 w-full h-12 px-4 pt-3 text-sm border text-gray-200 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              registerForm.get('confirmPassword')?.invalid &&
+              registerForm.get('confirmPassword')?.touched
+          }"
+        />
+        <label
+          for="confirmPassword"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          Confirm Password
+        </label>
+        <div
+          *ngIf="
+            registerForm.get('confirmPassword')?.touched &&
+            registerForm.get('confirmPassword')?.invalid
+          "
+          class="text-mugen-red text-xs m-1"
+        >
+          <div
+            *ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
+          >
+            Password is required.
+          </div>
+          <div
+            *ngIf="
+              registerForm.get('confirmPassword')?.touched &&
+              registerForm.get('confirmPassword')?.hasError('passwordMismatch')
+            "
+            class="text-mugen-red text-xs mt-1"
+          >
+            Passwords do not match.
+          </div>
+        </div>
+      </div>
       <button
         type="submit"
         class="w-full h-11 py-2 rounded-lg cursor-pointer text-white font-semibold hover:bg-mugen-red-hover bg-mugen-red duration-300 transition-colors ease-in-out"

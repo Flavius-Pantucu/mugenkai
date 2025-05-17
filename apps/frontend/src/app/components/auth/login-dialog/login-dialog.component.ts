@@ -15,22 +15,11 @@ export class LoginDialogComponent {
   @Output() close = new EventEmitter<void>();
 
   loginForm: FormGroup;
-  simplePasswordRegex = /^(?=.*[A-Z]).{8,}$/;
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.loginForm = this.fb.group({
-      username: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(20),
-        ],
-      ],
-      password: [
-        '',
-        [Validators.required, Validators.pattern(this.simplePasswordRegex)],
-      ],
+      username: ['', Validators.required],
+      password: ['', Validators.required],
     });
   }
 
