@@ -33,7 +33,7 @@ export class NavbarComponent {
 
   @Output() menuClicked = new EventEmitter<void>();
 
-  authModal: 'login' | 'register' | 'forgot' | null = 'login';
+  authModal: 'login' | 'register' | 'forgot' | null = 'forgot';
 
   openModal(type: 'login' | 'register' | 'forgot') {
     this.authModal = type;

@@ -16,16 +16,228 @@
         <span class="text-mugen-red">KAI</span>
       </a>
     </div>
-    <div class="flex w-full justify-center items-center my-10">
-      <h1>Coming soon!</h1>
-    </div>
-    <div class="flex flex-col gap-y-1.5 justify-between items-center">
-      <div
-        class="underline cursor-pointer text-xs text-gray-200"
-        (click)="goToLogin()"
-      >
-        Continue to <span> Login </span>
+
+    <!-- Step 1: Identify -->
+    <form
+      class="w-full space-y-4"
+      *ngIf="step === 'identify'"
+      [formGroup]="identifyForm"
+      (ngSubmit)="submitIdentifier()"
+    >
+      <div class="relative group">
+        <input
+          type="text"
+          formControlName="identifier"
+          id="identifier"
+          placeholder=" "
+          class="peer block appearance-none w-full border-gray-600 focus:border-gray-400 h-12 px-4 pt-3 text-sm border text-gray-300 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              identifyForm.get('identifier')?.invalid &&
+              identifyForm.get('identifier')?.touched
+          }"
+        />
+        <label
+          for="identifier"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          Username or Email
+        </label>
+        <div
+          *ngIf="
+            identifyForm.get('identifier')?.touched &&
+            identifyForm.get('identifier')?.invalid
+          "
+          class="text-mugen-red text-xs m-1"
+        >
+          <div *ngIf="identifyForm.get('identifier')?.errors?.['required']">
+            Identifier is required.
+          </div>
+        </div>
       </div>
-    </div>
+      <button
+        type="submit"
+        class="w-full h-12 py-2 rounded-lg cursor-pointer text-white font-semibold hover:bg-mugen-red-hover bg-mugen-red duration-300 transition-colors ease-in-out"
+      >
+        Send Code
+      </button>
+      <div class="flex flex-col gap-y-1.5 justify-between items-center">
+        <span
+          class="underline text-xs cursor-pointer text-gray-200"
+          (click)="goToLogin()"
+        >
+          Back to Login
+        </span>
+      </div>
+    </form>
+
+    <!-- Step 2: Verify Code -->
+    <form
+      class="w-full space-y-4"
+      *ngIf="step === 'verify'"
+      [formGroup]="codeForm"
+      (ngSubmit)="submitCode()"
+    >
+      <div class="text-sm text-gray-400 text-center mb-0">
+        A verification code has been sent to your email.
+      </div>
+      <div class="text-sm text-gray-400 text-center mb-4">
+        If you didn't receive any, use Resend code option.
+      </div>
+      <div class="relative group">
+        <input
+          type="text"
+          inputmode="numeric"
+          (keypress)="allowOnlyDigits($event)"
+          formControlName="code"
+          id="code"
+          placeholder=" "
+          class="peer block appearance-none w-full border-gray-600 focus:border-gray-400 h-12 px-4 pt-3 text-sm border text-gray-300 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              codeForm.get('code')?.invalid && codeForm.get('code')?.touched
+          }"
+        />
+        <label
+          for="code"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          Code
+        </label>
+        <div
+          *ngIf="codeForm.get('code')?.touched && codeForm.get('code')?.invalid"
+          class="text-mugen-red text-xs m-1"
+        >
+          <div *ngIf="codeForm.get('code')?.errors?.['required']">
+            Code is required.
+          </div>
+          <div
+            *ngIf="codeForm.get('code')?.errors?.['minlength'] || codeForm.get('code')?.errors?.['maxlength']"
+          >
+            Code must be exactly 6 digits.
+          </div>
+          <div *ngIf="codeForm.get('code')?.errors?.['digitsOnly']">
+            Only numbers are allowed.
+          </div>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="w-full h-12 py-2 rounded-lg cursor-pointer text-white font-semibold hover:bg-mugen-red-hover bg-mugen-red duration-300 transition-colors ease-in-out"
+      >
+        Verify Code
+      </button>
+      <div class="flex justify-between items-center w-full">
+        <span
+          class="underline text-xs cursor-pointer text-gray-200"
+          (click)="submitIdentifier()"
+        >
+          Resend code
+        </span>
+        <span
+          class="underline text-xs cursor-pointer text-gray-200"
+          (click)="goToLogin()"
+        >
+          Back to Login
+        </span>
+      </div>
+    </form>
+
+    <!-- Step 3: Reset Password -->
+    <form
+      class="w-full space-y-4"
+      *ngIf="step === 'reset'"
+      [formGroup]="resetForm"
+      (ngSubmit)="submitResetPassword()"
+    >
+      <div class="relative group">
+        <input
+          type="password"
+          formControlName="newPassword"
+          id="newPassword"
+          placeholder=" "
+          class="peer block appearance-none border-gray-600 focus:border-gray-400 w-full h-12 px-4 pt-3 text-sm border text-gray-200 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              resetForm.get('newPassword')?.invalid &&
+              resetForm.get('newPassword')?.touched
+          }"
+        />
+        <label
+          for="newPassword"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          New Password
+        </label>
+        <div
+          *ngIf="
+            resetForm.get('newPassword')?.touched &&
+            resetForm.get('newPassword')?.invalid
+          "
+          class="text-mugen-red text-xs m-1"
+        >
+          <div *ngIf="resetForm.get('newPassword')?.errors?.['required']">
+            Password is required.
+          </div>
+          <div *ngIf="resetForm.get('newPassword')?.errors?.['pattern']">
+            At least 8 characters with one uppercase letter.
+          </div>
+        </div>
+      </div>
+      <div class="relative group">
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          id="confirmPassword"
+          placeholder=" "
+          class="peer block appearance-none border-gray-600 focus:border-gray-400 w-full h-12 px-4 pt-3 text-sm border text-gray-200 placeholder-gray-400 rounded-lg focus:outline-none transition-colors duration-300 ease-in-out"
+          [ngClass]="{
+            'border-mugen-red focus:border-mugen-red':
+              resetForm.get('confirmPassword')?.invalid &&
+              resetForm.get('confirmPassword')?.touched
+          }"
+        />
+        <label
+          for="confirmPassword"
+          class="absolute pointer-events-none top-[14px] left-4 text-sm origin-[0] scale-100 transform text-gray-400 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-80 peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-80"
+        >
+          Confirm Password
+        </label>
+        <div
+          *ngIf="
+            resetForm.get('confirmPassword')?.touched &&
+            resetForm.get('confirmPassword')?.invalid
+          "
+          class="text-mugen-red text-xs m-1"
+        >
+          <div *ngIf="resetForm.get('confirmPassword')?.errors?.['required']">
+            Password is required.
+          </div>
+          <div
+            *ngIf="
+              resetForm.get('confirmPassword')?.touched &&
+              resetForm.get('confirmPassword')?.hasError('passwordMismatch')
+            "
+            class="text-mugen-red text-xs mt-1"
+          >
+            Passwords do not match.
+          </div>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="w-full h-11 py-2 rounded-lg cursor-pointer text-white font-semibold hover:bg-mugen-red-hover bg-mugen-red duration-300 transition-colors ease-in-out"
+      >
+        Reset Password
+      </button>
+      <div class="flex flex-col gap-y-1.5 justify-between items-center">
+        <span
+          class="underline text-xs cursor-pointer text-gray-200"
+          (click)="goToLogin()"
+        >
+          Back to Login
+        </span>
+      </div>
+    </form>
   </div>
 </div>

@@ -36,7 +36,7 @@ export class RegisterDialogComponent {
           Validators.required,
           Validators.pattern(this.simplePasswordRegex),
         ],
-        confirmPassword: ['', [Validators.required]],
+        confirmPassword: ['', Validators.required],
       },
       {
         validators: passwordMatchValidator('password', 'confirmPassword'),
