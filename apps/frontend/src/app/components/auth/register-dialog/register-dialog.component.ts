@@ -33,8 +33,7 @@ export class RegisterDialogComponent {
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',
-          Validators.required,
-          Validators.pattern(this.simplePasswordRegex),
+          [Validators.required, Validators.pattern(this.simplePasswordRegex)],
         ],
         confirmPassword: ['', Validators.required],
       },
