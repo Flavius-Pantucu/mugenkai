@@ -16,8 +16,7 @@ node_modules/
 .pnp.js
 
 # Env files
-.env
-.env.*
+.env.prod
 
 # Prisma
 prisma/migrations/
@@ -35,9 +34,6 @@ prisma/migrations/
 Thumbs.db
 
 # Docker
-**/Dockerfile
-docker-compose.override.yml
-docker-compose.dev.yml
 docker-compose.prod.yml
 
 # Nginx

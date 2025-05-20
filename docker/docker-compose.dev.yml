@@ -1,0 +1,229 @@
+services:
+  # Postgres services for each microservice
+  # Each service has its own database to ensure data isolation
+  # These services are used for data storage
+  postgres-auth-service:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: auth_db
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+  postgres-user-service:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: user_db
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - backend
+
+  postgres-anime-service:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: anime_db
+    volumes:
+      - anime_db_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - backend
+
+  postgres-manga-service:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: manga_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - manga_db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  # This service serves the frontend application
+  # It is built using the Dockerfile in the frontend directory
+  # The frontend application is built using Angular
+  frontend:
+    build:
+      context: ../apps/frontend
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        BUILD_ENV: development
+    ports:
+      - "4200:4200"
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - api-gateway
+    networks:
+      - backend
+    volumes:
+      - ../apps/frontend:/app
+      - /app/node_modules
+
+  # This service acts as a reverse proxy for the microservices
+  # It is built using the Dockerfile in the api-gateway directory
+  # The API Gateway is built using Node.js and Express
+  api-gateway:
+    build:
+      context: ../apps/api-gateway
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ../apps/api-gateway/.env
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ../apps/api-gateway:/app
+      - /app/node_modules
+    depends_on:
+      - kafka
+      - postgres-auth-service
+      - postgres-user-service
+      - postgres-anime-service
+      - postgres-manga-service
+    networks:
+      - backend
+
+  # Application services
+  # These services are built using the Dockerfile in their respective directories
+  # Each service is responsible for a specific domain
+  auth-service:
+    build:
+      context: ../apps/services/auth-service
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ../apps/services/auth-service/.env
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+    volumes:
+      - ../apps/services/auth-service:/app
+      - /app/node_modules
+    depends_on:
+      - kafka
+      - postgres-auth-service
+    networks:
+      - backend
+
+  user-service:
+    build:
+      context: ../apps/services/user-service
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ../apps/services/user-service/.env
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+    volumes:
+      - ../apps/services/user-service:/app
+      - /app/node_modules
+    depends_on:
+      - kafka
+      - postgres-user-service
+    networks:
+      - backend
+
+  anime-service:
+    build:
+      context: ../apps/services/anime-service
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ../apps/services/anime-service/.env
+    ports:
+      - "3003:3003"
+    environment:
+      NODE_ENV: development
+      PORT: 3003
+    volumes:
+      - ../apps/services/anime-service:/app
+      - /app/node_modules
+    depends_on:
+      - kafka
+      - postgres-anime-service
+    networks:
+      - backend
+
+  manga-service:
+    build:
+      context: ../apps/services/manga-service
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ../apps/services/manga-service/.env
+    ports:
+      - "3004:3004"
+    environment:
+      NODE_ENV: development
+      PORT: 3004
+    volumes:
+      - ../apps/services/manga-service:/app
+      - /app/node_modules
+    depends_on:
+      - kafka
+      - postgres-manga-service
+    networks:
+      - backend
+
+  # Kafka and Zookeeper services for message brokering
+  # These services are used for inter-service communication
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - backend
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - backend
+
+volumes:
+  auth_db_data:
+  user_db_data:
+  anime_db_data:
+  manga_db_data:
+
+networks:
+  backend:
+    driver: bridge
