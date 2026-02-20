@@ -1,0 +1,36 @@
+<section
+  class="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-black via-mugen-dark-blue to-black text-mugen-white px-4 lg:px-10 pb-16"
+>
+  <div class="grid gap-6 md:grid-cols-[2fr,1fr] pt-6">
+    <div>
+      <div
+        class="w-full h-[260px] md:h-[320px] rounded-3xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 shadow-xl overflow-hidden mb-4"
+      ></div>
+      <h1 class="text-2xl md:text-3xl font-bold mb-2">
+        Manga {{ mangaId }} (placeholder)
+      </h1>
+      <p class="text-sm text-gray-200 mb-4">
+        Detailed description of the manga will appear here. Chapters and
+        reading statistics will be loaded from the backend.
+      </p>
+    </div>
+
+    <aside class="space-y-4">
+      <div
+        class="rounded-2xl bg-white/5 border border-white/10 p-4 backdrop-blur-xl"
+      >
+        <h2 class="text-sm font-semibold mb-2">Chapters</h2>
+        <div class="space-y-2 max-h-[320px] overflow-y-auto pr-1 text-sm">
+          <div
+            *ngFor="let ch of [1, 2, 3, 4, 5, 6, 7, 8]"
+            class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition"
+          >
+            <span>Chapter {{ ch }}</span>
+            <span class="text-xs text-gray-300">20 pages</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+

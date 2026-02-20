@@ -1,0 +1,9 @@
+.reader-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reader-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.8);
+  border-radius: 9999px;
+}
+

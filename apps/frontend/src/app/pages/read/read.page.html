@@ -1,0 +1,38 @@
+<section
+  class="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-black via-mugen-dark-blue to-black text-mugen-white flex flex-col"
+>
+  <header class="px-4 lg:px-10 py-3 flex items-center justify-between">
+    <div>
+      <h1 class="text-sm font-semibold">Vertical reader</h1>
+      <p class="text-xs text-gray-300">{{ chapterLabel }}</p>
+    </div>
+    <div class="flex gap-2 text-xs">
+      <button
+        class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 cursor-pointer"
+      >
+        Fit width
+      </button>
+      <button
+        class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 cursor-pointer"
+      >
+        Settings
+      </button>
+    </div>
+  </header>
+
+  <main
+    class="flex-1 px-0 lg:px-20 pb-10 space-y-4 overflow-y-auto reader-scroll"
+  >
+    <div
+      *ngFor="let page of [1, 2, 3, 4, 5, 6]"
+      class="w-full max-w-3xl mx-auto rounded-2xl bg-white/5 aspect-[3/4] border border-white/10 shadow-md"
+    >
+      <div
+        class="w-full h-full flex items-center justify-center text-xs text-gray-300"
+      >
+        Page {{ page }} placeholder
+      </div>
+    </div>
+  </main>
+</section>
+
