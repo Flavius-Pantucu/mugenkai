@@ -7,19 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                    String    @id @default(uuid())
-  username              String    @unique
-  email                 String    @unique
-  passwordHash          String
-  profileImageUrl       String?
-  isVerified            Boolean   @default(false)
-  verificationCode      String?
-  verificationExpiresAt DateTime?
-  createdAt             DateTime  @default(now())
-  failedLoginAttempts   Int       @default(0)
-  updatedAt             DateTime  @updatedAt
-  lastLoginAt           DateTime?
-  role                  String    @default("user")
-  isActive              Boolean   @default(true)
+enum Role {
+  USER
+  ADMIN
+}
+
+model UserAuth {
+  id               String   @id @default(uuid())
+  email            String   @unique
+  passwordHash     String
+  role             Role     @default(USER)
+  refreshTokenHash String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }

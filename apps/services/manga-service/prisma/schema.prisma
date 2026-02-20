@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,8 +13,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+enum MangaStatus {
+  ONGOING
+  COMPLETED
+}
+
+model Manga {
+  id          String     @id @default(uuid())
+  title       String
+  description String
+  coverImage  String
+  bannerImage String?
+  status      MangaStatus @default(ONGOING)
+  rating      Float?     @default(0)
+  createdAt   DateTime   @default(now())
+
+  chapters Chapter[]
+}
+
+model Chapter {
+  id            String   @id @default(uuid())
+  mangaId       String
+  chapterNumber Int
+  title         String
+
+  manga          Manga           @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+  pages          Page[]
+  readingHistory ReadingHistory[]
+
+  @@index([mangaId])
+  @@unique([mangaId, chapterNumber])
+}
+
+model Page {
+  id         String  @id @default(uuid())
+  chapterId  String
+  imageUrl   String
+  pageNumber Int
+
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([chapterId])
+  @@unique([chapterId, pageNumber])
+}
+
+model ReadingHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  chapterId String
+  lastPage  Int      @default(1)
+
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([chapterId])
 }

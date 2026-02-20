@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,8 +13,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model UserProfile {
+  id        String           @id @default(uuid())
+  authId    String           @unique
+  username  String           @unique
+  avatarUrl String?
+  bio       String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  preferences UserPreferences[]
+}
+
+model UserPreferences {
+  id                   String   @id @default(uuid())
+  userId               String
+  preferredGenres      String[]
+  language             String   @default("en")
+  matureContentEnabled Boolean  @default(false)
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

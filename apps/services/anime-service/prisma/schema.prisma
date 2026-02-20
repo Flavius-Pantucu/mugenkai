@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,8 +13,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+enum AnimeStatus {
+  ONGOING
+  COMPLETED
+}
+
+model Anime {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  coverImage  String
+  bannerImage String?
+  trailerUrl  String?
+  releaseDate DateTime?
+  status      AnimeStatus @default(ONGOING)
+  rating      Float?    @default(0)
+  createdAt   DateTime  @default(now())
+
+  episodes Episode[]
+}
+
+model Episode {
+  id            String   @id @default(uuid())
+  animeId       String
+  episodeNumber Int
+  title         String
+  videoUrl      String
+  duration      Int
+
+  anime        Anime          @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  watchHistory WatchHistory[]
+
+  @@index([animeId])
+  @@unique([animeId, episodeNumber])
+}
+
+model WatchHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  episodeId String
+  progress  Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  episode Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([episodeId])
 }

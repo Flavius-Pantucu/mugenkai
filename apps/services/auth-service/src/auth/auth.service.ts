@@ -1,5 +1,5 @@
 import { RegisterDto } from './dtos/register.dto';
-import { PrismaService } from '../prisma/prisma.service'; // adjust the path if needed
+import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 
@@ -8,12 +8,10 @@ export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   async register(dto: RegisterDto) {
-    // More checks can be added here, like checking if the username or email already exists
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    const user = await this.prisma.user.create({
+    const user = await this.prisma.userAuth.create({
       data: {
-        username: dto.username,
         email: dto.email,
         passwordHash: hashedPassword,
       },
@@ -22,8 +20,8 @@ export class AuthService {
     return { message: 'User registered', userId: user.id };
   }
 
-  async validateUser(username: string, password: string) {
-    const user = await this.prisma.user.findUnique({ where: { username } });
+  async validateUser(email: string, password: string) {
+    const user = await this.prisma.userAuth.findUnique({ where: { email } });
     if (!user) return null;
 
     const isValid = await bcrypt.compare(password, user.passwordHash);
