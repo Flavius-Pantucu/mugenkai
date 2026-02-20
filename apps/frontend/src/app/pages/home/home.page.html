@@ -1,0 +1,71 @@
+<section
+  class="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-black via-mugen-dark-blue to-black text-mugen-white px-4 lg:px-10 pb-16"
+>
+  <!-- Hero row -->
+  <div class="relative h-[55vh] mb-8 mt-4 rounded-3xl overflow-hidden">
+    <div
+      class="absolute inset-0 bg-[url('assets/images/hero-placeholder.jpg')] bg-cover bg-center scale-110"
+    ></div>
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/10"
+    ></div>
+
+    <div
+      class="relative z-10 h-full flex flex-col justify-center px-6 lg:px-12 max-w-xl space-y-3"
+    >
+      <p class="text-xs uppercase tracking-[0.25em] text-mugen-red">
+        Continue watching
+      </p>
+      <h1 class="text-3xl md:text-5xl font-bold drop-shadow-xl">
+        Hero show title
+      </h1>
+      <p class="text-sm md:text-base text-gray-200 line-clamp-3">
+        A short description for the featured anime. This will be replaced with
+        real data from the backend.
+      </p>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <button
+          class="px-5 py-2.5 rounded-lg bg-mugen-red hover:bg-mugen-red-hover text-sm font-semibold shadow-xl shadow-mugen-red/40 cursor-pointer"
+        >
+          Play
+        </button>
+        <button
+          class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-semibold backdrop-blur-xl cursor-pointer"
+        >
+          More info
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skeleton shimmer rows -->
+  <div class="space-y-8">
+    <section>
+      <h2 class="text-lg font-semibold mb-3">Trending</h2>
+      <div class="flex gap-3 overflow-x-auto pb-2 shimmer-row">
+        <ng-container *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+          <div class="card-skeleton"></div>
+        </ng-container>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-lg font-semibold mb-3">Popular this week</h2>
+      <div class="flex gap-3 overflow-x-auto pb-2 shimmer-row">
+        <ng-container *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+          <div class="card-skeleton"></div>
+        </ng-container>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-lg font-semibold mb-3">Continue watching</h2>
+      <div class="flex gap-3 overflow-x-auto pb-2 shimmer-row">
+        <ng-container *ngFor="let i of [1, 2, 3, 4, 5, 6]">
+          <div class="card-skeleton h-[180px]"></div>
+        </ng-container>
+      </div>
+    </section>
+  </div>
+</section>
+

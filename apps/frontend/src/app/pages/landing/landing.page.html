@@ -1,0 +1,94 @@
+<section
+  class="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-black via-mugen-dark-blue to-black text-mugen-white relative overflow-hidden"
+>
+  <!-- Hero Banner with autoplay preview placeholder -->
+  <div class="relative h-[70vh]">
+    <div
+      class="absolute inset-0 bg-[url('assets/images/hero-placeholder.jpg')] bg-cover bg-center scale-105 blur-sm opacity-70"
+    ></div>
+
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10"
+    ></div>
+
+    <div
+      class="relative z-10 h-full flex flex-col justify-center px-6 lg:px-16 max-w-5xl"
+    >
+      <h1 class="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+        Unlimited <span class="text-mugen-red">anime</span> &
+        <span class="text-mugen-red">manga</span>, anytime.
+      </h1>
+      <p class="text-gray-200 text-sm md:text-base max-w-xl mb-6">
+        Dive into a curated multiverse of shows, movies, and manga chapters with
+        a cinematic, immersive experience built for anime fans.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <a
+          routerLink="/home"
+          class="px-6 py-3 rounded-lg bg-mugen-red hover:bg-mugen-red-hover text-sm font-semibold shadow-xl shadow-mugen-red/40 transition transform hover:-translate-y-0.5"
+        >
+          Start watching
+        </a>
+        <a
+          routerLink="/register"
+          class="px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-sm font-semibold shadow-lg transition transform hover:-translate-y-0.5"
+        >
+          Create account
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Highlight rows -->
+  <div class="relative z-10 px-4 lg:px-10 pb-16 space-y-10 -mt-20">
+    <section>
+      <h2 class="text-xl font-semibold mb-3">Trending now</h2>
+      <div
+        class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-mugen-gray/70"
+      >
+        <ng-container *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8]">
+          <div
+            class="relative min-w-[180px] h-[260px] rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 overflow-hidden shadow-lg cursor-pointer transform hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+          >
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute bottom-0 p-3 z-10">
+              <p class="text-sm font-semibold truncate">
+                Featured title {{ item }}
+              </p>
+              <p class="text-xs text-gray-300">New episode available</p>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70"></div>
+            <div
+              class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full bg-mugen-red text-mugen-white"
+            >
+              TOP {{ item }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </section>
+
+    <section class="grid gap-6 md:grid-cols-3">
+      <div
+        class="col-span-2 rounded-2xl bg-gradient-to-r from-mugen-dark-blue/90 to-mugen-gray/70 border border-white/10 p-6 shadow-xl backdrop-blur-xl"
+      >
+        <h3 class="text-lg font-semibold mb-2">Watch everywhere</h3>
+        <p class="text-sm text-gray-200">
+          Continue your episodes seamlessly across devices with instant resume
+          and synced watch history.
+        </p>
+      </div>
+      <div
+        class="rounded-2xl bg-gradient-to-br from-mugen-red/80 to-mugen-red-hover/70 border border-mugen-red/40 p-6 shadow-xl backdrop-blur-xl"
+      >
+        <h3 class="text-lg font-semibold mb-2">Built for fans</h3>
+        <p class="text-sm text-mugen-white">
+          Track favorites, build lists, and get recommendations tuned to your
+          tastes.
+        </p>
+      </div>
+    </section>
+  </div>
+</section>
+
