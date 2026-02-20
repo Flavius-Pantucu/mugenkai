@@ -1,0 +1,32 @@
+.shimmer-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.shimmer-row::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.8);
+  border-radius: 9999px;
+}
+
+.card-skeleton {
+  min-width: 180px;
+  height: 220px;
+  border-radius: 0.75rem;
+  background: linear-gradient(
+    120deg,
+    rgba(148, 163, 184, 0.2),
+    rgba(148, 163, 184, 0.08),
+    rgba(148, 163, 184, 0.2)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
