@@ -8,6 +8,11 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  getRoot(): string {
+    return this.appService.getHello();
+  }
+
+  @Get('health')
   async getHello(): Promise<Record<string, any>> {
     const results: Record<string, any> = {};
 
@@ -29,5 +34,51 @@ export class AppController {
     );
 
     return results;
+  }
+
+  @Get('home')
+  async getHome() {
+    return {
+      hero: {
+        id: 'demo-hero',
+        title: 'Hero show title',
+        description:
+          'Placeholder hero content. This will be populated from anime and manga services.',
+      },
+      trending: [],
+      popular: [],
+      continueWatching: [],
+    };
+  }
+
+  @Get('profile')
+  async getProfile() {
+    return {
+      user: {
+        id: 'demo-user',
+        username: 'demo',
+        avatarUrl: null,
+      },
+      preferences: {
+        preferredGenres: [],
+        language: 'en',
+        matureContentEnabled: false,
+      },
+      watchHistory: [],
+      readingHistory: [],
+    };
+  }
+
+  @Get('anime/:id/details')
+  async getAnimeDetails() {
+    return {
+      anime: {
+        id: 'demo-anime',
+        title: 'Demo anime',
+        description:
+          'Placeholder anime details. This will be aggregated from the anime service.',
+      },
+      episodes: [],
+    };
   }
 }
