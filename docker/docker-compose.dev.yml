@@ -80,6 +80,24 @@ services:
       - ../apps/frontend:/app
       - /app/node_modules
 
+  webapp:
+    build:
+      context: ../apps/webapp
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        BUILD_ENV: development
+    ports:
+      - "4321:4321"
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - api-gateway
+    networks:
+      - backend
+    volumes:
+      - ../apps/webapp:/app
+      - /app/node_modules
   # This service acts as a reverse proxy for the microservices
   # It is built using the Dockerfile in the api-gateway directory
   # The API Gateway is built using Node.js and Express
