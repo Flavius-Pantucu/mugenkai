@@ -64,3 +64,8 @@ e2e-tests/output/
 .turbo/
 turbo/
 nx-cache/
+
+# Local tool state and scratch files
+.gemini/
+.impeccable/
+index.js
