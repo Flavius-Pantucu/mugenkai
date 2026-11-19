@@ -26,6 +26,7 @@ export function MangaDetailsPage() {
       kind="manga"
       title={manga.title}
       banner={manga.bannerImage}
+      cover={manga.coverImage}
       rating={manga.rating}
       status={manga.status}
       facts={[String(manga.year), `${volumes.length} volumes · ${manga.chapters.length} chapters`, manga.author]}

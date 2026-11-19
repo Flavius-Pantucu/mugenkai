@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { BookOpen, Info, Play, Star } from "lucide-react";
+import { ResponsiveArt } from "@/components/ResponsiveArt";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Anime, Manga } from "@/data/mock-data";
@@ -76,10 +77,10 @@ export function HeroBanner({ slides }: { slides: HeroSlide[] }) {
     >
       <motion.div className="absolute inset-0 will-change-transform" style={{ y: artY, scale: artScale }}>
         {slides.map((s, i) => (
-          <img
+          <ResponsiveArt
             key={s.item.id}
-            src={s.item.bannerImage}
-            alt=""
+            banner={s.item.bannerImage}
+            cover={s.item.coverImage}
             aria-hidden
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-out ${
               i === current ? "opacity-100" : "opacity-0"

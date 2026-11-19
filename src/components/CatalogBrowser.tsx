@@ -13,12 +13,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { Status } from "@/data/schema";
 import { Footer } from "./Footer";
+import { ResponsiveArt } from "./ResponsiveArt";
 
 interface CatalogItem {
   id: string;
   title: string;
   nativeTitle: string;
   bannerImage: string;
+  coverImage: string;
   rating: number;
   popularity: number;
   year: number;
@@ -80,11 +82,12 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
 
   // Wallpaper: banner of the most popular title, fading into the page.
   // Random pick from the 15 most popular, chosen after mount so server and client HTML match.
-  const [wallpaper, setWallpaper] = useState<string>();
+  const [wallpaper, setWallpaper] = useState<{ banner: string; cover: string }>();
   const [wallpaperLoaded, setWallpaperLoaded] = useState(false);
   useEffect(() => {
     const top = [...items].sort(SORTS.popular.compare).slice(0, 15);
-    setWallpaper(top[Math.floor(Math.random() * top.length)]?.bannerImage);
+    const pick = top[Math.floor(Math.random() * top.length)];
+    if (pick) setWallpaper({ banner: pick.bannerImage, cover: pick.coverImage });
   }, [items]);
 
   // Filter bar is see-through over the wallpaper; it gets a backdrop only once it sticks under the navbar.
@@ -101,9 +104,9 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
     <div className="relative min-h-screen overflow-hidden bg-ink">
       {wallpaper && (
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[80vh]">
-          <img
-            src={wallpaper}
-            alt=""
+          <ResponsiveArt
+            banner={wallpaper.banner}
+            cover={wallpaper.cover}
             onLoad={() => setWallpaperLoaded(true)}
             className={`h-full w-full object-cover object-top transition-opacity duration-700 ${wallpaperLoaded ? "opacity-45" : "opacity-0"}`}
           />

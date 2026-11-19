@@ -12,6 +12,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 import type { Status } from "@/data/schema";
 import { CommentSection } from "./CommentSection";
+import { ResponsiveArt } from "./ResponsiveArt";
 import { Footer } from "./Footer";
 
 /** One episode or chapter, normalized so anime and manga share the page. */
@@ -42,7 +43,8 @@ export interface SeriesGroup {
 export interface SeriesPageProps {
   kind: "anime" | "manga";
   title: string;
-  banner: string;
+  banner: string; // wide art, md and up
+  cover: string; // portrait art, phones
   rating: number;
   status: Status;
   facts: string[]; // year, counts, studio or author
@@ -115,7 +117,7 @@ export function SeriesPage(props: SeriesPageProps) {
     <div className="min-h-screen bg-ink">
       {/* Banner: the art stays visible; scrims only under the text. */}
       <header className="relative flex min-h-[440px] items-end overflow-hidden sm:min-h-[460px]">
-        <img src={props.banner} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        <ResponsiveArt banner={props.banner} cover={props.cover} aria-hidden className="absolute inset-0 h-full w-full object-cover object-top md:object-center" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-ink/70 to-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-ink/70 via-ink/20 to-transparent md:w-2/3" />

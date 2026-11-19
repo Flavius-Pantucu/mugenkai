@@ -28,6 +28,7 @@ export function AnimeDetailsPage() {
       kind="anime"
       title={anime.title}
       banner={anime.bannerImage}
+      cover={anime.coverImage}
       rating={anime.rating}
       status={anime.status}
       facts={[
