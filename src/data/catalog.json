@@ -1,0 +1,3503 @@
+{
+  "fetchedAt": "2026-11-19",
+  "anime": [
+    {
+      "id": "16498",
+      "title": "Attack on Titan",
+      "nativeTitle": "Shingeki no Kyojin",
+      "description": "Several hundred years ago, humans were nearly exterminated by titans. Titans are typically several stories tall, seem to have no intelligence, devour human beings and, worst of all, seem to do it for the pleasure rather than as a food source. A small percentage of humanity survived by walling themselves in a city protected by extremely high walls, even taller than the biggest of titans.\n\n\r\nFlash forward to the present and the city has not seen a titan in over 100 years. Teenage boy Eren and his foster sister Mikasa witness something horrific as the city walls are destroyed by a colossal titan that appears out of thin air. As the smaller titans flood the city, the two kids watch in horror as their mother is eaten alive. Eren vows that he will murder every single titan and take revenge for all of mankind.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-buvcRTBx4NSm.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg",
+      "color": "#f1a143",
+      "status": "COMPLETED",
+      "rating": 8.5,
+      "popularity": 1080842,
+      "year": 2013,
+      "genres": [
+        "Action",
+        "Drama",
+        "Fantasy",
+        "Mystery"
+      ],
+      "studio": "WIT STUDIO",
+      "episodeCount": 87,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "LHtdKWJdif4\t",
+      "seasons": [
+        {
+          "id": "16498",
+          "number": 1,
+          "title": "Attack on Titan",
+          "year": 2013,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-buvcRTBx4NSm.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg"
+        },
+        {
+          "id": "20958",
+          "number": 2,
+          "title": "Attack on Titan Season 2",
+          "year": 2017,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20958-HuFJyr54Mmir.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20958-Y7eQdz9VENBD.jpg"
+        },
+        {
+          "id": "99147",
+          "number": 3,
+          "title": "Attack on Titan Season 3",
+          "year": 2018,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx99147-AiPDD8cwlCfi.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/99147-HACsFVrynFf5.jpg"
+        },
+        {
+          "id": "104578",
+          "number": 4,
+          "title": "Attack on Titan Season 3 Part 2",
+          "year": 2019,
+          "episodeCount": 10,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx104578-k61nx3LPjvgd.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/104578-z7SadpYEuAsy.jpg"
+        },
+        {
+          "id": "110277",
+          "number": 5,
+          "title": "Attack on Titan Final Season",
+          "year": 2021,
+          "episodeCount": 16,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx110277-sKUNXAsWMNFw.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/110277-iuGn6F5bK1U1.jpg"
+        },
+        {
+          "id": "131681",
+          "number": 6,
+          "title": "Attack on Titan Final Season Part 2",
+          "year": 2022,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131681-5ooUqvqNtee1.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/131681-3tNurPRsqsfz.jpg"
+        }
+      ]
+    },
+    {
+      "id": "101922",
+      "title": "Demon Slayer: Kimetsu no Yaiba",
+      "nativeTitle": "Kimetsu no Yaiba",
+      "description": "It is the Taisho Period in Japan. Tanjiro, a kindhearted boy who sells charcoal for a living, finds his family slaughtered by a demon. To make matters worse, his younger sister Nezuko, the sole survivor, has been transformed into a demon herself. Though devastated by this grim reality, Tanjiro resolves to become a “demon slayer” so that he can turn his sister back into a human, and kill the demon that massacred his family.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101922-WBsBl0ClmgYL.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101922-33MtJGsUSxga.jpg",
+      "color": "#f1c9ae",
+      "status": "COMPLETED",
+      "rating": 8.2,
+      "popularity": 1016581,
+      "year": 2019,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy",
+        "Supernatural"
+      ],
+      "studio": "ufotable",
+      "episodeCount": 63,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "6vMuWuWlW4I",
+      "seasons": [
+        {
+          "id": "101922",
+          "number": 1,
+          "title": "Demon Slayer: Kimetsu no Yaiba",
+          "year": 2019,
+          "episodeCount": 26,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101922-WBsBl0ClmgYL.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101922-33MtJGsUSxga.jpg"
+        },
+        {
+          "id": "129874",
+          "number": 2,
+          "title": "Demon Slayer: Kimetsu no Yaiba Mugen Train Arc",
+          "year": 2021,
+          "episodeCount": 7,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx129874-g6ZKXB94Hui1.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/129874-3ipZzS50i9Ta.jpg"
+        },
+        {
+          "id": "142329",
+          "number": 3,
+          "title": "Demon Slayer: Kimetsu no Yaiba Entertainment District Arc",
+          "year": 2022,
+          "episodeCount": 11,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx142329-kET1PIXJv2eW.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/142329-i413SzLmToZN.jpg"
+        },
+        {
+          "id": "145139",
+          "number": 4,
+          "title": "Demon Slayer: Kimetsu no Yaiba Swordsmith Village Arc",
+          "year": 2023,
+          "episodeCount": 11,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx145139-rRimpHGWLhym.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/145139-V01Prh6UzfRk.jpg"
+        },
+        {
+          "id": "166240",
+          "number": 5,
+          "title": "Demon Slayer: Kimetsu no Yaiba Hashira Training Arc",
+          "year": 2024,
+          "episodeCount": 8,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx166240-PBV7zukIHW7V.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/166240-YdxoEhrfwNk0.jpg"
+        }
+      ]
+    },
+    {
+      "id": "113415",
+      "title": "JUJUTSU KAISEN",
+      "nativeTitle": "Jujutsu Kaisen",
+      "description": "A boy fights... for \"the right death.\"\n\nHardship, regret, shame: the negative feelings that humans feel become Curses that lurk in our everyday lives. The Curses run rampant throughout the world, capable of leading people to terrible misfortune and even death. What's more, the Curses can only be exorcised by another Curse.\n\nItadori Yuji is a boy with tremendous physical strength, though he lives a completely ordinary high school life. One day, to save a friend who has been attacked by Curses, he eats the finger of the Double-Faced Specter, taking the Curse into his own soul. From then on, he shares one body with the Double-Faced Specter. Guided by the most powerful of sorcerers, Gojou Satoru, Itadori is admitted to the Tokyo Metropolitan Technical High School of Sorcery, an organization that fights the Curses... and thus begins the heroic tale of a boy who became a Curse to exorcise a Curse, a life from which he could never turn back.\n\nNote: The first episode received an early web premiere on September 19th, 2020. The regular TV broadcast started on October 3rd, 2020.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113415-LHBAeoZDIsnF.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/113415-jQBSkxWAAk83.jpg",
+      "color": "#e45d5d",
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 998495,
+      "year": 2020,
+      "genres": [
+        "Action",
+        "Drama",
+        "Supernatural"
+      ],
+      "studio": "MAPPA",
+      "episodeCount": 59,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "RIyb52EMx8c",
+      "seasons": [
+        {
+          "id": "113415",
+          "number": 1,
+          "title": "JUJUTSU KAISEN",
+          "year": 2020,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113415-LHBAeoZDIsnF.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/113415-jQBSkxWAAk83.jpg"
+        },
+        {
+          "id": "145064",
+          "number": 2,
+          "title": "JUJUTSU KAISEN Season 2",
+          "year": 2023,
+          "episodeCount": 23,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx145064-hSNRJM03pvv1.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/145064-esDtAY2He7sk.jpg"
+        },
+        {
+          "id": "172463",
+          "number": 3,
+          "title": "JUJUTSU KAISEN Season 3: The Culling Game Part 1",
+          "year": 2026,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx172463-LnXqHzt74SJL.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/172463-3J2o3qQZadFJ.jpg"
+        }
+      ]
+    },
+    {
+      "id": "1535",
+      "title": "Death Note",
+      "nativeTitle": "DEATH NOTE",
+      "description": "Light Yagami is a genius high school student who is about to learn about life through a book of death. When a bored shinigami, a God of Death, named Ryuk drops a black notepad called a Death Note, Light receives power over life and death with the stroke of a pen. Determined to use this dark gift for the best, Light sets out to rid the world of evil… namely, the people he believes to be evil. Should anyone hold such power?\n\nThe consequences of Light’s actions will set the world ablaze.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1535.jpg",
+      "color": null,
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 984910,
+      "year": 2006,
+      "genres": [
+        "Mystery",
+        "Psychological",
+        "Supernatural",
+        "Thriller"
+      ],
+      "studio": "MADHOUSE",
+      "episodeCount": 37,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "NlJZ-YgAt-c",
+      "seasons": [
+        {
+          "id": "1535",
+          "number": 1,
+          "title": "Death Note",
+          "year": 2006,
+          "episodeCount": 37,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1535.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21459",
+      "title": "My Hero Academia",
+      "nativeTitle": "Boku no Hero Academia",
+      "description": "What would the world be like if 80 percent of the population manifested extraordinary superpowers called “Quirks” at age four? Heroes and villains would be battling it out everywhere! Becoming a hero would mean learning to use your power, but where would you go to study? U.A. High's Hero Program of course! But what would you do if you were one of the 20 percent who were born Quirkless?\n\nMiddle school student Izuku Midoriya wants to be a hero more than anything, but he hasn't got an ounce of power in him. With no chance of ever getting into the prestigious U.A. High School for budding heroes, his life is looking more and more like a dead end. Then an encounter with All Might, the greatest hero of them all gives him a chance to change his destiny…",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21459-nYh85uj2Fuwr.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21459-yeVkolGKdGUV.jpg",
+      "color": "#f1d643",
+      "status": "COMPLETED",
+      "rating": 7.6,
+      "popularity": 892015,
+      "year": 2016,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy"
+      ],
+      "studio": "bones",
+      "episodeCount": 170,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "AhqVltWDqFA",
+      "seasons": [
+        {
+          "id": "21459",
+          "number": 1,
+          "title": "My Hero Academia",
+          "year": 2016,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21459-nYh85uj2Fuwr.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21459-yeVkolGKdGUV.jpg"
+        },
+        {
+          "id": "21856",
+          "number": 2,
+          "title": "My Hero Academia Season 2",
+          "year": 2017,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21856-gutauxhWAwn6.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21856-wtSHgeHFmzdG.jpg"
+        },
+        {
+          "id": "100166",
+          "number": 3,
+          "title": "My Hero Academia Season 3",
+          "year": 2018,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100166-jUCZYbzn2XLw.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/100166-k7RXwN5vZg0r.jpg"
+        },
+        {
+          "id": "104276",
+          "number": 4,
+          "title": "My Hero Academia Season 4",
+          "year": 2019,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx104276-SnEowMvesWIE.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/104276-PQO1pcNzzWT0.jpg"
+        },
+        {
+          "id": "117193",
+          "number": 5,
+          "title": "My Hero Academia Season 5",
+          "year": 2021,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx117193-E75BlZmDh1aB.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/117193-37OySoeOMN0z.jpg"
+        },
+        {
+          "id": "139630",
+          "number": 6,
+          "title": "My Hero Academia Season 6",
+          "year": 2022,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx139630-3v4gxWtNZxLV.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/139630-XLc90c6CJjZv.jpg"
+        },
+        {
+          "id": "163139",
+          "number": 7,
+          "title": "My Hero Academia Season 7",
+          "year": 2024,
+          "episodeCount": 21,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163139-JchZhUFlNTWU.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/163139-UWM3qDG5cRa6.jpg"
+        },
+        {
+          "id": "182896",
+          "number": 8,
+          "title": "My Hero Academia FINAL SEASON",
+          "year": 2025,
+          "episodeCount": 11,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182896-mvxTVHGdDB4q.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/182896-iJt79hYTpv8w.jpg"
+        }
+      ]
+    },
+    {
+      "id": "11061",
+      "title": "Hunter x Hunter (2011)",
+      "nativeTitle": "HUNTER×HUNTER (2011)",
+      "description": "A Hunter is one who travels the world doing all sorts of dangerous tasks. From capturing criminals to searching deep within uncharted lands for any lost treasures. Gon is a young boy whose father disappeared long ago, being a Hunter. He believes if he could also follow his father's path, he could one day reunite with him.\n\nAfter becoming 12, Gon leaves his home and takes on the task of entering the Hunter exam, notorious for its low success rate and high probability of death to become an official Hunter. He befriends the revenge-driven Kurapika, the doctor-to-be Leorio and the rebellious ex-assassin Killua in the exam, with their friendship prevailing throughout the many trials and threats they come upon taking on the dangerous career of a Hunter.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx11061-y5gsT1hoHuHw.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/11061-8WkkTZ6duKpq.jpg",
+      "color": "#f1d65d",
+      "status": "COMPLETED",
+      "rating": 8.9,
+      "popularity": 859359,
+      "year": 2011,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Fantasy"
+      ],
+      "studio": "MADHOUSE",
+      "episodeCount": 148,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "d6kBeJjTGnY",
+      "seasons": [
+        {
+          "id": "11061",
+          "number": 1,
+          "title": "Hunter x Hunter (2011)",
+          "year": 2011,
+          "episodeCount": 148,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx11061-y5gsT1hoHuHw.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/11061-8WkkTZ6duKpq.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21087",
+      "title": "One-Punch Man",
+      "nativeTitle": "One Punch Man",
+      "description": "Saitama has a rather peculiar hobby, being a superhero, but despite his heroic deeds and superhuman abilities, a shadow looms over his life. He's become much too powerful, to the point that every opponent ends up defeated with a single punch.\n\nThe lack of challenge has driven him into a state of apathy, as he watches his life pass by having lost all enthusiasm, at least until he's unwillingly thrust in the role of being a mentor to the young and revenge-driven Genos.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21087-B5DHjqZ3kW4b.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21087-sHb9zUZFsHe1.jpg",
+      "color": "#e4ae5d",
+      "status": "COMPLETED",
+      "rating": 8.2,
+      "popularity": 781713,
+      "year": 2015,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Sci-Fi",
+        "Supernatural"
+      ],
+      "studio": "MADHOUSE",
+      "episodeCount": 36,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "RzmFKUDOUgw",
+      "seasons": [
+        {
+          "id": "21087",
+          "number": 1,
+          "title": "One-Punch Man",
+          "year": 2015,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21087-B5DHjqZ3kW4b.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21087-sHb9zUZFsHe1.jpg"
+        },
+        {
+          "id": "97668",
+          "number": 2,
+          "title": "One-Punch Man Season 2",
+          "year": 2019,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97668-nC8gQrXVxt7k.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/97668-8Yo3iH2fxbKR.jpg"
+        },
+        {
+          "id": "153800",
+          "number": 3,
+          "title": "One-Punch Man Season 3",
+          "year": 2025,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153800-8SpzdHOaZCoU.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/153800-bgkLxE9SHmUi.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "title": "ONE PIECE",
+      "nativeTitle": "ONE PIECE",
+      "description": "Gold Roger was known as the Pirate King, the strongest and most infamous being to have sailed the Grand Line. The capture and death of Roger by the World Government brought a change throughout the world. His last words before his death revealed the location of the greatest treasure in the world, One Piece. It was this revelation that brought about the Grand Age of Pirates, men who dreamed of finding One Piece (which promises an unlimited amount of riches and fame), and quite possibly the most coveted of titles for the person who found it, the title of the Pirate King.\n\nEnter Monkey D. Luffy, a 17-year-old boy that defies your standard definition of a pirate. Rather than the popular persona of a wicked, hardened, toothless pirate who ransacks villages for fun, Luffy’s reason for being a pirate is one of pure wonder; the thought of an exciting adventure and meeting new and intriguing people, along with finding One Piece, are his reasons of becoming a pirate. Following in the footsteps of his childhood hero, Luffy and his crew travel across the Grand Line, experiencing crazy adventures, unveiling dark mysteries and battling strong enemies, all in order to reach One Piece.\n\n*This includes the following special episodes:\n\n- Chopperman to the Rescue! Protect the TV Station by the Shore! (Episode 336)\n\n- The Strongest Tag-Team! Luffy and Toriko's Hard Struggle! (Episode 492)\n\n- Team Formation! Save Chopper (Episode 542)\n\n- History's Strongest Collaboration vs. Glutton of the Sea (Episode 590)\n\n- 20th Anniversary! Special Romance Dawn (Episode 907)",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21-ELSYx3yMPcKM.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21-wf37VakJmZqs.jpg",
+      "color": "#e49335",
+      "status": "ONGOING",
+      "rating": 8.7,
+      "popularity": 771385,
+      "year": 1999,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Drama",
+        "Fantasy"
+      ],
+      "studio": "Toei Animation",
+      "episodeCount": 1180,
+      "episodeDuration": 24,
+      "trailerYoutubeId": null,
+      "seasons": [
+        {
+          "id": "21",
+          "number": 1,
+          "title": "ONE PIECE",
+          "year": 1999,
+          "episodeCount": 1180,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21-ELSYx3yMPcKM.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21-wf37VakJmZqs.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20605",
+      "title": "Tokyo Ghoul",
+      "nativeTitle": "Tokyo Ghoul",
+      "description": "The suspense horror/dark fantasy story is set in Tokyo, which is haunted by mysterious \"ghouls\" who are devouring humans. People are gripped by the fear of these ghouls whose identities are masked in mystery. An ordinary college student named Kaneki encounters Rize, a girl who is an avid reader like him, at the café he frequents. Little does he realize that his fate will change overnight.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b20605-k665mVkSug8D.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20605-RCJ7M71zLmrh.jpg",
+      "color": "#ff6b35",
+      "status": "COMPLETED",
+      "rating": 7.6,
+      "popularity": 756087,
+      "year": 2014,
+      "genres": [
+        "Action",
+        "Drama",
+        "Horror",
+        "Mystery",
+        "Psychological",
+        "Supernatural"
+      ],
+      "studio": "Studio Pierrot",
+      "episodeCount": 48,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "XfQUjYsVBrE",
+      "seasons": [
+        {
+          "id": "20605",
+          "number": 1,
+          "title": "Tokyo Ghoul",
+          "year": 2014,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b20605-k665mVkSug8D.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20605-RCJ7M71zLmrh.jpg"
+        },
+        {
+          "id": "20850",
+          "number": 2,
+          "title": "Tokyo Ghoul √A",
+          "year": 2015,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20850-glDf9EMKeCwe.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20850-YjtRXQkNl0xz.jpg"
+        },
+        {
+          "id": "100240",
+          "number": 3,
+          "title": "Tokyo Ghoul:re",
+          "year": 2018,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx100240-vJNaKd5HwPJ2.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/100240-aHnY7a5EutPU.jpg"
+        },
+        {
+          "id": "102351",
+          "number": 4,
+          "title": "Tokyo Ghoul:re 2",
+          "year": 2018,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx102351-yD3Ty9YZFMsf.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/n102351-Wg6nAXoVzn0W.jpg"
+        }
+      ]
+    },
+    {
+      "id": "5114",
+      "title": "Fullmetal Alchemist: Brotherhood",
+      "nativeTitle": "Hagane no Renkinjutsushi: FULLMETAL ALCHEMIST",
+      "description": "\"In order for something to be obtained, something of equal value must be lost.\"\n\nAlchemy is bound by this Law of Equivalent Exchange—something the young brothers Edward and Alphonse Elric only realize after attempting human transmutation: the one forbidden act of alchemy. They pay a terrible price for their transgression—Edward loses his left leg, Alphonse his physical body. It is only by the desperate sacrifice of Edward's right arm that he is able to affix Alphonse's soul to a suit of armor. Devastated and alone, it is the hope that they would both eventually return to their original bodies that gives Edward the inspiration to obtain metal limbs called \"automail\" and become a state alchemist, the Fullmetal Alchemist.\n\nThree years of searching later, the brothers seek the Philosopher's Stone, a mythical relic that allows an alchemist to overcome the Law of Equivalent Exchange. Even with military allies Colonel Roy Mustang, Lieutenant Riza Hawkeye, and Lieutenant Colonel Maes Hughes on their side, the brothers find themselves caught up in a nationwide conspiracy that leads them not only to the true nature of the elusive Philosopher's Stone, but their country's murky history as well. In between finding a serial killer and racing against time, Edward and Alphonse must ask themselves if what they are doing will make them human again... or take away their humanity.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-nSWCgQlmOMtj.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/5114-q0V5URebphSG.jpg",
+      "color": "#e4c993",
+      "status": "COMPLETED",
+      "rating": 9,
+      "popularity": 745608,
+      "year": 2009,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy"
+      ],
+      "studio": "bones",
+      "episodeCount": 64,
+      "episodeDuration": 25,
+      "trailerYoutubeId": "1ac3_YdSSy0",
+      "seasons": [
+        {
+          "id": "5114",
+          "number": 1,
+          "title": "Fullmetal Alchemist: Brotherhood",
+          "year": 2009,
+          "episodeCount": 64,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-nSWCgQlmOMtj.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/5114-q0V5URebphSG.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20",
+      "title": "Naruto",
+      "nativeTitle": "NARUTO",
+      "description": "Naruto Uzumaki, a hyperactive and knuckle-headed ninja, lives in Konohagakure, the Hidden Leaf village. Moments prior to his birth, a huge demon known as the Kyuubi, the Nine-tailed Fox, attacked Konohagakure and wreaked havoc. In order to put an end to the Kyuubi's rampage, the leader of the village, the 4th Hokage, sacrificed his life and sealed the monstrous beast inside the newborn Naruto. \n\nShunned because of the presence of the Kyuubi inside him, Naruto struggles to find his place in the village. He strives to become the Hokage of Konohagakure, and he meets many friends and foes along the way.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-dE6UHbFFg1A5.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20-HHxhPj5JD13a.jpg",
+      "color": "#e47850",
+      "status": "COMPLETED",
+      "rating": 8,
+      "popularity": 742949,
+      "year": 2002,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Drama",
+        "Fantasy",
+        "Supernatural"
+      ],
+      "studio": "Studio Pierrot",
+      "episodeCount": 1013,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "-G9BqkgZXRA",
+      "seasons": [
+        {
+          "id": "20",
+          "number": 1,
+          "title": "Naruto",
+          "year": 2002,
+          "episodeCount": 220,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-dE6UHbFFg1A5.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20-HHxhPj5JD13a.jpg"
+        },
+        {
+          "id": "1735",
+          "number": 2,
+          "title": "Naruto: Shippuden",
+          "year": 2007,
+          "episodeCount": 500,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1735-kGfVm0YqCPcu.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1735.jpg"
+        },
+        {
+          "id": "97938",
+          "number": 3,
+          "title": "Boruto: Naruto Next Generations",
+          "year": 2017,
+          "episodeCount": 293,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97938-BnF6M5yTaNB1.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/97938-cT6wkSRifTEC.jpg"
+        }
+      ]
+    },
+    {
+      "id": "11757",
+      "title": "Sword Art Online",
+      "nativeTitle": "Sword Art Online",
+      "description": "In the near future, a Virtual Reality Massive Multiplayer Online Role-Playing Game (VRMMORPG) called Sword Art Online has been released where players control their avatars with their bodies using a piece of technology called Nerve Gear. One day, players discover they cannot log out, as the game creator is holding them captive unless they reach the 100th floor of the game's tower and defeat the final boss. However, if they die in the game, they die in real life. Their struggle for survival starts now...",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx11757-SxYDUzdr9rh2.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/11757-TlEEV9weG4Ag.jpg",
+      "color": "#e4bb5d",
+      "status": "COMPLETED",
+      "rating": 7,
+      "popularity": 734159,
+      "year": 2012,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Fantasy",
+        "Romance"
+      ],
+      "studio": "A-1 Pictures",
+      "episodeCount": 49,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "C8Jl_-b7ju0",
+      "seasons": [
+        {
+          "id": "11757",
+          "number": 1,
+          "title": "Sword Art Online",
+          "year": 2012,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx11757-SxYDUzdr9rh2.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/11757-TlEEV9weG4Ag.jpg"
+        },
+        {
+          "id": "20594",
+          "number": 2,
+          "title": "Sword Art Online II",
+          "year": 2014,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx20594-FhRgZ1H9Istt.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20594-BZOLwqidcS1G.jpg"
+        }
+      ]
+    },
+    {
+      "id": "127230",
+      "title": "Chainsaw Man",
+      "nativeTitle": "Chainsaw Man",
+      "description": "Denji is a teenage boy living with a Chainsaw Devil named Pochita. Due to the debt his father left behind, he has been living a rock-bottom life while repaying his debt by harvesting devil corpses with Pochita.\n\nOne day, Denji is betrayed and killed. As his consciousness fades, he makes a contract with Pochita and gets revived as \"Chainsaw Man\" — a man with a devil's heart.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127230-DdP4vAdssLoz.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/127230-o8IRwCGVr9KW.jpg",
+      "color": "#6b1a1a",
+      "status": "COMPLETED",
+      "rating": 8.3,
+      "popularity": 654570,
+      "year": 2022,
+      "genres": [
+        "Action",
+        "Drama",
+        "Horror",
+        "Supernatural"
+      ],
+      "studio": "MAPPA",
+      "episodeCount": 12,
+      "episodeDuration": 25,
+      "trailerYoutubeId": "v4yLeNt-kCU",
+      "seasons": [
+        {
+          "id": "127230",
+          "number": 1,
+          "title": "Chainsaw Man",
+          "year": 2022,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127230-DdP4vAdssLoz.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/127230-o8IRwCGVr9KW.jpg"
+        }
+      ]
+    },
+    {
+      "id": "101759",
+      "title": "The Promised Neverland",
+      "nativeTitle": "Yakusoku no Neverland",
+      "description": "Emma, Norman and Ray are the brightest kids at the Grace Field House orphanage. And under the care of the woman they refer to as “Mom,” all the kids have enjoyed a comfortable life. Good food, clean clothes and the perfect environment to learn—what more could an orphan ask for? One day, though, Emma and Norman uncover the dark truth of the outside world they are forbidden from seeing.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101759-8UR7r9MNVpz2.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101759-MhlCoeqnODso.jpg",
+      "color": "#e4ae50",
+      "status": "COMPLETED",
+      "rating": 8.3,
+      "popularity": 644388,
+      "year": 2019,
+      "genres": [
+        "Drama",
+        "Fantasy",
+        "Horror",
+        "Mystery",
+        "Psychological",
+        "Thriller"
+      ],
+      "studio": "CloverWorks",
+      "episodeCount": 23,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "ApLudqucq-s",
+      "seasons": [
+        {
+          "id": "101759",
+          "number": 1,
+          "title": "The Promised Neverland",
+          "year": 2019,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101759-8UR7r9MNVpz2.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101759-MhlCoeqnODso.jpg"
+        },
+        {
+          "id": "108725",
+          "number": 2,
+          "title": "The Promised Neverland Season 2",
+          "year": 2021,
+          "episodeCount": 11,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108725-ZKivuyr4Jtc9.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/108725-lg940Urvxzfu.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21507",
+      "title": "Mob Psycho 100",
+      "nativeTitle": "Mob Psycho 100",
+      "description": "The story revolves around \"Mob,\" a boy who will explode if his emotional capacity reaches 100%. This boy with psychic powers earned his nickname \"Mob\" because he does not stand out among other people. He keeps his psychic powers bottled up so he can live normally, but if his emotional level reaches 100, something will overwhelm his entire body.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21507-6YUSbh2m0N1p.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21507-Qx8bGsLXUgLo.jpg",
+      "color": "#d65d1a",
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 640488,
+      "year": 2016,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Drama",
+        "Psychological",
+        "Slice of Life",
+        "Supernatural"
+      ],
+      "studio": "bones",
+      "episodeCount": 37,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "mV39saBlBLI",
+      "seasons": [
+        {
+          "id": "21507",
+          "number": 1,
+          "title": "Mob Psycho 100",
+          "year": 2016,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21507-6YUSbh2m0N1p.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21507-Qx8bGsLXUgLo.jpg"
+        },
+        {
+          "id": "101338",
+          "number": 2,
+          "title": "Mob Psycho 100 II",
+          "year": 2019,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101338-rokVscjRYzdP.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101338-Rl54Qhx71dUq.jpg"
+        },
+        {
+          "id": "140439",
+          "number": 3,
+          "title": "Mob Psycho 100 III",
+          "year": 2022,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140439-bPKmhe1wNxc9.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/140439-r9SRh0q0UgX1.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20755",
+      "title": "Assassination Classroom",
+      "nativeTitle": "Ansatsu Kyoushitsu",
+      "description": "Tucked in the mountains near the elite Kunugigaoka Middle School lies a small derelict building that houses the delinquents and dropouts of Class 3-E. Looked down upon by their peers, the students in this class appear to have little hope in advancing their academic careers. That is, until the national government tasks them with eliminating the greatest threat to their planet: their new teacher.\n\nHaving already destroyed the moon, the octopus-like professor—dubbed \"Koro-sensei\"—has now threatened to destroy the Earth by March of the following year. In light of their mission, the students have found that killing him is easier said than done. Not only can Koro-sensei move at speeds of up to Mach 20, but he can also resist almost every earthly weapon. Ironically, he also proves to be one of the best teachers Class 3-E has ever had. Training the class to excel in both their studies as students and skills as assassins, Koro-sensei is confident that his students' ingenuity and indomitable will could return them to the main campus.\n\nThrough trial and error, Nagisa Shiota, as well as the other students of Class 3-E, must figure out Koro-sensei's weaknesses—and fast, for the very fate of the world depends upon it.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20755-dWrhs569YGUO.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20755-D4ipww9U8YkC.jpg",
+      "color": "#f1e45d",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 640424,
+      "year": 2015,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Drama",
+        "Supernatural"
+      ],
+      "studio": "Lerche",
+      "episodeCount": 47,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "vAuTJFzjNLs",
+      "seasons": [
+        {
+          "id": "20755",
+          "number": 1,
+          "title": "Assassination Classroom",
+          "year": 2015,
+          "episodeCount": 22,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20755-dWrhs569YGUO.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20755-D4ipww9U8YkC.jpg"
+        },
+        {
+          "id": "21170",
+          "number": 2,
+          "title": "Assassination Classroom Second Season",
+          "year": 2016,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21170-kbcfTTZGSaFt.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21170-3sLTirZD2J4K.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21355",
+      "title": "Re:ZERO -Starting Life in Another World-",
+      "nativeTitle": "Re:Zero kara Hajimeru Isekai Seikatsu",
+      "description": "In the story, Subaru Natsuki is an ordinary high school student who is lost in an alternate world, where he is rescued by a beautiful, silver-haired girl. He stays near her to return the favor, but the destiny she is burdened with is more than Subaru can imagine. Enemies attack one by one, and both of them are killed. He then finds out he has the power to rewind death, back to the time he first came to this world. But only he remembers what has happened since.\n\nNotes:\n\n- The first episode aired with a runtime of ~50 minutes as opposed to the standard 25 minute long episode.\n\n- In the Winter 2020 season, Re:ZERO was rebroadcast and re-edited to fit into an hour time-slot. This edit included the first OVA and added slight modifications to certain scenes throughout. It also added an additional scene at the end of the final episode.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21355-f9SjOfEJMk5P.jpg",
+      "color": "#f150ae",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 639641,
+      "year": 2016,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy",
+        "Psychological",
+        "Romance",
+        "Thriller"
+      ],
+      "studio": "WHITE FOX",
+      "episodeCount": 85,
+      "episodeDuration": 25,
+      "trailerYoutubeId": "vFfXjuVA1Jk",
+      "seasons": [
+        {
+          "id": "21355",
+          "number": 1,
+          "title": "Re:ZERO -Starting Life in Another World-",
+          "year": 2016,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21355-f9SjOfEJMk5P.jpg"
+        },
+        {
+          "id": "108632",
+          "number": 2,
+          "title": "Re:ZERO -Starting Life in Another World- Season 2",
+          "year": 2020,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108632-lQWnmw7XaNOK.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/108632-yeLbrgPN4Oni.jpg"
+        },
+        {
+          "id": "119661",
+          "number": 3,
+          "title": "Re:ZERO -Starting Life in Another World- Season 2 Part 2",
+          "year": 2021,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx119661-GDbUZxrZMz01.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/119661-9C7DvtL7yfCu.jpg"
+        },
+        {
+          "id": "163134",
+          "number": 4,
+          "title": "Re:ZERO -Starting Life in Another World- Season 3",
+          "year": 2024,
+          "episodeCount": 16,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163134-yieRFbvUOH9a.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/163134-CqaXjXVivwJ5.jpg"
+        },
+        {
+          "id": "189046",
+          "number": 5,
+          "title": "Re:ZERO -Starting Life in Another World- Season 4",
+          "year": 2026,
+          "episodeCount": 19,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx189046-yaHWtS5FII46.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/189046-MDk2CaVuRWpb.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20665",
+      "title": "Your lie in April",
+      "nativeTitle": "Shigatsu wa Kimi no Uso",
+      "description": "Kousei Arima is a child prodigy known as the \"Human Metronome\" for playing the piano with precision and perfection. Guided by a strict mother and rigorous training, Kousei dominates every competition he enters, earning the admiration of his musical peers and praise from audiences. When his mother suddenly passes away, the subsequent trauma makes him unable to hear the sound of a piano, and he never takes the stage thereafter.\n\nNowadays, Kousei lives a quiet and unassuming life as a junior high school student alongside his friends Tsubaki Sawabe and Ryouta Watari. While struggling to get over his mother's death, he continues to cling to music. His monochrome life turns upside down the day he encounters the eccentric violinist Kaori Miyazono, who thrusts him back into the spotlight as her accompanist. Through a little lie, these two young musicians grow closer together as Kaori tries to fill Kousei's world with color.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20665-TLgkL8T8IRFd.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20665-j4kSsfhfkM24.jpg",
+      "color": "#e4bb50",
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 626344,
+      "year": 2014,
+      "genres": [
+        "Drama",
+        "Music",
+        "Romance",
+        "Slice of Life"
+      ],
+      "studio": "A-1 Pictures",
+      "episodeCount": 22,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "3aL0gDZtFbE",
+      "seasons": [
+        {
+          "id": "20665",
+          "number": 1,
+          "title": "Your lie in April",
+          "year": 2014,
+          "episodeCount": 22,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20665-TLgkL8T8IRFd.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20665-j4kSsfhfkM24.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21234",
+      "title": "ERASED",
+      "nativeTitle": "Boku dake ga Inai Machi",
+      "description": "When tragedy is about to strike, Satoru Fujinuma finds himself sent back several minutes before the accident occurs. The detached, 29-year-old manga artist has taken advantage of this powerful yet mysterious phenomenon, which he calls \"Revival,\" to save many lives.\n\nHowever, when he is wrongfully accused of murdering someone close to him, Satoru is sent back to the past once again, but this time to 1988, 18 years in the past. Soon, he realizes that the murder may be connected to the abduction and killing of one of his classmates, the solitary and mysterious Kayo Hinazuki, that took place when he was a child. This is his chance to make things right.\n\nBoku dake ga Inai Machi follows Satoru in his mission to uncover what truly transpired 18 years ago and prevent the death of his classmate while protecting those he cares about in the present.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21234-XmqW39aQ9o7O.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21234-7lfSSPoMmwr2.jpg",
+      "color": "#f1a150",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 617468,
+      "year": 2016,
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Supernatural",
+        "Thriller"
+      ],
+      "studio": "A-1 Pictures",
+      "episodeCount": 12,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "TZzMOC-4k6M",
+      "seasons": [
+        {
+          "id": "21234",
+          "number": 1,
+          "title": "ERASED",
+          "year": 2016,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21234-XmqW39aQ9o7O.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21234-7lfSSPoMmwr2.jpg"
+        }
+      ]
+    },
+    {
+      "id": "9253",
+      "title": "Steins;Gate",
+      "nativeTitle": "Steins;Gate",
+      "description": "Self-proclaimed mad scientist Okabe Rintarou lives in a small room in Akihabara, where he invents \"future gadgets\" with fellow lab members Shiina Mayuri, his air-headed childhood friend, and Hashida Itaru, an otaku hacker. The three pass the time by tinkering with their latest creation, a \"Phone Microwave\" that can be controlled through text messages. \n\nThe lab members soon face a string of mysterious incidents that lead to a game-changing discovery: the Phone Microwave can send emails to the past and thus alter history. Adapted from the critically acclaimed visual novel by 5pb. and Nitroplus, Steins;Gate takes Okabe to the depths of scientific theory and human despair as he faces the dire consequences of changing the past.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9253-tIUXF2gfU8Sg.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/n9253-JIhmKgBKsWUN.jpg",
+      "color": "#ffd6ae",
+      "status": "COMPLETED",
+      "rating": 8.9,
+      "popularity": 608226,
+      "year": 2011,
+      "genres": [
+        "Drama",
+        "Psychological",
+        "Sci-Fi",
+        "Thriller"
+      ],
+      "studio": "WHITE FOX",
+      "episodeCount": 24,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "27OZc-ku6is",
+      "seasons": [
+        {
+          "id": "9253",
+          "number": 1,
+          "title": "Steins;Gate",
+          "year": 2011,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9253-tIUXF2gfU8Sg.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/n9253-JIhmKgBKsWUN.jpg"
+        }
+      ]
+    },
+    {
+      "id": "97940",
+      "title": "Black Clover",
+      "nativeTitle": "Black Clover",
+      "description": "In a world where magic is everything, Asta and Yuno are both found abandoned at a church on the same day. While Yuno is gifted with exceptional magical powers, Asta is the only one in this world without any. At the age of fifteen, both receive grimoires, magic books that amplify their holder’s magic. Asta’s is a rare Grimoire of Anti-Magic that negates and repels his opponent’s spells. Being opposite but good rivals, Yuno and Asta are ready for the hardest of challenges to achieve their common dream: to be the Wizard King. Giving up is never an option!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97940-fyh8o7gNbha0.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/97940-1URQdQ4U1a0b.jpg",
+      "color": "#d6c96b",
+      "status": "ONGOING",
+      "rating": 7.9,
+      "popularity": 606661,
+      "year": 2017,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Fantasy"
+      ],
+      "studio": "Studio Pierrot",
+      "episodeCount": 182,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "vUjAxk1qYzQ",
+      "seasons": [
+        {
+          "id": "97940",
+          "number": 1,
+          "title": "Black Clover",
+          "year": 2017,
+          "episodeCount": 170,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97940-fyh8o7gNbha0.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/97940-1URQdQ4U1a0b.jpg"
+        },
+        {
+          "id": "195604",
+          "number": 2,
+          "title": "Black Clover Season 2",
+          "year": 2026,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx195604-tSZcfKbVqSEG.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/195604-lQpCzTziSA17.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20464",
+      "title": "HAIKYU!!",
+      "nativeTitle": "Haikyuu!!",
+      "description": "Ever since having witnessed the \"Little Giant\" and his astonishing skills on the volleyball court, Shouyou Hinata has been bewitched by the dynamic nature of the sport. Even though his attempt to make his debut as a volleyball regular during a middle school tournament went up in flames, he longs to prove that his less-than-impressive height ceases to be a hindrance in the face of his sheer will and perseverance.\n\nWhen Hinata enrolls in Karasuno High School, the Little Giant's alma mater, he believes that he is one step closer to his goal of becoming a professional volleyball player. Although the school only retains a shadow of its former glory, Hinata's conviction isn't shaken until he learns that Tobio Kageyama—the prodigy who humiliated Hinata's middle school volleyball team in a crushing defeat—is now his teammate.\n\nTo fulfill his desire of leaving a mark on the realm of volleyball—so often regarded as the domain of the tall and the strong—Hinata must smooth out his differences with Kageyama. Only when Hinata learns what it takes to be a part of a team will he be able to join the race to the top in earnest.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20464-ooZUyBe4ptp9.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20464-PpYjO9cPN1gs.jpg",
+      "color": "#e48635",
+      "status": "COMPLETED",
+      "rating": 8.3,
+      "popularity": 594553,
+      "year": 2014,
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Sports"
+      ],
+      "studio": "Production I.G",
+      "episodeCount": 60,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "9kLRkH9zC5k",
+      "seasons": [
+        {
+          "id": "20464",
+          "number": 1,
+          "title": "HAIKYU!!",
+          "year": 2014,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20464-ooZUyBe4ptp9.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20464-PpYjO9cPN1gs.jpg"
+        },
+        {
+          "id": "20992",
+          "number": 2,
+          "title": "HAIKYU!! 2nd Season",
+          "year": 2015,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20992-aHgNbcalVEqk.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20992-QMdqxEjAIAit.jpg"
+        },
+        {
+          "id": "21698",
+          "number": 3,
+          "title": "HAIKYU!! 3rd Season",
+          "year": 2016,
+          "episodeCount": 10,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21698-RL71mr1YU5Io.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21698-jVFRIHAENS5B.jpg"
+        }
+      ]
+    },
+    {
+      "id": "101291",
+      "title": "Rascal Does Not Dream of Bunny Girl Senpai",
+      "nativeTitle": "Seishun Buta Yarou wa Bunny Girl Senpai no Yume wo Minai",
+      "description": "There's a rumor about a mysterious phenomenon called \"puberty syndrome.\" For example, Sakuta Azusagawa is a high school student who suddenly sees a bunny girl appear in front of him. The girl is actually a girl named Mai Sakurajima, who is Sakuta's upperclassman who is also a famous actress who has gone on hiatus from the entertainment industry. For some reason, the people around Mai cannot see her bunny-girl figure. Sakuta sets out to solve this mystery, and as he spends time with Mai, he learns her secret feelings. Other heroines who have \"puberty syndrome\" start to appear in front of Sakuta.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101291-wfEdgPqtfU0l.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/n101291-fqIUvQ6apEtD.jpg",
+      "color": "#0d43f1",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 593421,
+      "year": 2018,
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Romance",
+        "Supernatural"
+      ],
+      "studio": "CloverWorks",
+      "episodeCount": 13,
+      "episodeDuration": 25,
+      "trailerYoutubeId": "o0TZj_d3Yfg",
+      "seasons": [
+        {
+          "id": "101291",
+          "number": 1,
+          "title": "Rascal Does Not Dream of Bunny Girl Senpai",
+          "year": 2018,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101291-wfEdgPqtfU0l.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/n101291-fqIUvQ6apEtD.jpg"
+        }
+      ]
+    },
+    {
+      "id": "140960",
+      "title": "SPY x FAMILY",
+      "nativeTitle": "SPY×FAMILY",
+      "description": "Everyone has a part of themselves they cannot show to anyone else.\n\nAt a time when all nations of the world were involved in a fierce war of information happening behind closed doors, Ostania and Westalis had been in a state of cold war against one another for decades. The Westalis Intelligence Services' Eastern-Focused Division (WISE) sends their most talented spy, \"Twilight,\" on a top-secret mission to investigate the movements of Donovan Desmond, the chairman of Ostania's National Unity Party, who is threatening peace efforts between the two nations.\n\nThis mission is known as \"Operation Strix.\" It consists of \"putting together a family in one week in order to infiltrate social gatherings organized by the elite school that Desmond's son attends.\" \n\n\"Twilight\" takes on the identity of psychiatrist Loid Forger and starts looking for family members. But Anya, the daughter he adopts, turns out to have the ability to read people's minds, while his wife, Yor, is an assassin! With it being in each of their own interests to keep these facts hidden, they start living together while concealing their true identities from one another. \n\nWorld peace is now in the hands of this brand-new family as they embark on an adventure full of surprises.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-Kb6R5nYQfjmP.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/140960-Z7xSvkRxHKfj.jpg",
+      "color": "#c9f1f1",
+      "status": "COMPLETED",
+      "rating": 8.3,
+      "popularity": 584812,
+      "year": 2022,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Slice of Life",
+        "Supernatural"
+      ],
+      "studio": "CloverWorks",
+      "episodeCount": 50,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "_VRxEEBa1XU",
+      "seasons": [
+        {
+          "id": "140960",
+          "number": 1,
+          "title": "SPY x FAMILY",
+          "year": 2022,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-Kb6R5nYQfjmP.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/140960-Z7xSvkRxHKfj.jpg"
+        },
+        {
+          "id": "142838",
+          "number": 2,
+          "title": "SPY x FAMILY Cour 2",
+          "year": 2022,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx142838-26JrqcFU1ljB.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/142838-tynuN00wxmKO.jpg"
+        },
+        {
+          "id": "158927",
+          "number": 3,
+          "title": "SPY x FAMILY Season 2",
+          "year": 2023,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b158927-lfO85WVguYgc.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/158927-zXtbXUO5iKzX.jpg"
+        },
+        {
+          "id": "177937",
+          "number": 4,
+          "title": "SPY x FAMILY Season 3",
+          "year": 2025,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177937-Tzgg6rAdhCoH.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/177937-jty4x7qBWG5n.jpg"
+        }
+      ]
+    },
+    {
+      "id": "101921",
+      "title": "Kaguya-sama: Love is War",
+      "nativeTitle": "Kaguya-sama wa Kokurasetai: Tensaitachi no Renai Zunousen",
+      "description": "Known for being both brilliant and powerful, Miyuki Shirogane and Kaguya Shinomiya lead the illustrious Shuchiin Academy as near equals. And everyone thinks they’d make a great couple. Pride and arrogance are in ample supply, so the only logical move is to trick the other into instigating a date! Who will come out on top in this psychological war where the first move is the only one that matters?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101921-ufrjLzhSz7L1.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101921-GgvvFhlNhzlF.jpg",
+      "color": "#e45086",
+      "status": "COMPLETED",
+      "rating": 8.3,
+      "popularity": 571523,
+      "year": 2019,
+      "genres": [
+        "Comedy",
+        "Psychological",
+        "Romance",
+        "Slice of Life"
+      ],
+      "studio": "A-1 Pictures",
+      "episodeCount": 41,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "IwpJJiQkZzI",
+      "seasons": [
+        {
+          "id": "101921",
+          "number": 1,
+          "title": "Kaguya-sama: Love is War",
+          "year": 2019,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101921-ufrjLzhSz7L1.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101921-GgvvFhlNhzlF.jpg"
+        },
+        {
+          "id": "112641",
+          "number": 2,
+          "title": "Kaguya-sama: Love is War?",
+          "year": 2020,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx112641-zoGC8d6FaPXU.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/112641-mKZe0zng0ndV.jpg"
+        },
+        {
+          "id": "125367",
+          "number": 3,
+          "title": "Kaguya-sama: Love is War -Ultra Romantic-",
+          "year": 2022,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx125367-1yuq9NFcQuLI.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/125367-hGPJLSNfprO3.jpg"
+        },
+        {
+          "id": "151384",
+          "number": 4,
+          "title": "Kaguya-sama: Love is War -The First Kiss That Never Ends-",
+          "year": 2023,
+          "episodeCount": 4,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151384-gv0q8wOE6D58.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/151384-JybfIpHr2gx6.jpg"
+        }
+      ]
+    },
+    {
+      "id": "105333",
+      "title": "Dr. STONE",
+      "nativeTitle": "Dr. STONE",
+      "description": "After five years of harboring unspoken feelings, high-schooler Taiju Ooki is finally ready to confess his love to Yuzuriha Ogawa. Just when Taiju begins his confession however, a blinding green light strikes the Earth and petrifies mankind around the world— turning every single human into stone.\n\nSeveral millennia later, Taiju awakens to find the modern world completely nonexistent, as nature has flourished in the years humanity stood still. Among a stone world of statues, Taiju encounters one other living human: his science-loving friend Senkuu, who has been active for a few months. Taiju learns that Senkuu has developed a grand scheme—to launch the complete revival of civilization with science. Taiju's brawn and Senkuu's brains combine to forge a formidable partnership, and they soon uncover a method to revive those petrified.\n\nHowever, Senkuu's master plan is threatened when his ideologies are challenged by those who awaken. All the while, the reason for mankind's petrification remains unknown.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105333-GybuoSoOZfpH.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/105333-KWKGvBM8Hyga.jpg",
+      "color": "#c9d678",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 566808,
+      "year": 2019,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Sci-Fi"
+      ],
+      "studio": "TMS Entertainment",
+      "episodeCount": 35,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "pon9R5n5dMk",
+      "seasons": [
+        {
+          "id": "105333",
+          "number": 1,
+          "title": "Dr. STONE",
+          "year": 2019,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105333-GybuoSoOZfpH.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/105333-KWKGvBM8Hyga.jpg"
+        },
+        {
+          "id": "113936",
+          "number": 2,
+          "title": "Dr. STONE: STONE WARS",
+          "year": 2021,
+          "episodeCount": 11,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113936-D4eYd4XwslVI.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/113936-PpMtCY9kCwwV.jpg"
+        }
+      ]
+    },
+    {
+      "id": "101348",
+      "title": "Vinland Saga",
+      "nativeTitle": "VINLAND SAGA",
+      "description": "Thorfinn is son to one of the Vikings' greatest warriors, but when his father is killed in battle by the mercenary leader Askeladd, he swears to have his revenge. Thorfinn joins Askeladd's band in order to challenge him to a duel, and ends up caught in the middle of a war for the crown of England.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101348-2fhDFPCuMNiz.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101348-pivKKffCAwAY.jpg",
+      "color": "#f16b5d",
+      "status": "COMPLETED",
+      "rating": 8.7,
+      "popularity": 561726,
+      "year": 2019,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama"
+      ],
+      "studio": "WIT STUDIO",
+      "episodeCount": 48,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "5xqEp7R9SYM",
+      "seasons": [
+        {
+          "id": "101348",
+          "number": 1,
+          "title": "Vinland Saga",
+          "year": 2019,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101348-2fhDFPCuMNiz.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101348-pivKKffCAwAY.jpg"
+        },
+        {
+          "id": "136430",
+          "number": 2,
+          "title": "Vinland Saga Season 2",
+          "year": 2023,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx136430-gsBsJjA7hGh9.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/136430-ktoFZnyubhHg.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21827",
+      "title": "Violet Evergarden",
+      "nativeTitle": "Violet Evergarden",
+      "description": "A certain point in time, in the continent of Telesis. The great war which divided the continent into North and South has ended after four years, and the people are welcoming a new generation. Violet Evergarden, a young girl formerly known as “the weapon”, has left the battlefield to start a new life at CH Postal Service. There, she is deeply moved by the work of “Auto Memories Dolls”, who carry people's thoughts and convert them into words. Violet begins her journey as an Auto Memories Doll, and comes face to face with various people's emotions and differing shapes of love. There are words Violet heard on the battlefield, which she cannot forget. These words were given to her by someone she holds dear, more than anyone else. She does not yet know their meaning but she searches to find it.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21827-ubzq619ZA2E9.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21827-ROucgYiiiSpR.jpg",
+      "color": "#3586e4",
+      "status": "COMPLETED",
+      "rating": 8.5,
+      "popularity": 558842,
+      "year": 2018,
+      "genres": [
+        "Drama",
+        "Fantasy",
+        "Slice of Life"
+      ],
+      "studio": "Kyoto Animation",
+      "episodeCount": 13,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "_grmduuECm4",
+      "seasons": [
+        {
+          "id": "21827",
+          "number": 1,
+          "title": "Violet Evergarden",
+          "year": 2018,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21827-ubzq619ZA2E9.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21827-ROucgYiiiSpR.jpg"
+        }
+      ]
+    },
+    {
+      "id": "124080",
+      "title": "Horimiya",
+      "nativeTitle": "Horimiya",
+      "description": "A secret life is the one thing they have in common. At school, Hori is a prim and perfect social butterfly, but the truth is she's a brash homebody. Meanwhile, under a gloomy facade, Miyamura hides a gentle heart, along with piercings and tattoos. In a chance meeting, they both reveal a side they've never shown. Could this blossom into something new?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx124080-3i22mRVPBS0T.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/124080-ARyLAHHgikRq.jpg",
+      "color": "#5dc9f1",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 557254,
+      "year": 2021,
+      "genres": [
+        "Comedy",
+        "Romance",
+        "Slice of Life"
+      ],
+      "studio": "CloverWorks",
+      "episodeCount": 13,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "tryurXgGqkI",
+      "seasons": [
+        {
+          "id": "124080",
+          "number": 1,
+          "title": "Horimiya",
+          "year": 2021,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx124080-3i22mRVPBS0T.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/124080-ARyLAHHgikRq.jpg"
+        }
+      ]
+    },
+    {
+      "id": "4224",
+      "title": "Toradora!",
+      "nativeTitle": "Toradora!",
+      "description": "Ryuuji Takasu is a gentle high school student with a love for housework; but in contrast to his kind nature, he has an intimidating face that often gets him labeled as a delinquent. On the other hand is Taiga Aisaka, a small, doll-like student, who is anything but a cute and fragile girl. Equipped with a wooden katana and feisty personality, Taiga is known throughout the school as the \"Palmtop Tiger.\"\n\nOne day, an embarrassing mistake causes the two students to cross paths. Ryuuji discovers that Taiga actually has a sweet side: she has a crush on the popular vice president, Yuusaku Kitamura, who happens to be his best friend. But things only get crazier when Ryuuji reveals that he has a crush on Minori Kushieda—Taiga's best friend!\n\nToradora! is a romantic comedy that follows this odd duo as they embark on a quest to help each other with their respective crushes, forming an unlikely alliance in the process.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx4224-PXVMBLNwy2aF.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/4224-iPUOHdMde27j.jpg",
+      "color": "#e45d78",
+      "status": "COMPLETED",
+      "rating": 7.7,
+      "popularity": 552798,
+      "year": 2008,
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Romance",
+        "Slice of Life"
+      ],
+      "studio": "J.C.STAFF",
+      "episodeCount": 25,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "ya570uUgQNc",
+      "seasons": [
+        {
+          "id": "4224",
+          "number": 1,
+          "title": "Toradora!",
+          "year": 2008,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx4224-PXVMBLNwy2aF.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/4224-iPUOHdMde27j.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20613",
+      "title": "Akame ga Kill!",
+      "nativeTitle": "Akame ga Kill!",
+      "description": "In a land where corruption rules and a ruthless Prime Minister has turned the puppet Emperor's armies of soldiers, assassins and secret police against the people, only one force dares to stand against them: Night Raid, an elite team of relentless killers, each equipped with an Imperial Arm - legendary weapons with unique and incredible powers created in the distant past.\n\nRescued from a fate worse than death by Night Raid, young Tatsumi is offered the chance to join their lethal ranks… but it's a deadly choice, as few can master an Imperial Arm and even fewer survive when two Arms go against each other in combat. The battle is on, and only the strongest will make it out alive.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20613-HXHpec4bemk5.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20613-CoEQF4qKiWDX.jpg",
+      "color": "#e45d43",
+      "status": "COMPLETED",
+      "rating": 7.3,
+      "popularity": 550285,
+      "year": 2014,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy",
+        "Horror",
+        "Psychological",
+        "Thriller"
+      ],
+      "studio": "WHITE FOX",
+      "episodeCount": 24,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "nsqpjtceIZo",
+      "seasons": [
+        {
+          "id": "20613",
+          "number": 1,
+          "title": "Akame ga Kill!",
+          "year": 2014,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20613-HXHpec4bemk5.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20613-CoEQF4qKiWDX.jpg"
+        }
+      ]
+    },
+    {
+      "id": "19815",
+      "title": "No Game, No Life",
+      "nativeTitle": "No Game No Life",
+      "description": "Bored with life and considering the real world to be just a “crappy game,” savvy sibling shut-ins Sora and Shiro have withdrawn into their own fantasy world filled with video games. \n\nHowever, one day they find themselves summoned to another world by a boy who calls himself “God,” their abilities are about to be put to the ultimate test! Now not only their fates — but the fate of all of humanity — will be decided by a series of games that may just be the hardest these super-geniuses have ever faced!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b19815-sEOQ9yQaPKlk.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/19815-BqbuD0wyBS3P.jpg",
+      "color": "#f1a135",
+      "status": "COMPLETED",
+      "rating": 7.7,
+      "popularity": 550085,
+      "year": 2014,
+      "genres": [
+        "Adventure",
+        "Comedy",
+        "Ecchi",
+        "Fantasy"
+      ],
+      "studio": "MADHOUSE",
+      "episodeCount": 12,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "TqMCYf1FibU",
+      "seasons": [
+        {
+          "id": "19815",
+          "number": 1,
+          "title": "No Game, No Life",
+          "year": 2014,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b19815-sEOQ9yQaPKlk.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/19815-BqbuD0wyBS3P.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20447",
+      "title": "Noragami",
+      "nativeTitle": "Noragami",
+      "description": "Minor god Yato is down on his luck. Fed up with his slacker lifestyle, his partner abruptly quits. He has no money, no worshippers, and no shrine to call home. But just when things are starting to seem hopeless, a bus accident forces him to cross paths with Hiyori Iki, a sweet and perky high school girl. After the accident, Hiyori's soul has a bad habit of slipping out of her body, and after enlisting Yato's help to get her back to normal, she begins to fall into the world of spirits and gods.\n\nBut Hiyori's not the only one who's keeping tabs on Yato. A god from Yato's past is back, and he's not interested in a friendly reunion.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20447-EoQXeygHaVCK.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20447-nlgQQzcgWbgw.jpg",
+      "color": "#bbe4f1",
+      "status": "COMPLETED",
+      "rating": 7.8,
+      "popularity": 547878,
+      "year": 2014,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Supernatural"
+      ],
+      "studio": "bones",
+      "episodeCount": 25,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "IQnnwUXd_0U",
+      "seasons": [
+        {
+          "id": "20447",
+          "number": 1,
+          "title": "Noragami",
+          "year": 2014,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20447-EoQXeygHaVCK.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20447-nlgQQzcgWbgw.jpg"
+        },
+        {
+          "id": "21128",
+          "number": 2,
+          "title": "Noragami Aragoto",
+          "year": 2015,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21128-eQgH3TG4nngo.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21128-CulsnPASGUoe.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20789",
+      "title": "The Seven Deadly Sins",
+      "nativeTitle": "Nanatsu no Taizai",
+      "description": "When they were accused of trying to overthrow the monarchy, the feared warriors the Seven Deadly Sins were sent into exile. Princess Elizabeth discovers the truth - the Sins were framed by the king's guard, the Holy Knights - too late to prevent them from assassinating her father and seizing the throne!\n\nNow the princess is on the run, seeking the Sins to help her reclaim the kingdom. But the first Sin she meets, Meliodas, is a little innkeeper with a talking pig. He doesn't even have a real sword! Have the legends of the Sins' strength been exaggerated?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20789-Ma5ouSYPkru9.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20789-qwG9GcxIrmVE.jpg",
+      "color": "#e4861a",
+      "status": "COMPLETED",
+      "rating": 7.2,
+      "popularity": 539495,
+      "year": 2014,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Ecchi",
+        "Fantasy",
+        "Supernatural"
+      ],
+      "studio": "A-1 Pictures",
+      "episodeCount": 100,
+      "episodeDuration": 25,
+      "trailerYoutubeId": "wxcvbL6o55M",
+      "seasons": [
+        {
+          "id": "20789",
+          "number": 1,
+          "title": "The Seven Deadly Sins",
+          "year": 2014,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20789-Ma5ouSYPkru9.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20789-qwG9GcxIrmVE.jpg"
+        },
+        {
+          "id": "21385",
+          "number": 2,
+          "title": "The Seven Deadly Sins: Signs of A Holy War",
+          "year": 2016,
+          "episodeCount": 4,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21385-0rOBu6r4C4b9.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21385-JCyhJbQVli1v.jpg"
+        },
+        {
+          "id": "99539",
+          "number": 3,
+          "title": "The Seven Deadly Sins: Revival of the Commandments",
+          "year": 2018,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx99539-caPX28RSsgRP.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/99539-ermF56v2Gz2p.png"
+        },
+        {
+          "id": "108928",
+          "number": 4,
+          "title": "The Seven Deadly Sins: Imperial Wrath of the Gods",
+          "year": 2019,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108928-DuyUzi0JyPIr.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/108928-QzElQ1VVSFoC.jpg"
+        },
+        {
+          "id": "116752",
+          "number": 5,
+          "title": "The Seven Deadly Sins: Dragon's Judgement",
+          "year": 2021,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx116752-yIJuKp88adqt.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/116752-P72hkhtqD76t.jpg"
+        }
+      ]
+    },
+    {
+      "id": "269",
+      "title": "Bleach",
+      "nativeTitle": "BLEACH",
+      "description": "Ichigo Kurosaki is a rather normal high school student apart from the fact he has the ability to see ghosts. This ability never impacted his life in a major way until the day he encounters the Shinigami Kuchiki Rukia, who saves him and his family's lives from a Hollow, a corrupt spirit that devours human souls. \n\nWounded during the fight against the Hollow, Rukia chooses the only option available to defeat the monster and passes her Shinigami powers to Ichigo. Now forced to act as a substitute until Rukia recovers, Ichigo hunts down the Hollows that plague his town.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx269-d2GmRkJbMopq.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/269-08ar2HJOUAuL.jpg",
+      "color": "#f1a150",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 538648,
+      "year": 2004,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Supernatural"
+      ],
+      "studio": "Studio Pierrot",
+      "episodeCount": 416,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "0c4IoCA5fY0",
+      "seasons": [
+        {
+          "id": "269",
+          "number": 1,
+          "title": "Bleach",
+          "year": 2004,
+          "episodeCount": 366,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx269-d2GmRkJbMopq.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/269-08ar2HJOUAuL.jpg"
+        },
+        {
+          "id": "116674",
+          "number": 2,
+          "title": "BLEACH: Thousand-Year Blood War",
+          "year": 2022,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx116674-p3zK4PUX2Aag.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/116674-l2YlIyJzvGSV.jpg"
+        },
+        {
+          "id": "159322",
+          "number": 3,
+          "title": "BLEACH: Thousand-Year Blood War - The Separation",
+          "year": 2023,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx159322-Sp1GflRhE6Po.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/159322-biJjvtNkhkxR.jpg"
+        },
+        {
+          "id": "169755",
+          "number": 4,
+          "title": "BLEACH: Thousand-Year Blood War - The Conflict",
+          "year": 2024,
+          "episodeCount": 14,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx169755-Rqb7MjnzdTc6.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/169755-hCWjp9ajjMYV.jpg"
+        },
+        {
+          "id": "185874",
+          "number": 5,
+          "title": "BLEACH: Thousand-Year Blood War - The Calamity",
+          "year": 2026,
+          "episodeCount": 10,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185874-aU3e6tBT6wwA.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/185874-IdGyh1EBG91I.jpg"
+        }
+      ]
+    },
+    {
+      "id": "21202",
+      "title": "KONOSUBA -God's blessing on this wonderful world!",
+      "nativeTitle": "Kono Subarashii Sekai ni Shukufuku wo!",
+      "description": "Kazuma Satou decides that today is the day to get out of the house for a bit. Since he dies, pointlessly, it's clearly a bad choice. The goddess who greets him in the afterlife, however, offers him a chance to be reborn in a world not unlike that of a video game, and as a bonus she'll even throw in a cool item or power! Can't possibly be a bad choice, right? Except he arrives with no money at all, dead average skills, and his \"bonus\" isn't useful at all--since he picked the goddess, Aqua, herself. How are the two of them supposed to defeat the evil Devil King and live happily ever after? Well, for them, it probably starts with day laboring rather than adventuring. And it's only going to get more disappointing from there!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21202-mPOr80AEjUcZ.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21202-UWijdV7RMnXo.jpg",
+      "color": "#5daee4",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 529804,
+      "year": 2016,
+      "genres": [
+        "Adventure",
+        "Comedy",
+        "Ecchi",
+        "Fantasy"
+      ],
+      "studio": "Studio DEEN",
+      "episodeCount": 20,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "NU87y-38glA",
+      "seasons": [
+        {
+          "id": "21202",
+          "number": 1,
+          "title": "KONOSUBA -God's blessing on this wonderful world!",
+          "year": 2016,
+          "episodeCount": 10,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21202-mPOr80AEjUcZ.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21202-UWijdV7RMnXo.jpg"
+        },
+        {
+          "id": "21699",
+          "number": 2,
+          "title": "KONOSUBA -God's blessing on this wonderful world! 2",
+          "year": 2017,
+          "episodeCount": 10,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21699-Fkbnkl9ZC6fW.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21699-1PwL1P4i61wP.jpg"
+        }
+      ]
+    },
+    {
+      "id": "1575",
+      "title": "Code Geass: Lelouch of the Rebellion",
+      "nativeTitle": "Code Geass: Hangyaku no Lelouch",
+      "description": "On August 10th of the year 2010 the Holy Empire of Britannia began a campaign of conquest, its sights set on Japan. Operations were completed in one month thanks to Britannia's deployment of new mobile humanoid armor vehicles dubbed Knightmare Frames. Japan's rights and identity were stripped away, the once proud nation now referred to as Area 11. Its citizens, Elevens, are forced to scratch out a living while the Britannian aristocracy lives comfortably within their settlements. Pockets of resistance appear throughout Area 11, working towards independence for Japan.\n\n Lelouch, an exiled Imperial Prince of Britannia posing as a student, finds himself in the heart of the ongoing conflict for the island nation. Through a chance meeting with a mysterious girl named C.C., Lelouch gains his Geass, the power of the king. Now endowed with absolute dominance over any person, Lelouch may finally realize his goal of bringing down Britannia from within!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1575-hsmWM2ydNm1m.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1575.jpg",
+      "color": "#c9d678",
+      "status": "COMPLETED",
+      "rating": 8.5,
+      "popularity": 514775,
+      "year": 2006,
+      "genres": [
+        "Action",
+        "Drama",
+        "Mecha",
+        "Sci-Fi",
+        "Thriller"
+      ],
+      "studio": "Sunrise",
+      "episodeCount": 50,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "Ab9ztHX-DVg",
+      "seasons": [
+        {
+          "id": "1575",
+          "number": 1,
+          "title": "Code Geass: Lelouch of the Rebellion",
+          "year": 2006,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1575-hsmWM2ydNm1m.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1575.jpg"
+        },
+        {
+          "id": "2904",
+          "number": 2,
+          "title": "Code Geass: Lelouch of the Rebellion R2",
+          "year": 2008,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2904-Fet9Q33suC7G.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/2904-X71fcvE83n3s.jpg"
+        }
+      ]
+    },
+    {
+      "id": "99423",
+      "title": "DARLING in the FRANXX",
+      "nativeTitle": "Darling in the Franxx",
+      "description": "The distant future: Humanity established the mobile fort city, Plantation, upon the ruined wasteland. Within the city were pilot quarters, Mistilteinn, otherwise known as the “Birdcage.” That is where the children live... Their only mission in life was the fight. Their enemies are the mysterious giant organisms known as Kyoryu. The children operate robots known as FRANXX in order to face these still unseen enemies. Among them was a boy who was once called a child prodigy: Code number 016, Hiro. One day, a mysterious girl called Zero Two appears in front of Hiro. “I’ve found you, my Darling.”",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx99423-8MBxtwCeHf8B.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/99423-OQfem628gdxD.jpg",
+      "color": "#f15043",
+      "status": "COMPLETED",
+      "rating": 6.9,
+      "popularity": 511128,
+      "year": 2018,
+      "genres": [
+        "Action",
+        "Drama",
+        "Mecha",
+        "Psychological",
+        "Romance",
+        "Sci-Fi"
+      ],
+      "studio": "TRIGGER",
+      "episodeCount": 24,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "KNIS0mVawhc",
+      "seasons": [
+        {
+          "id": "99423",
+          "number": 1,
+          "title": "DARLING in the FRANXX",
+          "year": 2018,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx99423-8MBxtwCeHf8B.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/99423-OQfem628gdxD.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20623",
+      "title": "Parasyte -the maxim-",
+      "nativeTitle": "Kiseijuu: Sei no Kakuritsu",
+      "description": "They arrive in silence and darkness. They descend from the skies. They have a hunger for human flesh. They are everywhere. They are parasites, alien creatures who must invade–and take control of–a human host to survive. And once they have infected their victims, they can assume any deadly form they choose: monsters with giant teeth, winged demons, creatures with blades for hands. But most have chosen to conceal their lethal purpose behind ordinary human faces. So no one knows their secret–except an ordinary high school student. Shin is battling for control of his own body against an alien parasite, but can he find a way to warn humanity of the horrors to come?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20623-dUARfggnNDOe.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20623-xb9PPf8rGOsG.jpg",
+      "color": "#285086",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 510273,
+      "year": 2014,
+      "genres": [
+        "Action",
+        "Drama",
+        "Horror",
+        "Psychological",
+        "Sci-Fi"
+      ],
+      "studio": "MADHOUSE",
+      "episodeCount": 24,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "2ilVWE9uw88",
+      "seasons": [
+        {
+          "id": "20623",
+          "number": 1,
+          "title": "Parasyte -the maxim-",
+          "year": 2014,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20623-dUARfggnNDOe.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20623-xb9PPf8rGOsG.jpg"
+        }
+      ]
+    },
+    {
+      "id": "30",
+      "title": "Neon Genesis Evangelion",
+      "nativeTitle": "Shin Seiki Evangelion",
+      "description": "In the year 2015, the Angels, huge, tremendously powerful, alien war machines, appear in Tokyo for the second time. The only hope for Mankind's survival lies in the Evangelion, a humanoid fighting machine developed by NERV, a special United Nations agency. Capable of withstanding anything the Angels can dish out, the Evangelion's one drawback lies in the limited number of people able to pilot them. Only a handful of teenagers, all born fourteen years ago, nine months after the Angels first appeared, are able to interface with the Evangelion. One such teenager is Shinji Ikari, whose father heads the NERV team that developed and maintains the Evangelion. Thrust into a maelstrom of battle and events that he does not understand, Shinji is forced to plumb the depths of his own inner resources for the courage and strength to not only fight, but to survive, or risk losing everything. \n\n Note: Later releases include edited versions of Episodes 21-24 called the \"Director's Cut\" with some visual editing and adding extra scenes that previously appeared in the theatrical recap 'Death'.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx30-AI1zr74Dh4ye.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/30-gEMoHHIqxDgN.jpg",
+      "color": "#f17843",
+      "status": "COMPLETED",
+      "rating": 8.3,
+      "popularity": 507014,
+      "year": 1995,
+      "genres": [
+        "Action",
+        "Drama",
+        "Mecha",
+        "Mystery",
+        "Psychological",
+        "Sci-Fi"
+      ],
+      "studio": "GAINAX",
+      "episodeCount": 26,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "kOH2_8MkgZY",
+      "seasons": [
+        {
+          "id": "30",
+          "number": 1,
+          "title": "Neon Genesis Evangelion",
+          "year": 1995,
+          "episodeCount": 26,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx30-AI1zr74Dh4ye.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/30-gEMoHHIqxDgN.jpg"
+        }
+      ]
+    },
+    {
+      "id": "154587",
+      "title": "Frieren: Beyond Journey’s End",
+      "nativeTitle": "Sousou no Frieren",
+      "description": "The adventure is over but life goes on for an elf mage just beginning to learn what living is all about. Elf mage Frieren and her courageous fellow adventurers have defeated the Demon King and brought peace to the land. But Frieren will long outlive the rest of her former party. How will she come to understand what life means to the people around her? Decades after their victory, the funeral of one her friends confronts Frieren with her own near immortality. Frieren sets out to fulfill the last wishes of her comrades and finds herself beginning a new adventure…",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-qQTzQnEJJ3oB.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/154587-ivXNJ23SM1xB.jpg",
+      "color": "#bbf1a1",
+      "status": "COMPLETED",
+      "rating": 9,
+      "popularity": 500578,
+      "year": 2023,
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Fantasy"
+      ],
+      "studio": "MADHOUSE",
+      "episodeCount": 38,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "tR8YH0G67Rk",
+      "seasons": [
+        {
+          "id": "154587",
+          "number": 1,
+          "title": "Frieren: Beyond Journey’s End",
+          "year": 2023,
+          "episodeCount": 28,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-qQTzQnEJJ3oB.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/154587-ivXNJ23SM1xB.jpg"
+        },
+        {
+          "id": "182255",
+          "number": 2,
+          "title": "Frieren: Beyond Journey’s End Season 2",
+          "year": 2026,
+          "episodeCount": 10,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182255-butzrqd4I0aC.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/182255-wyHvp6zJbWsO.jpg"
+        }
+      ]
+    },
+    {
+      "id": "105310",
+      "title": "Fire Force",
+      "nativeTitle": "Enen no Shouboutai",
+      "description": "Year 198 of the Solar Era in Tokyo, special fire brigades are fighting against a phenomenon called spontaneous human combustion where human beings are turned into living infernos called \"Infernals.” While the Infernals are first-generation cases of spontaneous human combustion, later generations possess the ability to manipulate flames while retaining human form. Shinra Kusakabe, a youth who gained the nickname Devil’s Footprints for his ability to ignite his feet at will, joins the Special Fire Force Company 8 which composes of other flames users as they work to extinguish any Infernals they encounter. As a faction that is creating Infernals appears, Shinra begins to uncover the truth behind a mysterious fire that caused the death of his family twelve years ago.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105310-2PKUvoaA6fTn.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/105310-ygGL9yweZM2Q.jpg",
+      "color": "#f1bb28",
+      "status": "COMPLETED",
+      "rating": 7.6,
+      "popularity": 494820,
+      "year": 2019,
+      "genres": [
+        "Action",
+        "Drama",
+        "Sci-Fi",
+        "Supernatural"
+      ],
+      "studio": "david production",
+      "episodeCount": 73,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "Dpae4acLLeA",
+      "seasons": [
+        {
+          "id": "105310",
+          "number": 1,
+          "title": "Fire Force",
+          "year": 2019,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105310-2PKUvoaA6fTn.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/105310-ygGL9yweZM2Q.jpg"
+        },
+        {
+          "id": "114236",
+          "number": 2,
+          "title": "Fire Force Season 2",
+          "year": 2020,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114236-wfQOWF0Ii3h2.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/114236-6nbw38bHeXYQ.jpg"
+        },
+        {
+          "id": "149118",
+          "number": 3,
+          "title": "Fire Force Season 3",
+          "year": 2025,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx149118-AOQb0xuTssGl.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/149118-neeUO11QUL0R.jpg"
+        },
+        {
+          "id": "179062",
+          "number": 4,
+          "title": "Fire Force Season 3 Part 2",
+          "year": 2026,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179062-pbzYE1miZq61.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/179062-ZnxW4uWEsV3H.jpg"
+        }
+      ]
+    },
+    {
+      "id": "14719",
+      "title": "JoJo's Bizarre Adventure (TV)",
+      "nativeTitle": "JoJo no Kimyou na Bouken (TV)",
+      "description": "Beginning its tale in 19th century England, young aristocrat Jonathan Joestar finds himself locked in bitter rivalry with Dio Brando, a low-born boy who Jonathan's father took under his wing after the death of Dio's father. Discontent with his station in life, Dio's fathomless lust to reign over all eventually leads him to seek the supernatural powers of an ancient Aztec stone mask in the Joestar's possession—an artifact that will forever change the destiny of Dio and Jonathan for generations to come.\n\nFifty years later, in 1938 New York City, Jonathan's grandson Joseph Joestar must take up his grandfather's mission and master the abilities necessary to destroy the stone mask and its immensely powerful creators who threaten humanity's very existence, the Pillar Men.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx14719-VT5dRzTBSZ0w.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/14719-m7Hv2AxcNNjM.jpg",
+      "color": "#e49343",
+      "status": "COMPLETED",
+      "rating": 7.7,
+      "popularity": 490572,
+      "year": 2012,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Supernatural"
+      ],
+      "studio": "david production",
+      "episodeCount": 152,
+      "episodeDuration": 24,
+      "trailerYoutubeId": null,
+      "seasons": [
+        {
+          "id": "14719",
+          "number": 1,
+          "title": "JoJo's Bizarre Adventure (TV)",
+          "year": 2012,
+          "episodeCount": 26,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx14719-VT5dRzTBSZ0w.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/14719-m7Hv2AxcNNjM.jpg"
+        },
+        {
+          "id": "20474",
+          "number": 2,
+          "title": "JoJo's Bizarre Adventure: Stardust Crusaders",
+          "year": 2014,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20474-xuqem5GBlBtb.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20474-peBLuUVAzNC3.jpg"
+        },
+        {
+          "id": "20799",
+          "number": 3,
+          "title": "JoJo's Bizarre Adventure: Stardust Crusaders - Battle in Egypt",
+          "year": 2015,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20799-S1eyqBDlx51E.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20799-Fc9I1XG4TWtJ.jpg"
+        },
+        {
+          "id": "21450",
+          "number": 4,
+          "title": "JoJo's Bizarre Adventure: Diamond is Unbreakable",
+          "year": 2016,
+          "episodeCount": 39,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21450-D7XFwEQjZ5GA.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21450-5mgIkvOWnF9Z.jpg"
+        },
+        {
+          "id": "102883",
+          "number": 5,
+          "title": "JoJo's Bizarre Adventure: Golden Wind",
+          "year": 2018,
+          "episodeCount": 39,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx102883-S9KzdMJhDswJ.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/102883-8ffuBLnY5vNR.jpg"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "title": "Cowboy Bebop",
+      "nativeTitle": "Cowboy Bebop",
+      "description": "Enter a world in the distant future, where Bounty Hunters roam the solar system. Spike and Jet, bounty hunting partners, set out on journeys in an ever struggling effort to win bounty rewards to survive.\n\nWhile traveling, they meet up with other very interesting people. Could Faye, the beautiful and ridiculously poor gambler, Edward, the computer genius, and Ein, the engineered dog be a good addition to the group?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1-GCsPm7waJ4kS.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1-OquNCNB6srGe.jpg",
+      "color": "#f16b50",
+      "status": "COMPLETED",
+      "rating": 8.6,
+      "popularity": 477321,
+      "year": 1998,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Sci-Fi"
+      ],
+      "studio": "Sunrise",
+      "episodeCount": 26,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "OhNwckCLzis",
+      "seasons": [
+        {
+          "id": "1",
+          "number": 1,
+          "title": "Cowboy Bebop",
+          "year": 1998,
+          "episodeCount": 26,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1-GCsPm7waJ4kS.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1-OquNCNB6srGe.jpg"
+        }
+      ]
+    },
+    {
+      "id": "101280",
+      "title": "That Time I Got Reincarnated as a Slime",
+      "nativeTitle": "Tensei Shitara Slime Datta Ken",
+      "description": "Lonely thirty-seven-year-old Satoru Mikami is stuck in a dead-end job, unhappy with his mundane life, but after dying at the hands of a robber, he awakens to a fresh start in a fantasy realm...as a slime monster! As he acclimates to his goopy new existence, his exploits with the other monsters set off a chain of events that will change his new world forever!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101280-tDxCVJm714nt.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101280-9t7J3774n955.jpg",
+      "color": "#5daef1",
+      "status": "COMPLETED",
+      "rating": 8,
+      "popularity": 476483,
+      "year": 2018,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Fantasy"
+      ],
+      "studio": "8-bit",
+      "episodeCount": 24,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "QsS7AzXCwKA",
+      "seasons": [
+        {
+          "id": "101280",
+          "number": 1,
+          "title": "That Time I Got Reincarnated as a Slime",
+          "year": 2018,
+          "episodeCount": 24,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101280-tDxCVJm714nt.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101280-9t7J3774n955.jpg"
+        }
+      ]
+    },
+    {
+      "id": "20931",
+      "title": "Death Parade",
+      "nativeTitle": "Death Parade",
+      "description": "When two people die at the same time, they’re sent to a place that’s neither heaven nor hell—a lavish bar between worlds where the stakes are high and the rules are simple: if you win you live again, if you die… you’re gone for good.\n\nDecim is the bartender charged with serving the souls who enter Quindecim. He may make a mean cocktail, but his true profession is to play the role of arbiter—a judge who determines whether or not a soul is worthy of reincarnation. To aid in his judgment, the bar’s patrons are forced to play simple games laced with sadistic twists designed to bring their true natures to light. To Decim, judgment has always been black and white—that is—until he meets a mysterious young woman whose fate seems impossible to decide. His indecision shakes the very foundation of the games and raises the biggest question of all: Who is fit to judge the dead?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx20931-bktYqOcxPERi.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20931-xDhiTPZmtS3u.jpg",
+      "color": "#35a1f1",
+      "status": "COMPLETED",
+      "rating": 8,
+      "popularity": 475056,
+      "year": 2015,
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Supernatural",
+        "Thriller"
+      ],
+      "studio": "MADHOUSE",
+      "episodeCount": 12,
+      "episodeDuration": 23,
+      "trailerYoutubeId": "n9lr8jqI-24",
+      "seasons": [
+        {
+          "id": "20931",
+          "number": 1,
+          "title": "Death Parade",
+          "year": 2015,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx20931-bktYqOcxPERi.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/20931-xDhiTPZmtS3u.jpg"
+        }
+      ]
+    },
+    {
+      "id": "108465",
+      "title": "Mushoku Tensei: Jobless Reincarnation",
+      "nativeTitle": "Mushoku Tensei: Isekai Ittara Honki Dasu",
+      "description": "When a 34-year-old underachiever gets run over by a bus, his story doesn’t end there. Reincarnated in a new world as an infant, Rudeus will seize every opportunity to live the life he’s always wanted. Armed with new friends, some freshly acquired magical abilities, and the courage to do the things he’s always dreamed of, he’s embarking on an epic adventure—with all of his past experience intact!\n\nNote: The anime pre-screened its 1st and 2nd episode starting on the 27th of December on the Nico Nico Live Broadcasting and D Anime Store services",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108465-1ANspF1EWyFx.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/108465-RgsRpTMhP9Sv.jpg",
+      "color": "#43a1e4",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 473445,
+      "year": 2021,
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Ecchi",
+        "Fantasy"
+      ],
+      "studio": "Studio Bind",
+      "episodeCount": 62,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "JoS7Z8MCD6E",
+      "seasons": [
+        {
+          "id": "108465",
+          "number": 1,
+          "title": "Mushoku Tensei: Jobless Reincarnation",
+          "year": 2021,
+          "episodeCount": 11,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108465-1ANspF1EWyFx.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/108465-RgsRpTMhP9Sv.jpg"
+        },
+        {
+          "id": "127720",
+          "number": 2,
+          "title": "Mushoku Tensei: Jobless Reincarnation Cour 2",
+          "year": 2021,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127720-ADJgIrUVMdU9.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/127720-oBpHiMWQhFVN.jpg"
+        },
+        {
+          "id": "146065",
+          "number": 3,
+          "title": "Mushoku Tensei: Jobless Reincarnation Season 2",
+          "year": 2023,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx146065-IjirxRK26O03.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/146065-33RDijfuxLLk.jpg"
+        },
+        {
+          "id": "166873",
+          "number": 4,
+          "title": "Mushoku Tensei: Jobless Reincarnation Season 2 Part 2",
+          "year": 2024,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx166873-xO0BRPkmwFll.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/166873-GTi5imE5skM2.jpg"
+        },
+        {
+          "id": "178789",
+          "number": 5,
+          "title": "Mushoku Tensei: Jobless Reincarnation Season 3",
+          "year": 2026,
+          "episodeCount": 14,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178789-hNXjKFzUq7mk.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/178789-9nHWmoRLlcLu.jpg"
+        }
+      ]
+    },
+    {
+      "id": "99263",
+      "title": "The Rising of the Shield Hero",
+      "nativeTitle": "Tate no Yuusha no Nariagari",
+      "description": "Naofumi Iwatani, an uncharismatic Otaku who spends his days on games and manga, suddenly finds himself summoned to a parallel universe! He discovers he is one of four heroes equipped with legendary weapons and tasked with saving the world from its prophesied destruction. As the Shield Hero, the weakest of the heroes, all is not as it seems. Naofumi is soon alone, penniless, and betrayed. With no one to turn to, and nowhere to run, he is left with only his shield. Now, Naofumi must rise to become the legendary Shield Hero and save the world!\n\nNote:\n\n- The first episode was pre-aired on December 27th, 2018. Regular broadcast began on January 9th, 2019.\n\n- The first episode aired with a runtime of ~47 minutes as opposed to the standard 24 minute long episode.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx99263-LcazQwdlWzMy.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/99263-IwkmdCTsDY1t.jpg",
+      "color": "#5dc9e4",
+      "status": "COMPLETED",
+      "rating": 7.6,
+      "popularity": 470907,
+      "year": 2019,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Fantasy"
+      ],
+      "studio": "Kinema Citrus",
+      "episodeCount": 62,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "VKYmpq-V3Rs",
+      "seasons": [
+        {
+          "id": "99263",
+          "number": 1,
+          "title": "The Rising of the Shield Hero",
+          "year": 2019,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx99263-LcazQwdlWzMy.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/99263-IwkmdCTsDY1t.jpg"
+        },
+        {
+          "id": "111321",
+          "number": 2,
+          "title": "The Rising of the Shield Hero Season 2",
+          "year": 2022,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx111321-dIr3dEKOIPer.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/111321-nnetF1qONAcE.jpg"
+        },
+        {
+          "id": "111322",
+          "number": 3,
+          "title": "The Rising of the Shield Hero Season 3",
+          "year": 2023,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx111322-2jQMDQva4YD7.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/111322-wK2exU6iNeen.jpg"
+        },
+        {
+          "id": "173780",
+          "number": 4,
+          "title": "The Rising of the Shield Hero Season 4",
+          "year": 2025,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx173780-O7v1YfXg61JT.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/173780-HImv1cYbvOlp.jpg"
+        }
+      ]
+    },
+    {
+      "id": "9919",
+      "title": "Blue Exorcist",
+      "nativeTitle": "Ao no Exorcist",
+      "description": "This world consists of two dimensions joined as one, like a mirror. The first is the world in which the humans live, Assiah. The other is the world of demons, Gehenna. Ordinarily, travel between the two, and indeed any kind of contact between the two, is impossible. However the demons can pass over into this world by possessing anything that exist within it. Satan the god of demons, but there's one thing that he doesn't have, and that's a substance in the human world that is powerful enough to contain him!! For that purpose he created Rin, his son from a human woman, but will his son agree to his plans? Or will he become something else...? An exorcist?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9919-nXS7JOZrWHfS.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/9919-S5idQm3GbZ80.jpg",
+      "color": "#aed6f1",
+      "status": "COMPLETED",
+      "rating": 7.2,
+      "popularity": 468567,
+      "year": 2011,
+      "genres": [
+        "Action",
+        "Fantasy",
+        "Supernatural"
+      ],
+      "studio": "A-1 Pictures",
+      "episodeCount": 73,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "0HHNeeXrysA",
+      "seasons": [
+        {
+          "id": "9919",
+          "number": 1,
+          "title": "Blue Exorcist",
+          "year": 2011,
+          "episodeCount": 25,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9919-nXS7JOZrWHfS.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/9919-S5idQm3GbZ80.jpg"
+        },
+        {
+          "id": "21861",
+          "number": 2,
+          "title": "Blue Exorcist: Kyoto Saga",
+          "year": 2017,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21861-KDvJJQenJJlT.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21861-liQDH4AtMeK6.jpg"
+        },
+        {
+          "id": "158931",
+          "number": 3,
+          "title": "Blue Exorcist -Shimane Illuminati Saga-",
+          "year": 2024,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx158931-QAQMtWKunvy3.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/158931-3cXdwPkUplE8.jpg"
+        },
+        {
+          "id": "176311",
+          "number": 4,
+          "title": "Blue Exorcist -Beyond the Snow Saga-",
+          "year": 2024,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176311-OZudERHrpJJ0.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/176311-faAPK9m0QCjP.jpg"
+        },
+        {
+          "id": "185880",
+          "number": 5,
+          "title": "Blue Exorcist -The Blue Night Saga-",
+          "year": 2025,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185880-efBIcDBzPiHP.jpg",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/185880-HiXONnk2jzSc.jpg"
+        }
+      ]
+    },
+    {
+      "id": "151807",
+      "title": "Solo Leveling",
+      "nativeTitle": "Ore dake Level Up na Ken",
+      "description": "They say whatever doesn’t kill you makes you stronger, but that’s not the case for the world’s weakest hunter Seong Jin-U. After being brutally slaughtered by monsters in a high-ranking dungeon, Jin-U came back with the System, a program only he could see, that’s leveling him up in every way. Now, he’s inspired to discover the secrets behind his powers and the dungeon that spawned them.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151807-it355ZgzquUd.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/151807-37yfQA3ym8PA.jpg",
+      "color": "#35bbf1",
+      "status": "COMPLETED",
+      "rating": 8,
+      "popularity": 464350,
+      "year": 2024,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Fantasy"
+      ],
+      "studio": "A-1 Pictures",
+      "episodeCount": 25,
+      "episodeDuration": 24,
+      "trailerYoutubeId": "HkIKAnwLZCw",
+      "seasons": [
+        {
+          "id": "151807",
+          "number": 1,
+          "title": "Solo Leveling",
+          "year": 2024,
+          "episodeCount": 12,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151807-it355ZgzquUd.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/151807-37yfQA3ym8PA.jpg"
+        },
+        {
+          "id": "176496",
+          "number": 2,
+          "title": "Solo Leveling Season 2 -Arise from the Shadow-",
+          "year": 2025,
+          "episodeCount": 13,
+          "coverImage": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176496-9BDMjAZGEbq4.png",
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/176496-5oY4k2NRqlYs.jpg"
+        }
+      ]
+    }
+  ],
+  "manga": [
+    {
+      "id": "105778",
+      "title": "Chainsaw Man",
+      "nativeTitle": "Chainsaw Man",
+      "description": "The name says it all! Denji's life of poverty is changed forever when he merges with his pet chainsaw dog, Pochita! Now he's living in the big city and an official Devil Hunter. But he's got a lot to learn about his new job and chainsaw powers!\n\nNotes:\n\n- Nominated for the 2020 Manga Taisho Award.\n\n- Winner of the 2021 Kono Manga ga Sugoi Award.\n\n- Winner of the 66th Shogakukan Manga Award in the shounen category.\n\n- Winner of the 2021 and 2022 Harvey Award for Best Manga.\n\n- Chapters 1-97 were released in Weekly Shounen Jump from Dec 3, 2018 to Dec 13, 2020. The series resumed from Ch. 98 in Shounen Jump+ on July 12, 2022",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx105778-euxXZEIfDY2u.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/105778-ppHaMwown6c9.jpg",
+      "color": "#f1c90d",
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 337872,
+      "year": 2018,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Drama",
+        "Horror",
+        "Supernatural"
+      ],
+      "author": "Tatsuki Fujimoto",
+      "chapterCount": 232,
+      "volumeCount": 24
+    },
+    {
+      "id": "105398",
+      "title": "Solo Leveling",
+      "nativeTitle": "Na Honjaman Level Up",
+      "description": "In a world where awakened beings called “Hunters” must battle deadly monsters to protect humanity, Seong Jin-U, nicknamed “the weakest hunter of all mankind,” finds himself in a constant struggle for survival. One day, after a brutal encounter in an overpowered dungeon wipes out his party and threatens to end his life, a mysterious System chooses him as its sole player: Jin-U has been granted the rare opportunity to level up his abilities, possibly beyond any known limits. Follow Jin-U’s journey as he takes on ever-stronger enemies, both human and monster, to discover the secrets deep within the dungeons and the ultimate extent of his powers.\n\nNote: Includes 22 extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx105398-b673Vt5ZSuz3.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/105398-4UrEhdqZukrg.jpg",
+      "color": null,
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 289539,
+      "year": 2018,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Fantasy"
+      ],
+      "author": "So-Ryeong Gi",
+      "chapterCount": 201,
+      "volumeCount": 15
+    },
+    {
+      "id": "30002",
+      "title": "Berserk",
+      "nativeTitle": "Berserk",
+      "description": "His name is Guts, the Black Swordsman, a feared warrior spoken of only in whispers. Bearer of a gigantic sword, an iron hand, and the scars of countless battles and tortures, his flesh is also indelibly marked with The Brand, an unholy symbol that draws the forces of darkness to him and dooms him as their sacrifice. But Guts won't take his fate lying down; he'll cut a crimson swath of carnage through the ranks of the damned—and anyone else foolish enough to oppose him! Accompanied by Puck the Elf, more an annoyance than a companion, Guts relentlessly follows a dark, bloodstained path that leads only to death...or vengeance.\n\nNotes:\n\n- Volumes 1-5 contain the 16 prequel chapters 0A - 0P.\n\n- Chapter 83 was omitted from Volume 13 due to the author’s request.\n\n- Volume 14 includes “Berserk: The Prototype”.\n\n- Due to the author's passing, starting from Chapter 365, the manga is illustrated by Studio Gaga (Miura's assistants) and supervised by Kouji Mori (a close friend of Miura's).",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30002-Cul4OeN7bYtn.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30002-3TuoSMl20fUX.jpg",
+      "color": "#d6861a",
+      "status": "ONGOING",
+      "rating": 9.2,
+      "popularity": 249533,
+      "year": 1989,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy",
+        "Horror",
+        "Psychological"
+      ],
+      "author": "Kentarou Miura",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "30013",
+      "title": "One Piece",
+      "nativeTitle": "ONE PIECE",
+      "description": "As a child, Monkey D. Luffy was inspired to become a pirate by listening to the tales of the buccaneer \"Red-Haired\" Shanks. But his life changed when Luffy accidentally ate the Gum-Gum Devil Fruit and gained the power to stretch like rubber...at the cost of never being able to swim again! Years later, still vowing to become the king of the pirates, Luffy sets out on his adventure...one guy alone in a rowboat, in search of the legendary \"One Piece,\" said to be the greatest treasure in the world...",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30013-BeslEMqiPhlk.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30013-hbbRZqC5MjYh.jpg",
+      "color": "#f1935d",
+      "status": "ONGOING",
+      "rating": 9.1,
+      "popularity": 237395,
+      "year": 1997,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Fantasy"
+      ],
+      "author": "Eiichirou Oda",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "53390",
+      "title": "Attack on Titan",
+      "nativeTitle": "Shingeki no Kyojin",
+      "description": "In this post-apocalyptic sci-fi story, humanity has been devastated by the bizarre, giant humanoids known as the Titans. Little is known about where they came from or why they are bent on consuming mankind. Seemingly unintelligent, they have roamed the world for years, killing everyone they see. For the past century, what's left of man has hidden in a giant, three-walled city. People believe their 50-meter-high walls will protect them from the Titans, but the sudden appearance of an immense Titan is about to change everything.\n\nNote: Includes two extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx53390-1RsuABC34P9D.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/53390-6Uru5rrjh8zv.jpg",
+      "color": "#d6431a",
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 229183,
+      "year": 2009,
+      "genres": [
+        "Action",
+        "Drama",
+        "Fantasy",
+        "Mystery"
+      ],
+      "author": "Hajime Isayama",
+      "chapterCount": 141,
+      "volumeCount": 34
+    },
+    {
+      "id": "87216",
+      "title": "Demon Slayer: Kimetsu no Yaiba",
+      "nativeTitle": "Kimetsu no Yaiba",
+      "description": "The setting is Taisho era Japan. Tanjirou is a kindhearted young boy who lived peacefully with his family as a coal seller. Their normal life changes completely when his family is slaughtered by demons. The only other survivor, Tanjirou's younger sister Nezuko, has become a ferocious demon. In order to return Nezuko to normal and get revenge on the demon that killed their family, the two of them depart on a journey. From a young talent, an adventure tale of blood and swords begins!\n\nNotes:\n\n- Includes two extra chapters.\n \n- Nominated to the 24th and 25th Annual Tezuka Osamu Cultural Prize.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx87216-c9bSNVD10UuD.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/87216-TVKEGfSxAqKs.jpg",
+      "color": "#f1d628",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 212936,
+      "year": 2016,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Supernatural"
+      ],
+      "author": "Koyoharu Gotouge",
+      "chapterCount": 207,
+      "volumeCount": 23
+    },
+    {
+      "id": "63327",
+      "title": "Tokyo Ghoul",
+      "nativeTitle": "Tokyo Ghoul",
+      "description": "Shy Ken Kaneki is thrilled to go on a date with the beautiful Rize. But it turns out that she’s only interested in his body—eating it, that is. When a morally questionable rescue transforms him into the first half-human half-Ghoul hybrid, Ken is drawn into the dark and violent world of Ghouls, which exists alongside our own.\n\nNote: Includes one extra chapter.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx63327-glC9cDxYBja9.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/63327-uaFaG1HAJ0tK.jpg",
+      "color": "#e46b5d",
+      "status": "COMPLETED",
+      "rating": 8.5,
+      "popularity": 200410,
+      "year": 2011,
+      "genres": [
+        "Action",
+        "Horror",
+        "Mystery",
+        "Psychological",
+        "Supernatural"
+      ],
+      "author": "Sui Ishida",
+      "chapterCount": 144,
+      "volumeCount": 14
+    },
+    {
+      "id": "34632",
+      "title": "Goodnight Punpun",
+      "nativeTitle": "Oyasumi Punpun",
+      "description": "Meet Punpun Punyama. He’s an average kid in an average town.\n\nHe wants to win a Nobel Prize and save the world.\n\nHe wants the girl he has a crush on to like him back.\n\nHe wants to find some porn.\n\nThat’s what he wants, but what does he get…?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx34632-5xMDkx3pXsEh.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/34632-JULTgA6q6jAH.jpg",
+      "color": "#e4c943",
+      "status": "COMPLETED",
+      "rating": 8.8,
+      "popularity": 189358,
+      "year": 2007,
+      "genres": [
+        "Drama",
+        "Psychological",
+        "Slice of Life"
+      ],
+      "author": "Inio Asano",
+      "chapterCount": 147,
+      "volumeCount": 13
+    },
+    {
+      "id": "85486",
+      "title": "My Hero Academia",
+      "nativeTitle": "Boku no Hero Academia",
+      "description": "Middle school student Izuku Midoriya wants to be a hero more than anything, but he hasn’t got an ounce of power in him. With no chance of ever getting into the prestigious U.A. High School for budding heroes, his life is looking more and more like a dead end. Then an encounter with All Might, the greatest hero of them all, gives him a chance to change his destiny…\n\nNote:\n\n- Winner of the 1st Next Manga Award in the Print Category in 2015.\n\n- Nominated for the 8th Manga Taisho Award in 2015.\n \n- Nominated for the 40th Kodansha Manga Award in the Shounen Category in 2016.\n \n- Includes one extra chapter.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx85486-INqnYx8gL3eX.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/85486-4mTRih1qOdgk.jpg",
+      "color": "#f1d650",
+      "status": "COMPLETED",
+      "rating": 7.7,
+      "popularity": 179855,
+      "year": 2014,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Drama",
+        "Fantasy"
+      ],
+      "author": "Kouhei Horikoshi",
+      "chapterCount": 432,
+      "volumeCount": 42
+    },
+    {
+      "id": "74347",
+      "title": "One-Punch Man",
+      "nativeTitle": "One Punch-Man",
+      "description": "In this new action-comedy, everything about a young man named Saitama screams \"AVERAGE,&rdquo; from his lifeless expression, to his bald head, to his unimpressive physique. However, this average-looking fellow doesn't have your average problem... He's actually a superhero that's looking for tough opponents! The problem is, every time he finds a promising candidate he beats the snot out of them in one punch. Can Saitama finally find an evil villain strong enough to challenge him? Follow Saitama through his hilarious romps as he searches for new bad guys to challenge!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx74347-sZpmNJ5xLwRK.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/74347-xAQI9BxcpWM3.jpg",
+      "color": null,
+      "status": "ONGOING",
+      "rating": 8.4,
+      "popularity": 176021,
+      "year": 2012,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Sci-Fi",
+        "Supernatural"
+      ],
+      "author": "ONE",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "30656",
+      "title": "Vagabond",
+      "nativeTitle": "Vagabond",
+      "description": "At seventeen years of age, Miyamoto Musashi--still known by his childhood name, Shinmen Takezo--was a wild young brute just setting out along the way of the sword.\n\nIn the aftermath of the epic Battle of Sekigahara, Takezo finds himself a fugitive survivor on the losing side of the war. Takezo's vicious nature has made him an outcast even in his own village, and he is hunted down like an animal. At this crucial crossroads in Takezo's life, an eccentric monk and a childhood friend are the only ones who can help him find his way.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30656-9mW113O7rDnA.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30656-XYzvRlsc3iK4.jpg",
+      "color": null,
+      "status": "ONGOING",
+      "rating": 9.1,
+      "popularity": 166207,
+      "year": 1998,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama"
+      ],
+      "author": "Takehiko Inoue",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "108556",
+      "title": "SPY x FAMILY",
+      "nativeTitle": "SPY×FAMILY",
+      "description": "The master spy codenamed &lt;Twilight&gt; has spent his days on undercover missions, all for the dream of a better world. But one day, he receives a particularly difficult new order from command. For his mission, he must form a temporary family and start a new life?! A Spy/Action/Comedy about a one-of-a-kind family!\n\nNotes:\n\n- Nominated for the 24th Tezuka Osamu Cultural Prize in 2020.\n\n- Nominated for the 13th and 14th Manga Taisho Award in 2020 and 2021.\n\n- Nominated for the 44th Kodansha Manga Award in the Shounen Category in 2020.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx108556-NHjkz0BNJhLx.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/108556-iCiPfU0GU4OM.jpg",
+      "color": "#e4505d",
+      "status": "ONGOING",
+      "rating": 8.3,
+      "popularity": 161545,
+      "year": 2019,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Slice of Life",
+        "Supernatural"
+      ],
+      "author": "Tatsuya Endou",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "30642",
+      "title": "Vinland Saga",
+      "nativeTitle": "Vinland Saga",
+      "description": "As a child, Thorfinn sat at the feet of the great Leif Ericson and thrilled to wild tales of a land far to the west. But his youthful fantasies were shattered by a mercenary raid. Raised by the Vikings who murdered his father, Thorfinn became a terrifying warrior, forever seeking to kill the band's leader, Askeladd, and avenge his father. Sustaining Thorfinn through his ordeal are his pride in his family and his dreams of a fertile westward land, a land without war or slavery … the land Leif called Vinland.\n\nNotes:\n\n- Includes the one-shot \"Sayonara ga Chikai no de\" (For Our Farewell Is Near)\n\n- Includes the one-shot \"Assassin's Creed: Valhalla x Vinland Saga\"\n\n- Includes two extra chapters.\n\n- Won the Grand Prize at the Japan Media Arts Festival in 2009.\n\n- Winner of the 36th Kodansha Manga Award in the General category in 2012.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30642-0mjRDkf4THpo.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30642-MeizzL2WDv6C.jpg",
+      "color": "#f16b43",
+      "status": "COMPLETED",
+      "rating": 9,
+      "popularity": 140979,
+      "year": 2005,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama"
+      ],
+      "author": "Makoto Yukimura",
+      "chapterCount": 224,
+      "volumeCount": 29
+    },
+    {
+      "id": "119257",
+      "title": "Omniscient Reader",
+      "nativeTitle": "Jeonjijeok Dokja Sijeom",
+      "description": "Back then, Dok-Ja had no idea. He had no idea his favorite web novel 'Three Ways to Survive the Apocalypse' was going to come to life, and that he would become the only person to know how the world was going to end. He also had no idea he would end up becoming the protagonist of this novel-turned-reality. Now, Dok-Ja will go on a journey to change the course of the story and save humankind once and for all.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx119257-Pi21aq3ey9GG.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/119257-RtxJMRCunHXc.jpg",
+      "color": null,
+      "status": "ONGOING",
+      "rating": 8.6,
+      "popularity": 135519,
+      "year": 2020,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Fantasy"
+      ],
+      "author": "Singsyong",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "87423",
+      "title": "The Promised Neverland",
+      "nativeTitle": "Yakusoku no Neverland",
+      "description": "Emma, Norman and Ray are the brightest kids at the Grace Field House orphanage. And under the care of the woman they refer to as “Mom,” all the kids have enjoyed a comfortable life. Good food, clean clothes and the perfect environment to learn—what more could an orphan ask for? One day, though, Emma and Norman uncover the dark truth of the outside world they are forbidden from seeing.\n\nNote: Nominated to the 22nd, 23rd, and 25th Annual Tezuka Osamu Cultural Prize.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx87423-gPNtu8QbGped.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/n87423-n5n0LZu9Gs5H.jpg",
+      "color": "#e4d650",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 135181,
+      "year": 2016,
+      "genres": [
+        "Drama",
+        "Fantasy",
+        "Horror",
+        "Mystery",
+        "Psychological",
+        "Thriller"
+      ],
+      "author": "Kaiu Shirai",
+      "chapterCount": 181,
+      "volumeCount": 20
+    },
+    {
+      "id": "106130",
+      "title": "Blue Lock",
+      "nativeTitle": "Blue Lock",
+      "description": "After a disastrous defeat at the 2018 World Cup, Japan's team struggles to regroup. But what's missing? An absolute Ace Striker, who can guide them to the win. The Japan Football Union is hell-bent on creating a striker who hungers for goals and thirsts for victory, and who can be the decisive instrument in turning around a losing match...and to do so, they've gathered 300 of Japan's best and brightest youth players. Who will emerge to lead the team...and will they be able to out-muscle and out-ego everyone who stands in their way?\n\nNote: Winner of the 45th Kodansha Manga Award in the Shounen Category in 2021.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx106130-yPNeuSu75ey1.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/106130-4UbnMTU80zur.jpg",
+      "color": "#86d61a",
+      "status": "ONGOING",
+      "rating": 8.2,
+      "popularity": 127241,
+      "year": 2018,
+      "genres": [
+        "Action",
+        "Drama",
+        "Sports"
+      ],
+      "author": "Muneyuki Kaneshiro",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "72451",
+      "title": "Horimiya",
+      "nativeTitle": "Horimiya",
+      "description": "At school, Kyouko Hori is known for being smart, attractive, and popular. On the other hand, her classmate, the boring, gloomy Izumi Miyamura tends to get painted as a \"loser fanboy.\" But when a liberally pierced and tattooed (not to mention downright gorgeous) Miyamura appears unexpectedly on the doorstep of secretly plain-Jane homebody Hori, these two similarly dissimilar teenagers discover that there are multiple sides to every story...and person!\n\nNotes:\n\n- Includes 20 extra chapters.\n\n- The 17th volume was released on July 18, 2023, two years after the series' original ending. This new volume included 10 additional chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx72451-vVXtRwyttjGG.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/42451-shG1Ksjxm3pw.jpg",
+      "color": "#e45d93",
+      "status": "COMPLETED",
+      "rating": 8.2,
+      "popularity": 124529,
+      "year": 2011,
+      "genres": [
+        "Comedy",
+        "Romance",
+        "Slice of Life"
+      ],
+      "author": "HERO",
+      "chapterCount": 152,
+      "volumeCount": 17
+    },
+    {
+      "id": "30012",
+      "title": "Bleach",
+      "nativeTitle": "BLEACH",
+      "description": "Ichigo Kurosaki has always been able to see ghosts, but this ability doesn't change his life nearly as much as his close encounter with Rukia Kuchiki, a Soul Reaper and member of the mysterious Soul Society. While fighting a Hollow, an evil spirit that preys on humans who display psychic energy, Rukia attempts to lend Ichigo some of her powers so that he can save his family; but much to her surprise, Ichigo absorbs every last drop of her energy. Now a full-fledged Soul Reaper himself, Ichigo quickly learns that the world he inhabits is one full of dangerous spirits and, along with Rukia— who is slowly regaining her powers— it's Ichigo's job to protect the innocent from Hollows and help the spirits themselves find peace.\n\nNote: Includes the 12-chapter “Turn Back The Pendulum” side story and 8 extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30012-1epmVfTSv2rr.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30012-RpbdVc2yNxhw.jpg",
+      "color": "#5da1f1",
+      "status": "COMPLETED",
+      "rating": 8,
+      "popularity": 123656,
+      "year": 2001,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Supernatural"
+      ],
+      "author": "Tite Kubo",
+      "chapterCount": 706,
+      "volumeCount": 74
+    },
+    {
+      "id": "86635",
+      "title": "Kaguya-sama: Love is War",
+      "nativeTitle": "Kaguya-sama wa Kokurasetai: Tensaitachi no Renai Zunousen",
+      "description": "As leaders of their prestigious academy’s student council, Kaguya and Miyuki are the elite of the elite! But it’s lonely at the top… Luckily for them, they’ve fallen in love! There’s just one problem—they both have too much pride to admit it. And so begins the daily scheming to get the object of their affection to confess their romantic feelings first… Love is a war you win by losing.\n\nNotes: \n\n- The first 10 chapters were published in Monthly Miracle Jump. It switched to Weekly Young Jump starting with Ch. 11, with the chapter count being reset. This entry still includes the first 10 chapters from Miracle Jump.\n\n- Winner of the 65th Shogakukan Manga Award for \"Best General Manga\" category in 2019.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx86635-EdaLQmsn86Fy.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/86635-qjRKbsrM3U9F.jpg",
+      "color": "#d61a35",
+      "status": "COMPLETED",
+      "rating": 8.7,
+      "popularity": 120893,
+      "year": 2015,
+      "genres": [
+        "Comedy",
+        "Psychological",
+        "Romance",
+        "Slice of Life"
+      ],
+      "author": "Aka Akasaka",
+      "chapterCount": 281,
+      "volumeCount": 28
+    },
+    {
+      "id": "102988",
+      "title": "Tokyo Revengers",
+      "nativeTitle": "Tokyo卍Revengers",
+      "description": "Hanagaki Takemichi was once a low-life punk, but after biting off more than he could chew with a gang in middle school, he ran away from his old life. Now that he’s an adult, the gang that once terrorized him has grown into the largest gang in Tokyo, and they’ve started killing people–including his old girlfriend! After learning this news, a mysterious force on a train platform shoves Takemichi right in front of an approaching train. As his life flashes before his eyes, he blinks to find himself transported back to middle school, before he fled from the gang! Now he has the chance to right what went wrong all those years ago. Can he save his girlfriend’s life in the future–and what else might he change if he’s rewriting the past?\n\nNotes:\n\n- Winner of the Shounen Manga category of the 44th annual Kodansha Manga Awards.\n\n- Includes one extra chapter.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx102988-OoVJxQCH6fbR.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/102988-T9bMDQxSyGpv.jpg",
+      "color": "#e45d50",
+      "status": "COMPLETED",
+      "rating": 7.4,
+      "popularity": 119121,
+      "year": 2017,
+      "genres": [
+        "Action",
+        "Drama",
+        "Romance",
+        "Supernatural"
+      ],
+      "author": "Ken Wakui",
+      "chapterCount": 279,
+      "volumeCount": 31
+    },
+    {
+      "id": "132029",
+      "title": "Dandadan",
+      "nativeTitle": "Dandadan",
+      "description": "Momo Ayase strikes up an unusual friendship with her school’s UFO fanatic, whom she nicknames “Okarun” because he has a name that is not to be said aloud. While Momo believes in spirits, she thinks aliens are nothing but nonsense. Her new friend, meanwhile, thinks the exact opposite. To settle matters, the two set out to prove each other wrong—Momo to a UFO hotspot and Okarun to a haunted tunnel! What unfolds next is a beautiful story of young love…and oddly horny aliens and spirits?\n\n \n\nNote: Nominated for the 15th Manga Taisho Award in 2022.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx132029-prGF4gePdSKv.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/132029-V1x9JAh3G8QK.jpg",
+      "color": "#f1d60d",
+      "status": "ONGOING",
+      "rating": 8.2,
+      "popularity": 119007,
+      "year": 2021,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Drama",
+        "Romance",
+        "Sci-Fi",
+        "Supernatural"
+      ],
+      "author": "Yukinobu Tatsu",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "30003",
+      "title": "20th Century Boys",
+      "nativeTitle": "20 Seiki Shounen",
+      "description": "Humanity, having faced extinction at the end of the 20th century, would not have entered the new millennium if it weren't for them. In 1969, during their youth, they created a symbol. In 1997, as the coming disaster slowly starts to unfold, that symbol returns. This is the story of a group of boys who try to save the world.\n\nFor Kenji, a simple convenience store manager who once dreamed of becoming a rock 'n' roll musician, a host of memories from his past come rushing back when one of his childhood friends mysteriously commits suicide. Could this new death be related to the rise of a bizarre new cult that's been implicated in several other murders and disappearances? Determined to dig deeper, Kenji reunites with some of his old buddies in the hope of learning the truth behind it all.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30003-E84fwIh22LAQ.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30003-MBm3u1K1uHsi.jpg",
+      "color": "#e4c943",
+      "status": "COMPLETED",
+      "rating": 8.8,
+      "popularity": 109749,
+      "year": 1999,
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Sci-Fi",
+        "Thriller"
+      ],
+      "author": "Naoki Urasawa",
+      "chapterCount": 249,
+      "volumeCount": 22
+    },
+    {
+      "id": "86123",
+      "title": "Black Clover",
+      "nativeTitle": "Black Clover",
+      "description": "Young Asta was born with no magic ability in a world where magic is everything. In order to prove his strength and keep a promise with his friend, Asta dreams of becoming the greatest mage in the land, the Wizard King!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx86123-Ill8uBdtvWrR.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/86123-vPWHXqCLYv86.jpg",
+      "color": "#e47828",
+      "status": "COMPLETED",
+      "rating": 7.7,
+      "popularity": 109679,
+      "year": 2015,
+      "genres": [
+        "Action",
+        "Comedy",
+        "Drama",
+        "Fantasy"
+      ],
+      "author": "Yuuki Tabata",
+      "chapterCount": 392,
+      "volumeCount": 38
+    },
+    {
+      "id": "30001",
+      "title": "Monster",
+      "nativeTitle": "MONSTER",
+      "description": "Everyone faces uncertainty at some point in their lives. Even a brilliant surgeon like Kenzo Tenma is no exception. But there’s no way he could have known that his decision to stop chasing professional success and instead concentrate on his oath to save peoples’ lives would result in the birth of an abomination. The questions of good and evil now take on a terrifyingly real dimension.\n\nYears later, in Germany during the tumultuous post-reunification period, middle-aged childless couples are being killed one after another. The serial killer’s identity is known. The reasons why he kills are not. Dr. Tenma sets out on a journey to find the killer’s twin sister, who may hold some clues to solving the enigma of the “Monster.”",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30001-Knby7l1jevE7.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/1-x9ksIvb9cKK2.jpg",
+      "color": "#50a1e4",
+      "status": "COMPLETED",
+      "rating": 9,
+      "popularity": 109408,
+      "year": 1994,
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Thriller"
+      ],
+      "author": "Naoki Urasawa",
+      "chapterCount": 162,
+      "volumeCount": 18
+    },
+    {
+      "id": "117195",
+      "title": "[Oshi no Ko]",
+      "nativeTitle": "[Oshi no Ko]",
+      "description": "Gorou is a gynecologist and idol fan who’s in shock after his favorite star, Ai, announces an impromptu hiatus. Little does Gorou realize that he’s about to forge a bond with her that defies all common sense! Lies are an idol’s weapon! \n\nNotes:\n\n- Nominated for the 14th and 15th Manga Taisho, the 26th Tezuka Osamu Cultural Prize, the 67th Shogakukan Manga Award in the general category and the 46th Kodansha Manga Award.\n\n- Winner of the 7th Next Manga Award in the print category.\n\n- Includes \"[Oshi no Ko]: interlude\" and one extra chapter.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx117195-r3kf8eF0xkDJ.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/117195-VVYq1EEOwR0K.jpg",
+      "color": "#e450a1",
+      "status": "COMPLETED",
+      "rating": 7.7,
+      "popularity": 108117,
+      "year": 2020,
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Supernatural"
+      ],
+      "author": "Aka Akasaka",
+      "chapterCount": 171,
+      "volumeCount": 16
+    },
+    {
+      "id": "97852",
+      "title": "Komi Can't Communicate",
+      "nativeTitle": "Komi-san wa, Komyushou desu.",
+      "description": "Timid Tadano is a total wallflower, and that’s just the way he likes it. But all that changes when he finds himself alone in a classroom on the first day of high school with the legendary Komi. He quickly realizes she isn’t aloof—she’s just super awkward. Now he’s made it his mission to help her on her quest to make 100 friends!\n\nNotes:\n\n- Winner of the 67th Shogakukan Manga Award in the Shounen Category in 2021.\n\n- Includes 37 extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx97852-M7vlc2OGR2gp.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/97852-wHsdcKYktdp5.jpg",
+      "color": "#e4aea1",
+      "status": "COMPLETED",
+      "rating": 7.7,
+      "popularity": 108083,
+      "year": 2016,
+      "genres": [
+        "Comedy",
+        "Romance",
+        "Slice of Life"
+      ],
+      "author": "Tomohito Oda",
+      "chapterCount": 537,
+      "volumeCount": 37
+    },
+    {
+      "id": "120760",
+      "title": "Kaiju No.8",
+      "nativeTitle": "Kaijuu 8-gou",
+      "description": "A man working a job far removed from his childhood dreams gets wrapped up in an unexpected situation…! Becoming a monster, he aims once again to fulfill his lifelong dream…!\n\nNote:\n\n- Nominated for the 14th Manga Taisho Award in 2021.\n\n- Winner of the 7th Next Manga Award in the Web Manga Category in 2021.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx120760-MtXvMgujLBpe.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/120760-f81MiocMQK03.jpg",
+      "color": "#e4280d",
+      "status": "COMPLETED",
+      "rating": 7.5,
+      "popularity": 108007,
+      "year": 2020,
+      "genres": [
+        "Action",
+        "Sci-Fi"
+      ],
+      "author": "Naoya Matsumoto",
+      "chapterCount": 129,
+      "volumeCount": 16
+    },
+    {
+      "id": "87170",
+      "title": "Fire Punch",
+      "nativeTitle": "Fire Punch",
+      "description": "Orphaned siblings Agni and Luna, like the Ice Witch who cursed their world, are two of the “blessed,” humans who hold special abilities. However, not all who are blessed are friendly, and after another of their kind attacks Agni and decimates the orphans' village, Agni fights to survive, vowing revenge.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx87170-nyuwcN7rU4pc.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/87170-gsBzHdIHoyEk.jpg",
+      "color": "#e4a15d",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 106957,
+      "year": 2016,
+      "genres": [
+        "Action",
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Supernatural",
+        "Thriller"
+      ],
+      "author": "Tatsuki Fujimoto",
+      "chapterCount": 83,
+      "volumeCount": 8
+    },
+    {
+      "id": "65243",
+      "title": "Haikyu!!",
+      "nativeTitle": "Haikyuu!!",
+      "description": "Shouyou Hinata is out to prove that in volleyball you don’t need to be tall to fly!\n\nAfter losing his first and last volleyball match against Tobio Kageyama, “the King of the Court,” Shouyou Hinata swears to become his rival after graduating middle school. But what happens when the guy he wants to defeat ends up being his teammate?!\n\nNotes: \n\n- Winner of the 61st Shogakukan Manga Award in the Shounen Category in 2017.\n\n- Includes two extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx65243-mR4MnJFmfaOF.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/65243-naohhXW4M4b9.jpg",
+      "color": "#f17843",
+      "status": "COMPLETED",
+      "rating": 8.8,
+      "popularity": 103168,
+      "year": 2012,
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Sports"
+      ],
+      "author": "Haruichi Furudate",
+      "chapterCount": 404,
+      "volumeCount": 45
+    },
+    {
+      "id": "101583",
+      "title": "My Dress-Up Darling",
+      "nativeTitle": "Sono Bisque Doll wa Koi wo Suru",
+      "description": "Traumatized by a childhood incident with a friend who took exception to his love of traditional dolls, doll-artisan hopeful Gojou Wakana passes his days as a loner, finding solace in the home ec room at his high school. To Wakana, people like beautiful Kitagawa Marin, a trendy girl who's always surrounded by a throng of friends, is practically an alien from another world. But when cheerful Marin--never one to be shy--spots Wakana sewing away one day after school, she barges in with the aim of roping her quiet classmate into her secret hobby: cosplay! Will Wakana's wounded heart be able to handle the invasion from this sexy alien?! \n\nNote: Includes four extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx101583-VI1PT2QGGT8W.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/101583-cSP6zPHQzjQD.jpg",
+      "color": "#f1bb35",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 102210,
+      "year": 2018,
+      "genres": [
+        "Comedy",
+        "Ecchi",
+        "Romance",
+        "Slice of Life"
+      ],
+      "author": "Shinichi Fukuda",
+      "chapterCount": 119,
+      "volumeCount": 15
+    },
+    {
+      "id": "30021",
+      "title": "Death Note",
+      "nativeTitle": "DEATH NOTE",
+      "description": "Light Yagami is an ace student with great prospects—and he’s bored out of his mind. But all that changes when he finds the Death Note, a notebook dropped by a rogue Shinigami death god. Any human whose name is written in the notebook dies, and Light has vowed to use the power of the Death Note to rid the world of evil. But will Light succeed in his noble goal, or will the Death Note turn him into the very thing he fights against?",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30021-FE6kmrfpuKyb.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/n30021-eZbrTpIjv10E.jpg",
+      "color": "#f1e4ae",
+      "status": "COMPLETED",
+      "rating": 8.4,
+      "popularity": 101454,
+      "year": 2003,
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Psychological",
+        "Supernatural",
+        "Thriller"
+      ],
+      "author": "Tsugumi Ooba",
+      "chapterCount": 108,
+      "volumeCount": 12
+    },
+    {
+      "id": "85143",
+      "title": "Tower of God",
+      "nativeTitle": "Sinui Tap",
+      "description": "What do you desire? Money and wealth? Honor and pride? Authority and power? Revenge? Or something that transcends them all? Whatever you desire—it's here.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx85143-23oup3ETbFJk.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/85143-IKyCdaJKfa2M.jpg",
+      "color": null,
+      "status": "ONGOING",
+      "rating": 8.1,
+      "popularity": 101376,
+      "year": 2010,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy",
+        "Mystery"
+      ],
+      "author": "SIU",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "30011",
+      "title": "Naruto",
+      "nativeTitle": "NARUTO",
+      "description": "Twelve years ago the Village Hidden in the Leaves was attacked by a fearsome threat. A nine-tailed fox spirit claimed the life of the village leader, the Hokage, and many others. Today, the village is at peace and a troublemaking kid named Naruto is struggling to graduate from Ninja Academy. His goal may be to become the next Hokage, but his true destiny will be much more complicated. The adventure begins now!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx30011-9yUF1dXWgDOx.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30011-pkX1O0EFqvV7.jpg",
+      "color": "#fe7828",
+      "status": "COMPLETED",
+      "rating": 8,
+      "popularity": 101085,
+      "year": 1999,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Supernatural"
+      ],
+      "author": "Masashi Kishimoto",
+      "chapterCount": 700,
+      "volumeCount": 72
+    },
+    {
+      "id": "100994",
+      "title": "Hell’s Paradise: Jigokuraku",
+      "nativeTitle": "Jigokuraku",
+      "description": "Gabimaru the Hollow is one of the most vicious assassins ever to come out of the ninja village of Iwagakure. He’s ruthlessly efficient, but a betrayal results in him being handed a death sentence. He has only one hope—in order to earn his freedom, he must travel to a long-hidden island and recover an elixir that will make the shogun immortal. Failure is not an option. On this island, heaven and hell are just a hair’s breadth away.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx100994-f6CMjiQQNVeS.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/100994-mEIqjSzFKysR.jpg",
+      "color": "#d61a86",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 99466,
+      "year": 2018,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Mystery",
+        "Supernatural"
+      ],
+      "author": "Yuuji Kaku",
+      "chapterCount": 127,
+      "volumeCount": 13
+    },
+    {
+      "id": "85135",
+      "title": "A Silent Voice",
+      "nativeTitle": "Koe no Katachi",
+      "description": "Based on a one-shot that won the 80th Weekly Shounen Magazine Newbie Best Mangaka Award.\n\nShouya is a bully. When Shouko, a girl who can't hear, enters his elementary school class, she becomes their favorite target, and Shouya and his friends goad each other into devising new tortures for her. But the children's cruelty goes too far. Shouko is forced to leave the school, and Shouya ends up shouldering all the blame. Six years later, the two meet again. Can Shouya make up for his past mistakes, or is it too late?\n\nNote: Includes two extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx85135-11OOnyaqV71k.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/85135-BPNyMuWVvZjh.jpg",
+      "color": "#e49343",
+      "status": "COMPLETED",
+      "rating": 8.7,
+      "popularity": 91905,
+      "year": 2013,
+      "genres": [
+        "Drama",
+        "Romance",
+        "Slice of Life"
+      ],
+      "author": "Yoshitoki Ooima",
+      "chapterCount": 64,
+      "volumeCount": 7
+    },
+    {
+      "id": "125828",
+      "title": "Sakamoto Days",
+      "nativeTitle": "SAKAMOTO DAYS",
+      "description": "Taro Sakamoto was the ultimate assassin, feared by villains and admired by hitmen. But one day...he fell in love! Retirement, marriage, fatherhood and then... Sakamoto gained weight! The chubby guy who runs the neighborhood store is actually a former legendary hitman! Can he protect his family from danger? Get ready to experience a new kind of action comedy series!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx125828-p78Z8SflkfmO.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/125828-wnmpFCNg0WkK.jpg",
+      "color": "#f1930d",
+      "status": "ONGOING",
+      "rating": 7.9,
+      "popularity": 90642,
+      "year": 2020,
+      "genres": [
+        "Action",
+        "Comedy"
+      ],
+      "author": "Yuuto  Suzuki",
+      "chapterCount": 284,
+      "volumeCount": 31
+    },
+    {
+      "id": "98416",
+      "title": "Dr. STONE",
+      "nativeTitle": "Dr. STONE",
+      "description": "One fateful day, all of humanity was petrified by a blinding flash of light. After several millennia, high schooler Taiju awakens and finds himself lost in a world of statues. However, he’s not alone! His science-loving friend Senku’s been up and running for a few months and he's got a grand plan in mind—to kickstart civilization with the power of science!\n\nNote: Shueisha published its 27th volume on April 4, 2024. This volume contains the one-shot Dr. STONE: TERRAFORMING and the mini-series Dr. STONE 4D SCIENCE.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/b98416-L44f4idEGMAX.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/98416-1XM7oOALCGjA.jpg",
+      "color": "#e4ae28",
+      "status": "COMPLETED",
+      "rating": 8.1,
+      "popularity": 89904,
+      "year": 2017,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Sci-Fi"
+      ],
+      "author": "Riichirou Inagaki",
+      "chapterCount": 236,
+      "volumeCount": 27
+    },
+    {
+      "id": "30436",
+      "title": "Uzumaki: Spiral into Horror",
+      "nativeTitle": "Uzumaki",
+      "description": "Kurozu-cho, a small fogbound town on the coast of Japan, is cursed. According to Shuichi Saito, the withdrawn boyfriend of teenager Kirie Goshima, their town is haunted not by a person or being but by a pattern: uzumaki, the spiral, the hypnotic secret shape of the world. It manifests itself in small ways: seashells, ferns, whirlpools in water, whirlwinds in air. And in large ways: the spiral marks on people's bodies, the insane obsessions of Shuichi's father, the voice from the cochlea in your inner ear. As the madness spreads, the inhabitants of Kurouzu-cho are pulled ever deeper, as if into a whirlpool from which there is no return...\n\nNotes:\n\n- Includes the extra chapter \"Uzumaki Tokubetsu-hen: Ginga\", which was included in editions later released.\n\n- Chosen by the American Library Association (ALA) as one of the Top Ten Great Graphic Novels for Teens 2009. (Vol. 1)",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30436-Opk9ZubMPuDU.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30436-2ga2SL6B6inQ.jpg",
+      "color": "#ffd6ae",
+      "status": "COMPLETED",
+      "rating": 7.9,
+      "popularity": 88639,
+      "year": 1998,
+      "genres": [
+        "Drama",
+        "Horror",
+        "Mystery",
+        "Psychological",
+        "Romance",
+        "Supernatural"
+      ],
+      "author": "Junji Itou",
+      "chapterCount": 20,
+      "volumeCount": 3
+    },
+    {
+      "id": "118586",
+      "title": "Frieren: Beyond Journey’s End",
+      "nativeTitle": "Sousou no Frieren",
+      "description": "The adventure is over but life goes on for an elf mage just beginning to learn what living is all about.\n\nElf mage Frieren and her courageous fellow adventurers have defeated the Demon King and brought peace to the land. With the great struggle over, they all go their separate ways to live a quiet life. But as an elf, Frieren, nearly immortal, will long outlive the rest of her former party. How will she come to terms with the mortality of her friends? How can she find fulfillment in her own life, and can she learn to understand what life means to the humans around her? Frieren begins a new journey to find the answer.\n\nNotes:\n\n- Winner of the Grand Prize at the 14th Manga Taisho Awards.\n\n- Nominated for the 25th Annual Tezuka Osamu Cultural Prize.\n\n- Placed 3rd at the 7th Annual Next Manga Award.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx118586-CXKgWikBFQgS.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/118586-R1c7mc72oPvS.jpg",
+      "color": "#e4ae5d",
+      "status": "ONGOING",
+      "rating": 8.7,
+      "popularity": 87125,
+      "year": 2020,
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Fantasy"
+      ],
+      "author": "Kanehito Yamada",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "97553",
+      "title": "Three Days of Happiness",
+      "nativeTitle": "Jumyou wo Kaitotte Moratta. Ichinen ni Tsuki, Ichimanen de.",
+      "description": "Kusunoki used to believe he was destined for great things. But now, approaching the age of twenty, he’s a completely mediocre college student with no motivation, no dreams, and no money. After learning he can sell his remaining years, he chooses to divest himself of all but his last three months. Spending this remaining time with his monitor, Miyagi, has Kusunoki truly destroyed his final chance to find happiness…or has he somehow found it?\n\nNote: Includes two extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx97553-vqJj5DFS8v2p.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/97553-efSxd9Q935oS.jpg",
+      "color": "#5dbbe4",
+      "status": "COMPLETED",
+      "rating": 8.6,
+      "popularity": 86208,
+      "year": 2016,
+      "genres": [
+        "Drama",
+        "Psychological",
+        "Romance",
+        "Supernatural"
+      ],
+      "author": "Shouichi Taguchi",
+      "chapterCount": 18,
+      "volumeCount": 3
+    },
+    {
+      "id": "98263",
+      "title": "Witch Hat Atelier",
+      "nativeTitle": "Tongari Boushi no Atelier",
+      "description": "In a world where everyone takes wonders like magic spells and dragons for granted, Coco is a girl with a simple dream: she wants to be a witch. But everybody knows magicians are born, not made, and Coco was not born with a gift for magic. Resigned to her un-magical life, Coco is about to give up on her dream to become a witch … until the day she meets Qifrey, a mysterious, traveling magician. After secretly seeing Qifrey perform magic in a way she’s never seen before, Coco soon learns what everybody “knows” might not be the truth, and discovers that her magical dream may not be as far away as it may seem...\n\nNotes:\n\n- Nominated for the 11th Manga Taishou Award in 2018.\n\n- Won the Daruma d'Or at Japan Expo in 2019.\n\n- Won Best U.S. Edition of International Material - Asia at the Eisner Awards in 2020.\n\n- Won the Best Manga Award at the Harvey Awards in 2020.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx98263-kIeaTXrAbGkj.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/98263-inZk3YmhgbQh.jpg",
+      "color": "#f1c950",
+      "status": "ONGOING",
+      "rating": 8.7,
+      "popularity": 85481,
+      "year": 2016,
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Fantasy"
+      ],
+      "author": "Kamome Shirahama",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "74489",
+      "title": "Land of the Lustrous",
+      "nativeTitle": "Houseki no Kuni",
+      "description": "In a world inhabited by crystalline lifeforms called The Lustrous, every unique gem must fight for their way of life against the threat of lunarians who would turn them into decorations. Phosphophyllite, the most fragile and brittle of gems, longs to join the battle. When Phos is instead assigned to complete a natural history of their world, it sounds like a dull and pointless task. But this new job brings Phos into contact with Cinnabar, a gem forced to live in isolation. Can Phos’s seemingly mundane assignment lead both Phos and Cinnabar to the fulfillment they desire?\n\nNotes:\n\n- Includes 12 extra chapters.\n\n- Nominated for the 8th Manga Taisho in 2015.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx74489-5HtDCFfut8Be.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/74489-iAeCc8td3qWX.jpg",
+      "color": null,
+      "status": "COMPLETED",
+      "rating": 8.9,
+      "popularity": 85177,
+      "year": 2012,
+      "genres": [
+        "Action",
+        "Drama",
+        "Fantasy",
+        "Mystery",
+        "Psychological",
+        "Sci-Fi"
+      ],
+      "author": "Haruko Ichikawa",
+      "chapterCount": 120,
+      "volumeCount": 13
+    },
+    {
+      "id": "140475",
+      "title": "The Fragrant Flower Blooms With Dignity",
+      "nativeTitle": "Kaoru Hana wa Rin to Saku",
+      "description": "This story takes place in a particular town with two infamous schools in constant dispute: Chidori High, a boys' school predominantly attended by low-class students with damning grades, and its neighbor Kikyo Girls' High, with most of its female students coming from wealthy and prestigious families. One day, high school second-year Rintaro Tsumugi, a fierce-looking but gentle-minded student at Chidori, is helping at his family's patisserie when he encounters a female customer by the name of Kaoruko Waguri. Rintaro enjoys his time with Kaoruko, as she doesn't judge him for his appearance, but this blissful peace is quickly disturbed when Rintaro makes the discovery that Kaoruko is actually a student at Kikyo. This revelation marks the beginning of the two's strenuous tale, as they fight against the limitations placed upon them by their schools and surroundings in an attempt to find their own path!",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx140475-QEGtrmdvbpOv.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/140475-FgBKTTJY7Ry6.jpg",
+      "color": null,
+      "status": "ONGOING",
+      "rating": 8.6,
+      "popularity": 82304,
+      "year": 2021,
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Romance"
+      ],
+      "author": "Saka Mikami",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "30025",
+      "title": "Fullmetal Alchemist",
+      "nativeTitle": "Hagane no Renkinjutsushi",
+      "description": "Alchemy tore the Elric brothers’ bodies apart. Can their bond make them whole again?\n\nIn this world, alchemists are those who study and perform the art of alchemical transmutation—the science of manipulating and transforming matter. They are bounded by the Law of Equivalent Exchange: in order to gain something, one must sacrifice something of equal value.\n\nIn an alchemical ritual gone wrong, Edward Elric lost his arm and his leg, and his brother Alphonse became nothing but a soul in a suit of armor. Equipped with mechanical “auto-mail” limbs, Edward becomes a state alchemist, seeking the one thing that can restore his and his brother’s bodies...the legendary Philosopher’s Stone.\n\nNote: Includes eight extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30025-mpPVpCKFTowt.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30025-IaxAxX9hIGx0.jpg",
+      "color": "#f1ae5d",
+      "status": "COMPLETED",
+      "rating": 8.9,
+      "popularity": 81616,
+      "year": 2001,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Drama",
+        "Fantasy"
+      ],
+      "author": "Hiromu Arakawa",
+      "chapterCount": 116,
+      "volumeCount": 27
+    },
+    {
+      "id": "86964",
+      "title": "Bastard",
+      "nativeTitle": "Hurejasik",
+      "description": "High school life is hard enough, but it’s even harder for Seon Jin. A sickly disabled boy, Jin might as well be invisible. No one ever pays attention to him, except for the bullies who prey on him for being weak. Jin, however, keeps a very dark secret—there’s a serial killer in his house…and it’s his father!\n\nNote: Includes one extra chapter.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/b86964-vTdn1Esqw3va.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/86964-pdcp6HlZ66lq.jpg",
+      "color": null,
+      "status": "COMPLETED",
+      "rating": 8.3,
+      "popularity": 78098,
+      "year": 2014,
+      "genres": [
+        "Drama",
+        "Horror",
+        "Mystery",
+        "Psychological",
+        "Romance",
+        "Thriller"
+      ],
+      "author": "Carnby Kim",
+      "chapterCount": 94,
+      "volumeCount": 5
+    },
+    {
+      "id": "107237",
+      "title": "Blue Period",
+      "nativeTitle": "Blue Period",
+      "description": "The studious Yatora leaves a dry life of study and good manners behind for a new passion: painting. But untethering yourself from all your past expectations is dangerous as well as thrilling…\n\nNote: Nominated for Manga Taisho Awards in 2019, Kodansha Manga Awards in 2019 and the 24th Tezuka Osamu Cultural Prize in 2020. Winner of the 13th Manga Taisho Awards. Winner of the General Manga category of the 44th annual Kodansha Manga Awards.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx107237-tyQXghsKmE0t.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/107237-mBUo7cMAWktl.jpg",
+      "color": "#5dc9e4",
+      "status": "ONGOING",
+      "rating": 8.6,
+      "popularity": 77998,
+      "year": 2017,
+      "genres": [
+        "Drama",
+        "Slice of Life"
+      ],
+      "author": "Tsubasa Yamaguchi",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "46765",
+      "title": "Kingdom",
+      "nativeTitle": "Kingdom",
+      "description": "Xin is a war orphan in a poor village in the kingdom of Qin. He has big dreams of becoming a great general, and when his best friend’s life is cut short by political machinations, Xin sets off to find a deposed ruler and help restore his place on the throne, while working his way up through the ranks of the Qin kingdom’s army to do what no one has ever done before—unify China.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx46765-KPXir4sRqJBW.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/46765-8DqCBEYyt9yP.jpg",
+      "color": "#e46b43",
+      "status": "ONGOING",
+      "rating": 8.9,
+      "popularity": 77773,
+      "year": 2006,
+      "genres": [
+        "Action",
+        "Drama"
+      ],
+      "author": "Yasuhisa Hara",
+      "chapterCount": 150,
+      "volumeCount": null
+    },
+    {
+      "id": "100664",
+      "title": "Don't Toy With Me, Miss Nagatoro",
+      "nativeTitle": "Ijiranaide, Nagatoro-san",
+      "description": "Nagatoro is a freshman in high school who loves teasing and torturing her older male classmate! What’s her motivation and why does Senpai put up with her? Does Nagatoro just want to create misery for Senpai? Or maybe she secretly likes him?\n\nNote: Includes 35 extra chapters.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx100664-uzN5998CDxPJ.jpg",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/100664-G1MIUsSTupjq.jpg",
+      "color": "#1aa1e4",
+      "status": "COMPLETED",
+      "rating": 7.3,
+      "popularity": 76502,
+      "year": 2017,
+      "genres": [
+        "Comedy",
+        "Ecchi",
+        "Romance",
+        "Slice of Life"
+      ],
+      "author": "Nanashi",
+      "chapterCount": 189,
+      "volumeCount": 20
+    },
+    {
+      "id": "30051",
+      "title": "Slam Dunk",
+      "nativeTitle": "SLAM DUNK",
+      "description": "Hanamichi Sakuragi's got no game with girls--none at all! It doesn't help that he's known for throwing down at a moment's notice and always coming out on top. A hopeless bruiser, he's been rejected by 50 girls in a row! All that changes when he meets the girl of his dreams, Haruko, and she's actually not afraid of him! When she introduces him to the game of basketball, his life is changed forever...",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30051-5KJyPlO7z5F4.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/30051-Cp4mFnqb6zhz.jpg",
+      "color": "#f18650",
+      "status": "COMPLETED",
+      "rating": 9,
+      "popularity": 75494,
+      "year": 1990,
+      "genres": [
+        "Comedy",
+        "Drama",
+        "Sports"
+      ],
+      "author": "Takehiko Inoue",
+      "chapterCount": 276,
+      "volumeCount": 31
+    },
+    {
+      "id": "37375",
+      "title": "The Climber",
+      "nativeTitle": "Kokou no Hito",
+      "description": "Transfer student Buntaro Mori starts his first day at his new school already on the administration’s radar. He’s withdrawn and sullen, and the teachers are just waiting for him to explode. When his annoying classmate Miyamoto promises to leave him alone forever if he climbs to the top of the school, Mori eagerly takes up the challenge and shocks everyone when he makes it all the way to the roof. Flushed with the victory of his first successful climb, Mori can’t resist the lure of the local peak, despite warnings from more experienced climbers about the risks of climbing alone. But Mori doesn’t care. A little danger is nothing in the face of his new obsession.",
+      "coverImage": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx37375-wkgev4kXhamw.png",
+      "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/manga/banner/37375-CWUiMtQsmdJI.jpg",
+      "color": "#5daee4",
+      "status": "COMPLETED",
+      "rating": 8.7,
+      "popularity": 75071,
+      "year": 2007,
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Psychological",
+        "Sports"
+      ],
+      "author": "Shinichi Sakamoto",
+      "chapterCount": 170,
+      "volumeCount": 17
+    }
+  ]
+}

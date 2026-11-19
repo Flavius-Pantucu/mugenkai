@@ -1,0 +1,216 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --font-family: 'Zen Kaku Gothic New', system-ui, sans-serif;
+  --font-family-heading: 'Zen Kaku Gothic New', system-ui, sans-serif;
+  --background: #061013;
+  --foreground: #fafafa;
+  --card: #0a161a;
+  --card-foreground: #fafafa;
+  --popover: #0a161a;
+  --popover-foreground: #fafafa;
+  --primary: #5fd9cc;
+  --primary-foreground: #061013;
+  --secondary: #13262b;
+  --secondary-foreground: #fafafa;
+  --muted: #11232a;
+  --muted-foreground: #8aa3a6;
+  --accent: #13a89e;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(46, 196, 182, 0.12);
+  --input: transparent;
+  --input-background: #0f1e22;
+  --switch-background: #1c3236;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #5fd9cc;
+  --chart-1: #2ec4b6;
+  --chart-2: #06b6d4;
+  --chart-3: #ec4899;
+  --chart-4: #f59e0b;
+  --chart-5: #10b981;
+  --radius: 0.75rem;
+  --sidebar: #081418;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #2ec4b6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #13262b;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgba(46, 196, 182, 0.12);
+  --sidebar-ring: #2ec4b6;
+}
+
+.dark {
+  --background: #061013;
+  --foreground: #fafafa;
+  --card: #0a161a;
+  --card-foreground: #fafafa;
+  --popover: #0a161a;
+  --popover-foreground: #fafafa;
+  --primary: #5fd9cc;
+  --primary-foreground: #061013;
+  --secondary: #13262b;
+  --secondary-foreground: #fafafa;
+  --muted: #11232a;
+  --muted-foreground: #8aa3a6;
+  --accent: #13a89e;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(46, 196, 182, 0.12);
+  --input: rgba(46, 196, 182, 0.12);
+  --ring: #5fd9cc;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #2ec4b6;
+  --chart-2: #06b6d4;
+  --chart-3: #ec4899;
+  --chart-4: #f59e0b;
+  --chart-5: #10b981;
+  --sidebar: #081418;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #2ec4b6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #13262b;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgba(46, 196, 182, 0.12);
+  --sidebar-ring: #2ec4b6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-family);
+  }
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-family-heading);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-family-heading);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-family-heading);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}
+/* Lagoon world: teal primary, deep reef blue secondary, coral counter-accent. */
+@theme {
+  --color-lagoon-50: #ecfdf9;
+  --color-lagoon-100: #cbf8ef;
+  --color-lagoon-200: #9cebe1;
+  --color-lagoon-300: #5fd9cc;
+  --color-lagoon-400: #2ec4b6;
+  --color-lagoon-500: #13a89e;
+  --color-lagoon-600: #0b8781;
+  --color-lagoon-700: #0d6b68;
+  --color-lagoon-800: #0f5553;
+  --color-lagoon-900: #104645;
+  --color-lagoon-950: #032a2a;
+
+  --color-reef-50: #ecfafe;
+  --color-reef-100: #cff2fb;
+  --color-reef-200: #a2e3f5;
+  --color-reef-300: #67cdeb;
+  --color-reef-400: #2fb2da;
+  --color-reef-500: #1594bd;
+  --color-reef-600: #10769a;
+  --color-reef-700: #125f7d;
+  --color-reef-800: #164f67;
+  --color-reef-900: #174257;
+  --color-reef-950: #082a3b;
+
+  --color-coral-300: #ffb199;
+  --color-coral-400: #ff8a66;
+  --color-coral-500: #f9683f;
+  --color-coral-600: #e14d24;
+
+  --color-ink: #061013;
+  --color-ink-raised: #0a161a;
+}

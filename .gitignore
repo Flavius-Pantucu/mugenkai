@@ -16,7 +16,17 @@ node_modules/
 .pnp.js
 
 # Env files
+.env
+.env*.local
 .env.prod
+
+# Next.js
+.next/
+next-env.d.ts
+.vercel
+
+# Root-owned leftovers from old Docker volumes (delete with sudo)
+.root-owned-trash/
 
 # Prisma
 prisma/migrations/
