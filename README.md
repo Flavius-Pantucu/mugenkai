@@ -88,4 +88,4 @@ pnpm db:studio      # browse the database
 
 ## Deploy (Vercel)
 
-Import the repo, framework preset Next.js. Add the variables from `.env.example` in Project → Settings → Environment Variables. Run `pnpm db:deploy` against the production database once (and after each new migration), then trigger the `catalog` and `manga` jobs once.
+Import the repo, framework preset Next.js. Add the variables from `.env.example` in Project → Settings → Environment Variables. Production deploys run `prisma migrate deploy` automatically (the `vercel-build` script; preview deploys skip it), so set `DIRECT_URL` there too. After the first deploy, trigger the `catalog` and `manga` jobs once.
