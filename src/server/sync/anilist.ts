@@ -1,6 +1,7 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "../db";
-import { airedEpisodes, cleanDescription, parseStreamingTitle, toStatus } from "./parse";
+import { kitsuEpisodes } from "./kitsu";
+import { airedEpisodes, assignStreamingEpisodes, cleanDescription, toStatus } from "./parse";
 
 // AniList GraphQL. Public, no key; ~90 req/min (sometimes lowered to 30). We batch with id_in
 // and back off on 429, so a full catalog sync stays around a dozen requests.
@@ -137,8 +138,12 @@ const streamingLinks = (m: Media) => m.externalLinks.filter((l) => l.type === "S
 
 // ─── Writers ─────────────────────────────────────────────────────────────────
 
-/** Upserts one anime franchise: series row, every season, episode rows, official links. */
-async function writeAnime(chain: Media[]) {
+/**
+ * Upserts one anime franchise: series row, every season, episode rows, official links.
+ * `full` (daily catalog) also fills titles AniList lacks from Kitsu and rewrites every episode;
+ * the hourly airing pass only applies AniList's own titles, so it never wipes the Kitsu ones.
+ */
+async function writeAnime(chain: Media[], full: boolean) {
   const root = chain[0];
   const seriesId = String(root.id);
   const series = {
@@ -149,6 +154,12 @@ async function writeAnime(chain: Media[]) {
     episodeDuration: root.duration ?? 24,
     trailerYoutubeId: root.trailer?.site === "youtube" ? root.trailer.id : null,
   };
+  const counts = chain.map(airedEpisodes);
+  const streaming = assignStreamingEpisodes(chain.map((s, i) => ({ episodeCount: counts[i], streamingEpisodes: s.streamingEpisodes })));
+  // Kitsu only for seasons with gaps, one season at a time to stay polite.
+  const kitsu: Map<number, { title: string; thumbnail: string | null }>[] = [];
+  for (const [i, s] of chain.entries())
+    kitsu.push(full && streaming[i].length < counts[i] ? await kitsuEpisodes(String(s.id), counts[i]) : new Map());
 
   await db().$transaction(
     async (tx) => {
@@ -163,7 +174,7 @@ async function writeAnime(chain: Media[]) {
           number,
           title: s.title.english || s.title.romaji,
           year: s.seasonYear ?? s.startDate.year ?? series.year,
-          episodeCount: airedEpisodes(s),
+          episodeCount: counts[i],
           coverImage: s.coverImage.extraLarge,
           bannerImage: banner,
           airing: s.status === "RELEASING",
@@ -182,16 +193,28 @@ async function writeAnime(chain: Media[]) {
         }));
         await tx.episode.createMany({ data: episodes, skipDuplicates: true });
 
-        // Real titles, thumbnails and per-episode official links where AniList has them.
-        for (const se of s.streamingEpisodes) {
-          const parsed = parseStreamingTitle(se.title);
-          if (!parsed || parsed.number > season.episodeCount) continue;
-          const episodeId = `${seriesId}-s${number}-e${parsed.number}`;
-          await tx.episode
-            .update({ where: { id: episodeId }, data: { title: parsed.title, ...(se.thumbnail ? { thumbnail: se.thumbnail } : {}) } })
-            .catch((err) => {
-              throw new Error(`episode ${episodeId} (season ${seasonId}, ${season.episodeCount} eps): ${err instanceof Error ? err.message : err}`);
-            });
+        // Titles and thumbnails: AniList first, then Kitsu, then the placeholder. A full pass rewrites
+        // every episode, so anything a past sync put on the wrong season is replaced.
+        const fromAniList = new Map(streaming[i].map((se) => [se.number, se]));
+        const rows = (full ? episodes.map((e) => e.number) : [...fromAniList.keys()]).map((n) => {
+          const a = fromAniList.get(n);
+          const k = kitsu[i].get(n);
+          return {
+            id: `${seriesId}-s${number}-e${n}`,
+            title: a?.title ?? k?.title ?? `Episode ${n}`,
+            thumbnail: a?.thumbnail ?? k?.thumbnail ?? (full ? banner : null),
+          };
+        });
+        if (rows.length > 0) {
+          await tx.$executeRaw`
+            UPDATE "Episode" AS e SET title = t.title, thumbnail = COALESCE(t.thumb, e.thumbnail)
+            FROM unnest(${rows.map((r) => r.id)}::text[], ${rows.map((r) => r.title)}::text[], ${rows.map((r) => r.thumbnail)}::text[]) AS t(id, title, thumb)
+            WHERE e.id = t.id`;
+        }
+
+        // Per-episode official links where AniList has them.
+        for (const se of streaming[i]) {
+          const episodeId = `${seriesId}-s${number}-e${se.number}`;
           if (se.url && se.site) {
             await tx.streamingLink.upsert({
               where: { url: se.url },
@@ -232,8 +255,11 @@ async function writeManga(m: Media) {
 /** Daily: the top-N anime (with all seasons) and top-N manga by popularity. */
 export async function syncCatalog(topAnime: number, topManga: number) {
   const roots = await topMedia("ANIME", ["TV"], topAnime);
+  // 4 franchises at a time: the Kitsu lookups dominate, and one by one this nears Vercel's 300 s limit.
+  const chains = await seasonChains(roots);
   let seasons = 0;
-  for (const chain of await seasonChains(roots)) seasons += await writeAnime(chain);
+  for (let i = 0; i < chains.length; i += 4)
+    for (const n of await Promise.all(chains.slice(i, i + 4).map((c) => writeAnime(c, true)))) seasons += n;
 
   const manga = await topMedia("MANGA", ["MANGA"], topManga);
   for (const m of manga) await writeManga(m);
@@ -249,6 +275,6 @@ export async function syncAiring() {
 
   // Same path as the daily sync (idempotent), so new episodes, titles and links all land.
   const roots = await byIds(seriesIds.map(Number));
-  for (const chain of await seasonChains(roots)) await writeAnime(chain);
+  for (const chain of await seasonChains(roots)) await writeAnime(chain, false);
   return { franchises: roots.length };
 }

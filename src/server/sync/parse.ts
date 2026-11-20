@@ -22,6 +22,34 @@ export function parseStreamingTitle(title: string | null): { number: number; tit
   return m && Number(m[1]) >= 1 ? { number: Number(m[1]), title: m[2].trim() } : null;
 }
 
+export interface StreamingEpisode {
+  title: string | null;
+  thumbnail: string | null;
+  url: string | null;
+  site: string | null;
+}
+
+/**
+ * Splits AniList streamingEpisodes between the seasons of one franchise (in chain order).
+ * Sequels often repeat the whole show's feed ("Episode 1 - Cruelty" under Demon Slayer S2..S5),
+ * so an episode belongs to the first season that lists it. Numbering that continues from the
+ * previous season ("Episode 27" as S2E1) is shifted back to start at 1.
+ */
+export function assignStreamingEpisodes(seasons: { episodeCount: number; streamingEpisodes: StreamingEpisode[] }[]) {
+  const claimed = new Set<string>();
+  return seasons.map((s) => {
+    const own = s.streamingEpisodes
+      .map((se) => ({ se, parsed: parseStreamingTitle(se.title), key: se.url || se.title || "" }))
+      .filter((x): x is typeof x & { parsed: { number: number; title: string } } => !!x.parsed && !claimed.has(x.key));
+    for (const x of own) claimed.add(x.key);
+    const first = Math.min(...own.map((x) => x.parsed.number));
+    const shift = own.length > 0 && first > 1 && Math.max(...own.map((x) => x.parsed.number)) - first < s.episodeCount ? first - 1 : 0;
+    return own
+      .map((x) => ({ ...x.se, number: x.parsed.number - shift, title: x.parsed.title }))
+      .filter((x) => x.number <= s.episodeCount);
+  });
+}
+
 export interface MdChapter {
   id: string;
   attributes: { chapter: string | null; title: string | null; pages: number; externalUrl: string | null; publishAt: string };

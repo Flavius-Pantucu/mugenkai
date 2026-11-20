@@ -2,7 +2,7 @@
 
 Anime and manga discovery, tracking and discussion. One Next.js app (App Router) with its own API routes and a PostgreSQL database, deployed on Vercel.
 
-The catalog fills itself: scheduled jobs pull the most popular anime (every season, every episode, official streaming links) from AniList and manga chapters from MangaDex. Episodes link out to where they stream officially (Crunchyroll, Netflix, …); manga chapters are read in-app from MangaDex, or linked to the official reader when that's where they're published.
+The catalog fills itself: scheduled jobs pull the most popular anime (every season, every episode, official streaming links) from AniList, with episode titles and thumbnails AniList lacks filled in from Kitsu, and manga chapters from MangaDex. Episodes link out to where they stream officially (Crunchyroll, Netflix, …); manga chapters are read in-app from MangaDex, or linked to the official reader when that's where they're published.
 
 ## Stack
 

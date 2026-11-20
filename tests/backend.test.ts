@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { episodeId, parseChapterId, parseEpisodeId, similarTo } from "../src/data/series.ts";
 import { hashPassword, verifyPassword } from "../src/server/password.ts";
-import { airedEpisodes, cleanDescription, parseStreamingTitle, pickChapters, type MdChapter } from "../src/server/sync/parse.ts";
+import { airedEpisodes, assignStreamingEpisodes, cleanDescription, parseStreamingTitle, pickChapters, type MdChapter } from "../src/server/sync/parse.ts";
 
 test("AniList streaming titles map to episode number and title", () => {
   assert.deepEqual(parseStreamingTitle("Episode 12 - The Hero's Return"), { number: 12, title: "The Hero's Return" });
@@ -12,6 +12,19 @@ test("AniList streaming titles map to episode number and title", () => {
   assert.equal(parseStreamingTitle("Special: Recap"), null);
   assert.equal(parseStreamingTitle("Episode 0 - Prologue"), null);
   assert.equal(parseStreamingTitle(null), null);
+});
+
+test("sequels don't take the first season's streaming episodes", () => {
+  const ep = (n: number, t: string) => ({ title: `Episode ${n} - ${t}`, thumbnail: `${t}.jpg`, url: `https://cr/${t}`, site: "Crunchyroll" });
+  const s1 = [ep(1, "Cruelty"), ep(2, "Trainer")];
+  const [a, b, c] = assignStreamingEpisodes([
+    { episodeCount: 2, streamingEpisodes: s1 },
+    { episodeCount: 2, streamingEpisodes: s1 }, // AniList repeats S1's feed
+    { episodeCount: 2, streamingEpisodes: [...s1, ep(3, "Train"), ep(4, "Flame")] }, // continues the numbering
+  ]);
+  assert.deepEqual(a.map((e) => [e.number, e.title]), [[1, "Cruelty"], [2, "Trainer"]]);
+  assert.deepEqual(b, []);
+  assert.deepEqual(c.map((e) => [e.number, e.title]), [[1, "Train"], [2, "Flame"]]);
 });
 
 test("aired episode count follows the airing schedule", () => {
