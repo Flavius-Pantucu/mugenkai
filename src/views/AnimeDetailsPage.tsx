@@ -1,27 +1,16 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { SeriesPage } from "@/components/SeriesPage";
 import { ContentRow } from "@/components/ContentRow";
 import { AnimeCard } from "@/components/ContentCard";
-import { animeList, getSeasons, episodeLabel } from "@/data/mock-data";
+import type { Anime, AnimeSummary } from "@/data/schema";
+import { episodeLabel, getSeasons } from "@/data/series";
 import { episodeProgress, useProgress } from "@/lib/progress";
-import { NotFoundPage } from "./NotFoundPage";
 
-export function AnimeDetailsPage() {
-  const { id } = useParams<{ id: string }>();
-  const progressState = useProgress(); // before the early return: hooks run every render
-  const anime = animeList.find((a) => a.id === id);
-  if (!anime) return <NotFoundPage />;
-
+export function AnimeDetailsPage({ anime, related }: { anime: Anime; related: AnimeSummary[] }) {
+  const progressState = useProgress();
   const seasons = getSeasons(anime);
   const lastEpisode = anime.episodes.at(-1);
-  // Most shared genres first.
-  const shared = (genres: string[]) => genres.filter((g) => anime.genres.includes(g)).length;
-  const related = animeList
-    .filter((a) => a.id !== anime.id && shared(a.genres) > 0)
-    .sort((a, b) => shared(b.genres) - shared(a.genres) || b.popularity - a.popularity)
-    .slice(0, 20);
 
   return (
     <SeriesPage
@@ -39,6 +28,7 @@ export function AnimeDetailsPage() {
       genres={anime.genres}
       description={anime.description}
       showProgress
+      seriesId={anime.id}
       threadId={`anime:${anime.id}`}
       groups={seasons.map((s) => ({
         id: s.id,

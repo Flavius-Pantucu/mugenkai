@@ -2,8 +2,8 @@
 
 import { CatalogBrowser } from "@/components/CatalogBrowser";
 import { MangaCard } from "@/components/ContentCard";
-import { mangaList } from "@/data/mock-data";
+import type { MangaSummary } from "@/data/schema";
 
-export function MangaPage() {
-  return <CatalogBrowser title="Manga" noun="manga" items={mangaList} renderItem={(m) => <MangaCard manga={m} fluid />} />;
+export function MangaPage({ items }: { items: MangaSummary[] }) {
+  return <CatalogBrowser title="Manga" noun="manga" items={items} renderItem={(m) => <MangaCard manga={m} fluid />} />;
 }

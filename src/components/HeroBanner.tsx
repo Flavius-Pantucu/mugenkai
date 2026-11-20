@@ -7,9 +7,10 @@ import { BookOpen, Info, Play, Star } from "lucide-react";
 import { ResponsiveArt } from "@/components/ResponsiveArt";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Anime, Manga } from "@/data/mock-data";
+import type { AnimeSummary, MangaSummary } from "@/data/schema";
+import { episodeId } from "@/data/series";
 
-export type HeroSlide = { kind: "anime"; item: Anime } | { kind: "manga"; item: Manga };
+export type HeroSlide = { kind: "anime"; item: AnimeSummary } | { kind: "manga"; item: MangaSummary };
 
 const SLIDE_MS = 8000;
 
@@ -17,15 +18,17 @@ function slideMeta(slide: HeroSlide) {
   if (slide.kind === "anime") {
     const a = slide.item;
     return {
-      parts: ["Anime", String(a.year), `${a.episodes.length} episodes`, a.studio],
-      primary: { href: `/watch/${a.id}/${a.episodes[0]?.id}`, label: "Play episode 1", icon: Play },
+      parts: ["Anime", String(a.year), `${a.episodeCount} episodes`, a.studio],
+      primary: { href: `/watch/${a.id}/${episodeId(a.id, 1, 1)}`, label: "Play episode 1", icon: Play },
       details: `/anime/${a.id}`,
     };
   }
   const m = slide.item;
   return {
-    parts: ["Manga", `${m.chapters.length} chapters`, m.author],
-    primary: { href: `/read/${m.id}/${m.chapters[0]?.id}`, label: "Read chapter 1", icon: BookOpen },
+    parts: ["Manga", `${m.chapterCount} chapters`, m.author],
+    primary: m.firstChapterId
+      ? { href: `/read/${m.id}/${m.firstChapterId}`, label: "Start reading", icon: BookOpen }
+      : { href: `/manga/${m.id}`, label: "See chapters", icon: BookOpen },
     details: `/manga/${m.id}`,
   };
 }

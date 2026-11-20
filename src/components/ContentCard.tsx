@@ -9,10 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { episodeLabel, type Anime, type Manga } from "@/data/mock-data";
+import type { AnimeSummary, MangaSummary } from "@/data/schema";
+import { episodeId, episodeLabel } from "@/data/series";
+import { toggleList, useListStatus } from "@/lib/list";
 import type { ReadingItem, WatchingItem } from "@/lib/progress";
 
-type Series = { kind: "anime"; item: Anime } | { kind: "manga"; item: Manga };
+type Series = { kind: "anime"; item: AnimeSummary } | { kind: "manga"; item: MangaSummary };
 
 const OPEN_DELAY_MS = 450;
 const PREVIEW_WIDTH_RATIO = 2; // preview is twice the card's width
@@ -24,13 +26,13 @@ function seriesLinks(s: Series) {
     const a = s.item;
     return {
       details: `/anime/${a.id}`,
-      primary: `/watch/${a.id}/${a.episodes[0]?.id}`,
+      primary: `/watch/${a.id}/${episodeId(a.id, 1, 1)}`,
       primaryLabel: `Play ${a.title}`,
       PrimaryIcon: Play,
       count:
         a.seasons.length > 1
           ? `${a.seasons.length} seasons`
-          : `${a.episodes.length} ${a.episodes.length === 1 ? "episode" : "episodes"}`,
+          : `${a.episodeCount} ${a.episodeCount === 1 ? "episode" : "episodes"}`,
       by: a.studio,
       ongoingLabel: "Airing",
     };
@@ -38,10 +40,10 @@ function seriesLinks(s: Series) {
   const m = s.item;
   return {
     details: `/manga/${m.id}`,
-    primary: `/read/${m.id}/${m.chapters[0]?.id}`,
+    primary: m.firstChapterId ? `/read/${m.id}/${m.firstChapterId}` : `/manga/${m.id}`,
     primaryLabel: `Read ${m.title}`,
     PrimaryIcon: BookOpen,
-    count: `${m.chapters.length} chapters`,
+    count: `${m.chapterCount} chapters`,
     by: m.author,
     ongoingLabel: "Ongoing",
   };
@@ -106,7 +108,7 @@ function PosterCard({ series, fluid }: { series: Series; fluid?: boolean }) {
 
 function HoverPreview({ series, anchor, onClose }: { series: Series; anchor: DOMRect; onClose: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [inList, setInList] = useState(false);
+  const inList = useListStatus(series.item.id) !== undefined;
   const [top, setTop] = useState(anchor.top);
   const { item } = series;
   const links = seriesLinks(series);
@@ -175,7 +177,7 @@ function HoverPreview({ series, anchor, onClose }: { series: Series; anchor: DOM
             className="rounded-full"
             aria-pressed={inList}
             aria-label={inList ? "Remove from your list" : "Add to your list"}
-            onClick={() => setInList((v) => !v)}
+            onClick={() => toggleList(series.item.id)}
           >
             {inList ? <Check className="text-primary" /> : <Plus />}
           </Button>
@@ -214,11 +216,11 @@ function HoverPreview({ series, anchor, onClose }: { series: Series; anchor: DOM
   );
 }
 
-export function AnimeCard({ anime, fluid }: { anime: Anime; fluid?: boolean }) {
+export function AnimeCard({ anime, fluid }: { anime: AnimeSummary; fluid?: boolean }) {
   return <PosterCard series={{ kind: "anime", item: anime }} fluid={fluid} />;
 }
 
-export function MangaCard({ manga, fluid }: { manga: Manga; fluid?: boolean }) {
+export function MangaCard({ manga, fluid }: { manga: MangaSummary; fluid?: boolean }) {
   return <PosterCard series={{ kind: "manga", item: manga }} fluid={fluid} />;
 }
 
@@ -251,14 +253,15 @@ function ResumeCard({ href, image, title, meta, progress, Icon }: { href: string
 }
 
 export function ContinueWatchingCard({ item }: { item: WatchingItem }) {
-  const { anime, episode, progress } = item;
-  const left = Math.max(1, Math.round(episode.duration * (1 - progress / 100)));
+  const { anime, progress } = item;
+  const label = episodeLabel(anime, item);
+  const left = Math.max(1, Math.round(anime.episodeDuration * (1 - progress / 100)));
   return (
     <ResumeCard
-      href={`/watch/${anime.id}/${episode.id}`}
-      image={episode.thumbnail}
+      href={`/watch/${anime.id}/${item.episodeId}`}
+      image={item.thumbnail}
       title={anime.title}
-      meta={progress > 0 ? `${episodeLabel(anime, episode)} · ${left} min left` : `Up next · ${episodeLabel(anime, episode)}`}
+      meta={progress > 0 ? `${label} · ${left} min left` : `Up next · ${label}`}
       progress={progress}
       Icon={Play}
     />
@@ -266,14 +269,16 @@ export function ContinueWatchingCard({ item }: { item: WatchingItem }) {
 }
 
 export function ContinueReadingCard({ item }: { item: ReadingItem }) {
-  const { manga, chapter, page } = item;
+  const { manga, page, pageCount, chapterNumber } = item;
+  const finished = page >= pageCount;
   return (
     <ResumeCard
-      href={`/read/${manga.id}/${chapter.id}`}
+      // A finished chapter resumes from the manga page, whose Continue button picks the next chapter.
+      href={finished ? `/manga/${manga.id}` : `/read/${manga.id}/${item.chapterId}`}
       image={manga.bannerImage}
       title={manga.title}
-      meta={page > 1 ? `Ch. ${chapter.chapterNumber} · page ${page} of ${chapter.pageCount}` : `Up next · Ch. ${chapter.chapterNumber}`}
-      progress={page > 1 ? (page / chapter.pageCount) * 100 : 0}
+      meta={finished ? `Read Ch. ${chapterNumber} · continue` : `Ch. ${chapterNumber} · page ${page} of ${pageCount}`}
+      progress={(page / pageCount) * 100}
       Icon={BookOpen}
     />
   );

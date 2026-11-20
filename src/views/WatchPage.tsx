@@ -1,288 +1,195 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { ChevronLeft, List, Maximize, Minimize, Pause, Play, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Check, CheckCheck, ChevronLeft, ChevronRight, ExternalLink, RotateCcw, Tv } from "lucide-react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Slider } from "@/components/ui/slider";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { CommentSection } from "@/components/CommentSection";
-import { animeList } from "@/data/mock-data";
-import { getProgress, saveEpisodeProgress, WATCHED_AT } from "@/lib/progress";
+import type { Anime } from "@/data/schema";
+import { episodeLabel } from "@/data/series";
+import { episodeProgress, saveEpisodeProgress, useProgress } from "@/lib/progress";
 import { NotFoundPage } from "./NotFoundPage";
 
-const ctrl = "text-white/80 hover:bg-white/10 hover:text-white";
+/**
+ * Episodes stream on official sites (Crunchyroll, Netflix, …), not here. This page is the hub for one episode:
+ * where to watch it, marking it watched, moving to the next one, and its discussion.
+ */
+export function WatchPage({ anime, episodeId }: { anime: Anime; episodeId: string }) {
+  const router = useRouter();
+  const progress = useProgress();
+  const episode = anime.episodes.find((e) => e.id === episodeId);
+  if (!episode) return <NotFoundPage />;
 
-function formatTime(pct: number, totalMinutes: number) {
-  const seconds = Math.floor((pct / 100) * totalMinutes * 60);
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-}
-
-export function WatchPage() {
-  const { animeId, episodeId } = useParams<{ animeId: string; episodeId: string }>();
-  const anime = animeList.find((a) => a.id === animeId);
-  const episode = anime?.episodes.find((e) => e.id === episodeId);
-
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [volume, setVolume] = useState(80);
-  const [muted, setMuted] = useState(false);
-  const [showControls, setShowControls] = useState(true);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const controlsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const playerRef = useRef<HTMLDivElement>(null);
-
-  // New episode: resume where it was left (finished episodes start over).
-  useEffect(() => {
-    const saved = getProgress().episodes[episodeId]?.progress ?? 0;
-    setProgress(saved >= WATCHED_AT ? 0 : saved);
-    setIsPlaying(false);
-  }, [episodeId]);
-
-  // Save every 5s while playing, and once more on pause / leaving the episode.
-  const progressRef = useRef(progress);
-  progressRef.current = progress;
-  useEffect(() => {
-    if (!isPlaying) return;
-    const id = setInterval(() => saveEpisodeProgress(episodeId, progressRef.current), 5000);
-    return () => {
-      clearInterval(id);
-      saveEpisodeProgress(episodeId, progressRef.current);
-    };
-  }, [isPlaying, episodeId]);
-
-  const pokeControls = useCallback(() => {
-    if (controlsTimer.current) clearTimeout(controlsTimer.current);
-    setShowControls(true);
-    if (isPlaying) controlsTimer.current = setTimeout(() => setShowControls(false), 3000);
-  }, [isPlaying]);
-
-  useEffect(() => {
-    pokeControls();
-    return () => {
-      if (controlsTimer.current) clearTimeout(controlsTimer.current);
-    };
-  }, [pokeControls]);
-
-  // Simulated playback until real video sources exist.
-  useEffect(() => {
-    if (!isPlaying) return;
-    const id = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 100) {
-          setIsPlaying(false);
-          return 100;
-        }
-        return p + 0.05;
-      });
-    }, 50);
-    return () => clearInterval(id);
-  }, [isPlaying]);
-
-  useEffect(() => {
-    const onChange = () => setIsFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener("fullscreenchange", onChange);
-    return () => document.removeEventListener("fullscreenchange", onChange);
-  }, []);
-
-  if (!anime || !episode) return <NotFoundPage />;
-
-  const index = anime.episodes.findIndex((e) => e.id === episode.id);
+  // Where this episode streams officially: its own page when AniList has one, else the show's.
+  const watchLinks = episode.links.length > 0 ? episode.links : anime.links;
+  const index = anime.episodes.indexOf(episode);
   const prevEp = anime.episodes[index - 1];
   const nextEp = anime.episodes[index + 1];
   const epHref = (id: string) => `/watch/${anime.id}/${id}`;
-  const seasonPrefix = (n: number) => (anime.seasons.length > 1 ? `Season ${n} · ` : "");
+  const watched = episodeProgress(progress, episode) >= 100;
+  const seasonEpisodes = anime.episodes.filter((e) => e.seasonNumber === episode.seasonNumber);
+  const multiSeason = anime.seasons.length > 1;
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) void playerRef.current?.requestFullscreen();
-    else void document.exitFullscreen();
+  const markWatched = (goNext: boolean) => {
+    saveEpisodeProgress(episode.id, 100);
+    if (goNext && nextEp) router.push(epHref(nextEp.id));
+    else toast.success(`${episodeLabel(anime, episode)} marked watched`);
   };
 
+  // Opening a stream doesn't mean it was watched; offer the shortcut for when they come back.
+  const openedStream = () =>
+    toast("Finished the episode?", { action: { label: "Mark watched", onClick: () => saveEpisodeProgress(episode.id, 100) }, duration: 15_000 });
+
   return (
-    <div className="bg-black pt-16">
-      <div className="flex min-h-[calc(100svh-4rem)] flex-col">
-      <div
-        ref={playerRef}
-        className="relative flex flex-1 select-none items-center justify-center bg-black"
-        onMouseMove={pokeControls}
-        onClick={() => setIsPlaying((v) => !v)}
-      >
-        <img
-          src={anime.bannerImage}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-500"
-          style={{ filter: isPlaying ? "brightness(0.6)" : "brightness(0.4)" }}
-        />
+    <div className="min-h-screen bg-ink pt-16">
+      <div className="relative overflow-hidden">
+        <img src={episode.thumbnail} alt="" aria-hidden className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-2xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/70 to-ink" />
 
-        {!isPlaying && (
-          <span className="relative z-10 flex flex-col items-center gap-3">
-            <span className="grid size-24 place-items-center rounded-full bg-primary/90 text-primary-foreground shadow-2xl">
-              <Play className="ml-1 size-10 fill-current" />
-            </span>
-            {progress > 0 && progress < 100 && (
-              <span className="rounded-full bg-black/60 px-3 py-1 text-sm text-white backdrop-blur-sm">
-                Resume from {formatTime(progress, episode.duration)}
-              </span>
-            )}
-          </span>
-        )}
+        <div className="relative mx-auto grid w-[90%] gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-12">
+          <div className="space-y-6">
+            <Link href={`/anime/${anime.id}`} className="inline-flex items-center gap-1 text-sm text-zinc-400 transition-colors hover:text-white">
+              <ChevronLeft className="size-4" />
+              {anime.title}
+            </Link>
 
-        <div
-          className={cn("absolute inset-0 z-20 flex flex-col justify-between transition-opacity duration-300", showControls ? "opacity-100" : "pointer-events-none opacity-0")}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex items-center gap-3 bg-gradient-to-b from-black/80 to-transparent p-4">
-            <Button asChild variant="ghost" size="icon" className={ctrl} aria-label={`Back to ${anime.title}`}>
-              <Link href={`/anime/${anime.id}`}>
-                <ChevronLeft className="size-6" />
-              </Link>
-            </Button>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-base font-semibold text-white">{anime.title}</p>
-              <p className="text-[13px] text-zinc-400">
-                {seasonPrefix(episode.seasonNumber)}
-                {episode.title}
-              </p>
-            </div>
-
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className={ctrl} aria-label="Episode list">
-                  <List className="size-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="w-80 border-white/10 bg-ink-raised/95 p-0 backdrop-blur-xl">
-                <SheetHeader className="border-b border-white/10">
-                  <SheetTitle>Episodes</SheetTitle>
-                  <SheetDescription>{anime.episodes.length} total</SheetDescription>
-                </SheetHeader>
-                <ScrollArea className="h-[calc(100vh-88px)]">
-                  <div className="space-y-1 p-2">
-                    {anime.episodes.map((ep, i) => {
-                      const current = ep.id === episode.id;
-                      const seasonStart = anime.seasons.length > 1 && ep.seasonNumber !== anime.episodes[i - 1]?.seasonNumber;
-                      return (
-                        <div key={ep.id}>
-                        {seasonStart && (
-                          <p className="px-3 pb-1 pt-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                            Season {ep.seasonNumber}
-                          </p>
-                        )}
-                        <Button
-                          asChild
-                          variant="ghost"
-                          className={cn("h-auto w-full justify-start gap-3 p-3", current && "bg-primary/15 hover:bg-primary/20")}
-                        >
-                          <Link href={epHref(ep.id)} aria-current={current ? "page" : undefined}>
-                            <span
-                              className={cn(
-                                "grid size-8 shrink-0 place-items-center rounded text-xs font-semibold",
-                                current ? "bg-primary text-primary-foreground" : "bg-white/5 text-zinc-400",
-                              )}
-                            >
-                              {ep.episodeNumber}
-                            </span>
-                            <span className="min-w-0 flex-1 text-left">
-                              <span className={cn("block truncate text-[13px]", current ? "text-primary" : "text-zinc-300")}>{ep.title}</span>
-                              <span className="block text-[11px] text-muted-foreground">{ep.duration} min</span>
-                            </span>
-                          </Link>
-                        </Button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </ScrollArea>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          <div className="space-y-3 bg-gradient-to-t from-black/80 to-transparent p-4">
-            <Slider
-              value={[progress]}
-              max={100}
-              step={0.1}
-              onValueChange={([v]) => setProgress(v)}
-              onValueCommit={([v]) => saveEpisodeProgress(episode.id, v)}
-              aria-label="Seek"
-            />
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                {prevEp && (
-                  <Button asChild variant="ghost" size="icon" className={ctrl} aria-label="Previous episode">
-                    <Link href={epHref(prevEp.id)}>
-                      <SkipBack className="size-5" />
-                    </Link>
-                  </Button>
+            <div className="grid gap-6 md:grid-cols-[minmax(0,420px)_1fr] md:items-end">
+              <div className="relative aspect-video overflow-hidden rounded-xl ring-1 ring-white/10">
+                <img src={episode.thumbnail} alt="" className={cn("h-full w-full object-cover", watched && "opacity-60")} />
+                <Badge className="absolute left-3 top-3 rounded-md bg-ink/80 font-bold tabular-nums text-white">{episodeLabel(anime, episode)}</Badge>
+                {watched && (
+                  <span className="absolute right-3 top-3 grid size-7 place-items-center rounded-full bg-primary text-primary-foreground" aria-label="Watched">
+                    <Check className="size-4" strokeWidth={3} />
+                  </span>
                 )}
-                <Button variant="ghost" size="icon" className={cn(ctrl, "size-11")} onClick={() => setIsPlaying((v) => !v)} aria-label={isPlaying ? "Pause" : "Play"}>
-                  {isPlaying ? <Pause className="size-7" /> : <Play className="ml-0.5 size-7 fill-current" />}
-                </Button>
-                {nextEp && (
-                  <Button asChild variant="ghost" size="icon" className={ctrl} aria-label="Next episode">
-                    <Link href={epHref(nextEp.id)}>
-                      <SkipForward className="size-5" />
-                    </Link>
-                  </Button>
-                )}
-
-                <Button variant="ghost" size="icon" className={ctrl} onClick={() => setMuted((v) => !v)} aria-label={muted ? "Unmute" : "Mute"}>
-                  {muted || volume === 0 ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
-                </Button>
-                <Slider
-                  value={[muted ? 0 : volume]}
-                  max={100}
-                  onValueChange={([v]) => {
-                    setVolume(v);
-                    setMuted(false);
-                  }}
-                  aria-label="Volume"
-                  className="hidden w-24 sm:flex"
-                />
-
-                <span className="ml-3 hidden text-[13px] tabular-nums text-white/60 sm:block">
-                  {formatTime(progress, episode.duration)} / {episode.duration}:00
-                </span>
               </div>
 
-              <Button variant="ghost" size="icon" className={ctrl} onClick={toggleFullscreen} aria-label={isFullscreen ? "Exit full screen" : "Full screen"}>
-                {isFullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}
-              </Button>
+              <div>
+                <p className="text-[13px] font-medium uppercase tracking-wide text-lagoon-200">
+                  {multiSeason ? `Season ${episode.seasonNumber} · ` : ""}Episode {episode.episodeNumber}
+                </p>
+                <h1
+                  className="mt-1 text-balance text-white"
+                  style={{ fontFamily: "var(--font-family-heading)", fontSize: "clamp(1.5rem, 2.6vw, 2.2rem)", fontWeight: 900, lineHeight: 1.1 }}
+                >
+                  {episode.title}
+                </h1>
+                <p className="mt-2 text-sm text-zinc-400">{episode.duration} min</p>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {nextEp && (
-        <div className="flex items-center justify-between border-t border-white/10 bg-ink-raised p-4">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Up next</p>
-            <p className="text-sm font-medium text-white">
-              {seasonPrefix(nextEp.seasonNumber)}
-              {nextEp.title}
+            <Card className="gap-4 bg-ink-raised/80 p-5 backdrop-blur">
+              <div className="flex items-center gap-2 text-sm font-semibold text-white">
+                <Tv className="size-4 text-primary" />
+                Where to watch
+              </div>
+              {watchLinks.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {watchLinks.slice(0, 6).map((l) => (
+                    <Button key={l.url} asChild size="lg" variant="secondary" className="bg-white/10 text-white hover:bg-white/20">
+                      <a href={l.url} target="_blank" rel="noopener noreferrer" onClick={openedStream}>
+                        {l.provider}
+                        <ExternalLink className="opacity-70" />
+                      </a>
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">No official streaming link is known for this episode yet.</p>
+              )}
+              {episode.links.length === 0 && watchLinks.length > 0 && (
+                <p className="text-xs text-muted-foreground">These open the show&apos;s page; pick episode {episode.episodeNumber} there.</p>
+              )}
+
+              <div className="flex flex-wrap gap-2 border-t border-white/5 pt-4">
+                {watched ? (
+                  <Button size="lg" variant="outline" onClick={() => saveEpisodeProgress(episode.id, 0)}>
+                    <RotateCcw />
+                    Mark unwatched
+                  </Button>
+                ) : (
+                  <>
+                    {nextEp && (
+                      <Button size="lg" className="font-semibold" onClick={() => markWatched(true)}>
+                        <CheckCheck />
+                        Mark watched &amp; next
+                      </Button>
+                    )}
+                    <Button size="lg" variant={nextEp ? "outline" : "default"} onClick={() => markWatched(false)}>
+                      <Check />
+                      Mark watched
+                    </Button>
+                  </>
+                )}
+              </div>
+            </Card>
+
+            <nav aria-label="Episodes" className="flex items-center justify-between gap-3">
+              {prevEp ? (
+                <Button asChild variant="ghost" className="min-w-0">
+                  <Link href={epHref(prevEp.id)}>
+                    <ChevronLeft />
+                    <span className="truncate">Previous · {episodeLabel(anime, prevEp)}</span>
+                  </Link>
+                </Button>
+              ) : (
+                <span />
+              )}
+              {nextEp && (
+                <Button asChild variant="ghost" className="min-w-0">
+                  <Link href={epHref(nextEp.id)}>
+                    <span className="truncate">Next · {episodeLabel(anime, nextEp)}</span>
+                    <ChevronRight />
+                  </Link>
+                </Button>
+              )}
+            </nav>
+          </div>
+
+          <aside aria-label={multiSeason ? `Season ${episode.seasonNumber} episodes` : "Episodes"} className="lg:pt-10">
+            <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {multiSeason ? `Season ${episode.seasonNumber}` : "Episodes"} · {seasonEpisodes.length}
             </p>
-          </div>
-          <Button asChild>
-            <Link href={epHref(nextEp.id)}>
-              <Play className="fill-current" />
-              Play next
-            </Link>
-          </Button>
+            <ol className="max-h-[420px] space-y-1 overflow-y-auto rounded-xl bg-white/[0.02] p-1.5 ring-1 ring-white/5 lg:max-h-[560px]">
+              {seasonEpisodes.map((ep) => {
+                const current = ep.id === episode.id;
+                const done = episodeProgress(progress, ep) >= 100;
+                return (
+                  <li key={ep.id}>
+                    <Link
+                      href={epHref(ep.id)}
+                      aria-current={current ? "page" : undefined}
+                      className={cn("flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-white/5", current && "bg-primary/15 hover:bg-primary/20")}
+                    >
+                      <span
+                        className={cn(
+                          "grid size-8 shrink-0 place-items-center rounded text-xs font-semibold tabular-nums",
+                          current ? "bg-primary text-primary-foreground" : done ? "bg-primary/20 text-primary" : "bg-white/5 text-zinc-400",
+                        )}
+                      >
+                        {done && !current ? <Check className="size-3.5" strokeWidth={3} /> : ep.episodeNumber}
+                      </span>
+                      <span className={cn("min-w-0 flex-1 truncate text-[13px]", current ? "text-white" : done ? "text-zinc-500" : "text-zinc-300")}>
+                        {ep.title}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ol>
+          </aside>
         </div>
-      )}
       </div>
 
-      <div className="bg-ink">
-        <CommentSection
-          threadId={`episode:${episode.id}`}
-          title={`${anime.seasons.length > 1 ? `Season ${episode.seasonNumber} · ` : ""}Episode ${episode.episodeNumber} comments`}
-          className="mx-auto w-[90%] max-w-3xl py-12"
-        />
-      </div>
+      <CommentSection
+        threadId={`episode:${episode.id}`}
+        title={`${multiSeason ? `Season ${episode.seasonNumber} · ` : ""}Episode ${episode.episodeNumber} comments`}
+        className="mx-auto w-[90%] max-w-3xl py-12"
+      />
     </div>
   );
 }

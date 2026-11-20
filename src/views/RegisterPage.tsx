@@ -12,10 +12,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
-import { animeList } from "@/data/mock-data";
 import { RegisterSchema, type RegisterInput } from "@/data/schema";
 
-export function RegisterPage() {
+export function RegisterPage({ backdrop }: { backdrop: string }) {
   const { register, isLoading } = useAuth();
   const router = useRouter();
   const form = useForm<RegisterInput>({
@@ -35,7 +34,7 @@ export function RegisterPage() {
 
   return (
     <AuthShell
-      backdrop={animeList[4].bannerImage}
+      backdrop={backdrop}
       title="Create your account"
       description="One history for every episode and chapter"
       footer={

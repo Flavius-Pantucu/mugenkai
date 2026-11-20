@@ -1,13 +1,14 @@
-// Merged from the former auth, user, anime and manga service schemas.
-// UserAuth + UserProfile + UserPreferences are folded into one User table.
+// Mugenkai data model. Catalog rows are written by the sync jobs (src/server/sync),
+// user rows by the API routes (src/app/api). Ids for series/episodes/chapters are
+// deterministic (AniList id based) so URLs and browser-saved progress stay valid.
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -15,116 +16,252 @@ enum Role {
   ADMIN
 }
 
+enum SeriesKind {
+  ANIME
+  MANGA
+}
+
 enum ReleaseStatus {
   ONGOING
   COMPLETED
 }
 
+/// Where a title sits in the user's list. CURRENT = watching (anime) / reading (manga).
+enum ListStatus {
+  CURRENT
+  PLANNING
+  COMPLETED
+  PAUSED
+  DROPPED
+}
+
+// ─── Users ──────────────────────────────────────────────────────────────────
+
 model User {
-  id                   String   @id @default(uuid())
-  email                String   @unique
-  passwordHash         String
-  role                 Role     @default(USER)
-  username             String   @unique
-  avatarUrl            String?
-  bio                  String?
-  preferredGenres      String[]
-  language             String   @default("en")
-  matureContentEnabled Boolean  @default(false)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String   @unique
+  passwordHash  String
+  role          Role     @default(USER)
+  avatarUrl     String?
+  bio           String   @default("")
+  matureContent Boolean  @default(false)
+  notifications Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  watchHistory   WatchHistory[]
-  readingHistory ReadingHistory[]
+  sessions        Session[]
+  episodeProgress EpisodeProgress[]
+  chapterProgress ChapterProgress[]
+  comments        Comment[]
+  likes           CommentLike[]
+  list            ListEntry[]
 }
 
-model Anime {
-  id          String        @id @default(uuid())
-  title       String
-  description String
-  coverImage  String
-  bannerImage String?
-  trailerUrl  String?
-  releaseDate DateTime?
-  status      ReleaseStatus @default(ONGOING)
-  rating      Float?        @default(0)
-  createdAt   DateTime      @default(now())
+/// id is the SHA-256 of the cookie token, so a leaked database cannot be replayed as sessions.
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ─── Catalog (written by sync jobs) ─────────────────────────────────────────
+
+/// One anime franchise or one manga. id = AniList id of the first season / the manga.
+model Series {
+  id               String        @id
+  kind             SeriesKind
+  malId            Int?
+  mangadexId       String?       @unique
+  title            String
+  nativeTitle      String
+  description      String
+  coverImage       String
+  bannerImage      String
+  color            String?
+  status           ReleaseStatus
+  rating           Float
+  popularity       Int
+  year             Int
+  genres           String[]
+  // anime
+  studio           String?
+  episodeDuration  Int?
+  trailerYoutubeId String?
+  // manga
+  author           String?
+  volumeCount      Int?
+  createdAt        DateTime      @default(now())
+  syncedAt         DateTime      @updatedAt
+
+  seasons     Season[]
+  episodes    Episode[]
+  chapters    Chapter[]
+  links       StreamingLink[]
+  listEntries ListEntry[]
+
+  @@index([kind, popularity(sort: Desc)])
+}
+
+/// A TV season. id = that season's AniList id.
+model Season {
+  id           String  @id
+  seriesId     String
+  number       Int
+  title        String
+  year         Int
+  episodeCount Int
+  coverImage   String
+  bannerImage  String
+  airing       Boolean @default(false)
+
+  series   Series    @relation(fields: [seriesId], references: [id], onDelete: Cascade)
   episodes Episode[]
+
+  @@unique([seriesId, number])
 }
 
+/// id = "<seriesId>-s<season>-e<number>".
 model Episode {
-  id            String @id @default(uuid())
-  animeId       String
-  episodeNumber Int
-  title         String
-  videoUrl      String
-  duration      Int
+  id           String    @id
+  seriesId     String
+  seasonId     String
+  seasonNumber Int
+  number       Int
+  title        String
+  thumbnail    String
+  duration     Int
+  airedAt      DateTime?
 
-  anime        Anime          @relation(fields: [animeId], references: [id], onDelete: Cascade)
-  watchHistory WatchHistory[]
+  series   Series            @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  season   Season            @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  links    StreamingLink[]
+  progress EpisodeProgress[]
 
-  @@unique([animeId, episodeNumber])
+  @@unique([seasonId, number])
+  @@index([seriesId])
 }
 
-model WatchHistory {
-  id        String   @id @default(uuid())
+/// id = "<seriesId>-ch-<number>". Pages are fetched live from MangaDex, never stored.
+model Chapter {
+  id                String    @id
+  seriesId          String
+  number            Float
+  title             String
+  pageCount         Int
+  mangadexChapterId String?   @unique
+  /// Set when MangaDex only links to an official reader (e.g. MANGA Plus).
+  externalUrl       String?
+  scanlationGroup   String?
+  publishedAt       DateTime?
+
+  series   Series            @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  progress ChapterProgress[]
+
+  @@unique([seriesId, number])
+}
+
+/// Official places to watch: per series (AniList externalLinks) or per episode (streamingEpisodes).
+model StreamingLink {
+  id        String  @id @default(uuid())
+  url       String  @unique
+  provider  String
+  language  String?
+  seriesId  String?
+  episodeId String?
+
+  series  Series?  @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  episode Episode? @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@index([seriesId])
+  @@index([episodeId])
+}
+
+// ─── User activity ──────────────────────────────────────────────────────────
+
+model EpisodeProgress {
   userId    String
   episodeId String
-  progress  Int      @default(0)
-  updatedAt DateTime @updatedAt
+  progress  Float
+  updatedAt DateTime
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   episode Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, episodeId])
+  @@id([userId, episodeId])
+  @@index([userId, updatedAt(sort: Desc)])
 }
 
-model Manga {
-  id          String        @id @default(uuid())
-  title       String
-  description String
-  coverImage  String
-  bannerImage String?
-  status      ReleaseStatus @default(ONGOING)
-  rating      Float?        @default(0)
-  createdAt   DateTime      @default(now())
-
-  chapters Chapter[]
-}
-
-model Chapter {
-  id            String @id @default(uuid())
-  mangaId       String
-  chapterNumber Int
-  title         String
-
-  manga          Manga            @relation(fields: [mangaId], references: [id], onDelete: Cascade)
-  pages          Page[]
-  readingHistory ReadingHistory[]
-
-  @@unique([mangaId, chapterNumber])
-}
-
-model Page {
-  id         String @id @default(uuid())
-  chapterId  String
-  imageUrl   String
-  pageNumber Int
-
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-
-  @@unique([chapterId, pageNumber])
-}
-
-model ReadingHistory {
-  id        String @id @default(uuid())
+model ChapterProgress {
   userId    String
   chapterId String
-  lastPage  Int    @default(1)
+  page      Int
+  pageCount Int
+  updatedAt DateTime
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, chapterId])
+  @@id([userId, chapterId])
+  @@index([userId, updatedAt(sort: Desc)])
+}
+
+/// threadId: "anime:<id>" | "manga:<id>" | "episode:<id>" | "chapter:<id>".
+/// Deleting sets deletedAt so replies keep their parent (shown as "Comment deleted").
+model Comment {
+  id        String    @id @default(uuid())
+  threadId  String
+  parentId  String?
+  userId    String
+  body      String
+  spoiler   Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent  Comment?      @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[]     @relation("Replies")
+  likes   CommentLike[]
+
+  @@index([threadId, createdAt])
+}
+
+model CommentLike {
+  userId    String
+  commentId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@id([userId, commentId])
+}
+
+/// "Add to list", with a status (watching, planning, …).
+model ListEntry {
+  userId    String
+  seriesId  String
+  status    ListStatus @default(PLANNING)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  series Series @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@id([userId, seriesId])
+  @@index([userId, updatedAt(sort: Desc)])
+}
+
+// ─── Operations ─────────────────────────────────────────────────────────────
+
+model SyncState {
+  job       String    @id
+  lastRunAt DateTime?
+  lastOkAt  DateTime?
+  lastError String?
+  summary   Json?
 }

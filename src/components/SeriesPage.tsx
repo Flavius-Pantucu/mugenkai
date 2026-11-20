@@ -2,15 +2,27 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { BookOpen, Check, ChevronDown, EyeOff, Play, Plus, Star } from "lucide-react";
+import { BookOpen, Check, CheckCheck, ChevronDown, EyeOff, Play, Plus, Star, X } from "lucide-react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
-import type { Status } from "@/data/schema";
+import { LIST_STATUSES, type ListStatus, type Status } from "@/data/schema";
+import { listLabel, setListStatus, useListStatus } from "@/lib/list";
+import { markFinished } from "@/lib/progress";
 import { CommentSection } from "./CommentSection";
 import { ResponsiveArt } from "./ResponsiveArt";
 import { Footer } from "./Footer";
@@ -24,6 +36,7 @@ export interface SeriesUnit {
   image: string;
   href: string;
   length: string; // "24 min" or "18 pages"
+  pageCount?: number; // chapters only
   remaining?: string; // "13 min left", shown when partly done
   progress: number; // 0-100
   isNew: boolean;
@@ -52,6 +65,7 @@ export interface SeriesPageProps {
   description: string;
   groups: SeriesGroup[];
   showProgress: boolean;
+  seriesId: string;
   threadId: string; // comment thread for the whole series, e.g. "anime:16498"
   related: React.ReactNode;
 }
@@ -76,7 +90,7 @@ export function SeriesPage(props: SeriesPageProps) {
   const [activeId, setActiveId] = useState(resumeGroup?.id ?? groups[0]?.id ?? "");
   const [newestFirst, setNewestFirst] = useState(false);
   const [hideDone, setHideDone] = useState(false);
-  const [inList, setInList] = useState(false);
+  const listStatus = useListStatus(props.seriesId);
   const [shown, setShown] = useState(PAGE);
 
   // Saved progress arrives after hydration: jump to the resume season/volume once, the first time it's known.
@@ -112,6 +126,14 @@ export function SeriesPage(props: SeriesPageProps) {
     : all[0] && { href: all[0].href, label: noun.start };
   const PrimaryIcon = kind === "anime" ? Play : BookOpen;
   const left = units.length - shown;
+  const unfinished = active?.units.filter((u) => u.progress < 100) ?? [];
+
+  const markGroupDone = () => {
+    if (!active) return;
+    if (kind === "anime") markFinished(unfinished.map((u) => u.id), []);
+    else markFinished([], unfinished.map((u) => ({ id: u.id, pageCount: u.pageCount ?? 1 })));
+    toast.success(`${active.title} marked ${noun.done}`);
+  };
 
   return (
     <div className="min-h-screen bg-ink">
@@ -163,16 +185,7 @@ export function SeriesPage(props: SeriesPageProps) {
                 </Link>
               </Button>
             )}
-            <Button
-              size="lg"
-              variant="secondary"
-              onClick={() => setInList((v) => !v)}
-              aria-pressed={inList}
-              className="bg-white/12 font-semibold text-white hover:bg-white/20"
-            >
-              {inList ? <Check className="text-primary" /> : <Plus />}
-              {inList ? "In your list" : "Add to list"}
-            </Button>
+            <ListStatusMenu kind={kind} seriesId={props.seriesId} status={listStatus} />
           </div>
         </div>
       </header>
@@ -207,7 +220,13 @@ export function SeriesPage(props: SeriesPageProps) {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {showProgress && unfinished.length > 0 && (
+              <Button variant="outline" onClick={markGroupDone}>
+                <CheckCheck />
+                Mark {groups.length > 1 ? noun.group.toLowerCase() : "all"} {noun.done}
+              </Button>
+            )}
             <Select value={newestFirst ? "newest" : "oldest"} onValueChange={(v) => setNewestFirst(v === "newest")}>
               <SelectTrigger aria-label="Order" className="w-[140px] bg-ink-raised">
                 <SelectValue />
@@ -275,6 +294,39 @@ export function SeriesPage(props: SeriesPageProps) {
 
       <Footer />
     </div>
+  );
+}
+
+/** "Add to list" when the title isn't saved; otherwise its status, changeable from the menu. */
+function ListStatusMenu({ kind, seriesId, status }: { kind: "anime" | "manga"; seriesId: string; status: ListStatus | undefined }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="lg" variant="secondary" className="bg-white/12 font-semibold text-white hover:bg-white/20">
+          {status ? <Check className="text-primary" /> : <Plus />}
+          {status ? listLabel(status, kind) : "Add to list"}
+          <ChevronDown className="opacity-60" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-48">
+        <DropdownMenuRadioGroup value={status ?? ""} onValueChange={(v) => setListStatus(seriesId, v as ListStatus)}>
+          {LIST_STATUSES.map((s) => (
+            <DropdownMenuRadioItem key={s} value={s}>
+              {listLabel(s, kind)}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+        {status && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive" onSelect={() => setListStatus(seriesId, null)}>
+              <X />
+              Remove from list
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

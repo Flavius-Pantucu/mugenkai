@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Home, LayoutDashboard, LogOut, Menu, Tv, User } from "lucide-react";
+import { BookOpen, Home, LayoutDashboard, LogOut, Tv, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import type { SearchIndex } from "@/data/series";
 import { LogoMark } from "./Logo";
 import { NavSearch } from "./NavSearch";
 
@@ -26,9 +26,8 @@ const navLinks = [
   { label: "Manga", to: "/manga", icon: BookOpen },
 ];
 
-export function Navbar() {
+export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
 
@@ -38,8 +37,6 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => setMenuOpen(false), [pathname]);
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
@@ -75,14 +72,14 @@ export function Navbar() {
         </div>
 
         <div className="col-start-3 flex items-center gap-1.5 justify-self-end">
-          <NavSearch />
+          <NavSearch index={searchIndex} />
 
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="size-10 rounded-full hover:bg-white/10" aria-label="Account menu">
                   <Avatar className="size-8 ring-2 ring-primary/60">
-                    <AvatarImage src={user.avatarUrl} alt="" className="object-cover" />
+                    {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" className="object-cover" />}
                     <AvatarFallback>{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Button>
@@ -122,35 +119,48 @@ export function Navbar() {
             </Button>
           )}
 
-          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-10 rounded-full text-zinc-300 md:hidden" aria-label="Open menu">
-                <Menu className="size-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-72 border-white/5 bg-ink">
-              <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
-              </SheetHeader>
-              <div className="space-y-1 px-4">
-                {navLinks.map((link) => (
-                  <Button
-                    key={link.label}
-                    asChild
-                    variant="ghost"
-                    className={cn("w-full justify-start gap-3 text-[15px]", isActive(link.to) ? "bg-white/10 text-white" : "text-zinc-300")}
-                  >
-                    <Link href={link.to} aria-current={isActive(link.to) ? "page" : undefined}>
-                      <link.icon />
-                      {link.label}
-                    </Link>
-                  </Button>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     </nav>
+  );
+}
+
+/** Phones: Home / Anime / Manga / Profile within thumb reach. Hidden in the reader, which has its own bottom bar. */
+export function MobileTabBar() {
+  const pathname = usePathname();
+  const { isAuthenticated } = useAuth();
+  if (pathname.startsWith("/read/")) return null;
+  const tabs = [...navLinks, isAuthenticated ? { label: "Profile", to: "/profile", icon: User } : { label: "Sign in", to: "/login", icon: User }];
+  const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+
+  return (
+    <>
+      <div aria-hidden className="h-[calc(4rem+env(safe-area-inset-bottom))] md:hidden" />
+      <nav
+        aria-label="Main"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-white/5 bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
+      >
+        <ul className="grid h-16 grid-cols-4">
+          {tabs.map((t) => {
+            const active = isActive(t.to);
+            return (
+              <li key={t.to}>
+                <Link
+                  href={t.to}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex h-full flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors",
+                    active ? "text-primary" : "text-zinc-400 active:text-white",
+                  )}
+                >
+                  <t.icon className="size-5" />
+                  {t.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </>
   );
 }

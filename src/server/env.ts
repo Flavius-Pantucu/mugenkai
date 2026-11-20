@@ -1,0 +1,22 @@
+import { z } from "zod";
+
+// Server-only configuration. See .env.example for what each key does.
+const optional = z.preprocess((v) => (v === "" ? undefined : v), z.string().min(1).optional());
+
+const EnvSchema = z.object({
+  DATABASE_URL: optional,
+  CRON_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16, "CRON_SECRET must be at least 16 characters").optional()),
+  SYNC_TOP_ANIME: z.coerce.number().int().min(1).max(500).default(50),
+  SYNC_TOP_MANGA: z.coerce.number().int().min(1).max(500).default(50),
+  MANGADEX_USER_AGENT: z.string().default("Mugenkai/1.0"),
+  ADMIN_EMAILS: z
+    .string()
+    .default("")
+    .transform((s) => s.split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)),
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+});
+
+export const env = EnvSchema.parse(process.env);
+
+/** Without a database the app runs in demo mode (bundled catalog, browser-only user data). */
+export const backendEnabled = Boolean(env.DATABASE_URL);

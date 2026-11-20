@@ -11,10 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
-import { animeList } from "@/data/mock-data";
 import { LoginSchema, type LoginInput } from "@/data/schema";
 
-export function LoginPage() {
+export function LoginPage({ backdrop }: { backdrop: string }) {
   const { login, isLoading } = useAuth();
   const router = useRouter();
   const form = useForm<LoginInput>({ resolver: zodResolver(LoginSchema), defaultValues: { email: "", password: "" } });
@@ -31,7 +30,7 @@ export function LoginPage() {
 
   return (
     <AuthShell
-      backdrop={animeList[1].bannerImage}
+      backdrop={backdrop}
       title="Welcome back"
       description="Sign in to continue where you left off"
       footer={

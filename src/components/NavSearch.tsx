@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Star } from "lucide-react";
+import { History, Search, Star } from "lucide-react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
@@ -13,19 +14,11 @@ import {
   CommandList,
   CommandShortcut,
 } from "@/components/ui/command";
-import { animeList, mangaList } from "@/data/mock-data";
+import type { SearchIndex, SearchResult as Result } from "@/data/series";
+import { createLocalStore } from "@/lib/local-store";
 
-interface Result {
-  id: string;
-  title: string;
-  cover: string;
-  href: string;
-  meta: string;
-  keywords: string[];
-  rating: number;
-}
-
-const byRating = (a: Result, b: Result) => b.rating - a.rating;
+// Last few titles opened from search, newest first (per device).
+const recentStore = createLocalStore("mugenkai:recent-search", z.array(z.string()).max(20), []);
 
 /** Substring match (cmdk's default is fuzzy, which matched "berserk" to unrelated titles). Title prefix ranks first. */
 function matchScore(value: string, search: string, keywords: string[] = []) {
@@ -36,55 +29,43 @@ function matchScore(value: string, search: string, keywords: string[] = []) {
   return keywords.some((k) => k.toLowerCase().includes(q)) ? 0.4 : 0;
 }
 
-const anime: Result[] = animeList
-  .map((a) => ({
-    id: a.id,
-    title: a.title,
-    cover: a.coverImage,
-    href: `/anime/${a.id}`,
-    meta: `${a.year} · ${a.episodes.length} episodes · ${a.studio}`,
-    keywords: [a.nativeTitle, ...a.genres],
-    rating: a.rating,
-  }))
-  .sort(byRating);
-
-const manga: Result[] = mangaList
-  .map((m) => ({
-    id: m.id,
-    title: m.title,
-    cover: m.coverImage,
-    href: `/manga/${m.id}`,
-    meta: `${m.chapters.length} chapters · ${m.author}`,
-    keywords: [m.nativeTitle, m.author, ...m.genres],
-    rating: m.rating,
-  }))
-  .sort(byRating);
-
-/** Search button that opens a command palette over titles, native titles, authors and genres. ⌘K / Ctrl+K opens it. */
-export function NavSearch() {
+/** Search button that opens a command palette over titles, native titles, authors and genres. ⌘K / Ctrl+K or "/" opens it. */
+export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const router = useRouter();
+  const recentIds = recentStore.useValue();
+  const byId = new Map([...anime, ...manga].map((r) => [r.id, r]));
+  const recent = recentIds.flatMap((id) => byId.get(id) ?? []).slice(0, 5);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((v) => !v);
+      } else if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const t = e.target;
+        if (t instanceof HTMLElement && t.closest("input, textarea, select, [contenteditable=true]")) return;
+        e.preventDefault();
+        setOpen(true);
       }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  const go = (href: string) => {
+  const go = (r: Result) => {
+    recentStore.write((ids) => [r.id, ...ids.filter((id) => id !== r.id)].slice(0, 20));
     setOpen(false);
-    router.push(href);
+    setQuery("");
+    router.push(r.href);
   };
 
-  const group = (heading: string, items: Result[]) => (
+  const group = (heading: string, items: Result[], prefix = "") => (
     <CommandGroup heading={heading}>
       {items.map((r) => (
-        <CommandItem key={r.id} value={`${r.title}​${r.id}`} keywords={r.keywords} onSelect={() => go(r.href)} className="gap-3">
+        <CommandItem key={r.id} value={`${r.title}​${prefix}${r.id}`} keywords={r.keywords} onSelect={() => go(r)} className="gap-3">
+          {prefix && <History className="text-muted-foreground" />}
           <img src={r.cover} alt="" className="h-12 w-8 shrink-0 rounded object-cover ring-1 ring-white/10" />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[14px] text-foreground">{r.title}</span>
@@ -106,15 +87,23 @@ export function NavSearch() {
         size="icon"
         onClick={() => setOpen(true)}
         aria-label="Search anime and manga"
+        title="Search (/)"
         className="size-10 rounded-full text-zinc-300 hover:bg-white/10 hover:text-white"
       >
         <Search className="size-5" />
       </Button>
 
-      <CommandDialog open={open} onOpenChange={setOpen} title="Search anime and manga" description="Titles, authors, studios and genres" filter={matchScore}>
-        <CommandInput placeholder="Search titles, authors, genres…" />
+      <CommandDialog
+        open={open}
+        onOpenChange={(o) => {
+          setOpen(o);
+          if (!o) setQuery("");
+        }}
+        title="Search anime and manga" description="Titles, authors, studios and genres" filter={matchScore}>
+        <CommandInput placeholder="Search titles, authors, genres…" value={query} onValueChange={setQuery} />
         <CommandList className="max-h-[min(60vh,520px)]">
           <CommandEmpty>Nothing matches. Try a shorter title or a genre like Fantasy.</CommandEmpty>
+          {query.trim() === "" && recent.length > 0 && group("Recent", recent, "recent:")}
           {group("Anime", anime)}
           {group("Manga", manga)}
         </CommandList>

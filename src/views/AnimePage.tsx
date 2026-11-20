@@ -2,8 +2,8 @@
 
 import { CatalogBrowser } from "@/components/CatalogBrowser";
 import { AnimeCard } from "@/components/ContentCard";
-import { animeList } from "@/data/mock-data";
+import type { AnimeSummary } from "@/data/schema";
 
-export function AnimePage() {
-  return <CatalogBrowser title="Anime" noun="anime" items={animeList} renderItem={(a) => <AnimeCard anime={a} fluid />} />;
+export function AnimePage({ items }: { items: AnimeSummary[] }) {
+  return <CatalogBrowser title="Anime" noun="anime" items={items} renderItem={(a) => <AnimeCard anime={a} fluid />} />;
 }

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Activity, ArrowUp, BookOpen, Eye, LayoutDashboard, MoreHorizontal, Pencil, Plus, Search, Trash2, TrendingUp, Tv, Users } from "lucide-react";
+import { BookOpen, Eye, LayoutDashboard, MoreHorizontal, Pencil, Plus, RefreshCw, Search, Trash2, TrendingUp, Tv, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -24,8 +24,15 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { animeList, mangaList } from "@/data/mock-data";
-import { SeriesFormSchema, type SeriesFormInput } from "@/data/schema";
+import { runSync } from "@/app/admin/actions";
+import { SeriesFormSchema, type AnimeSummary, type MangaSummary, type SeriesFormInput } from "@/data/schema";
+
+export interface AdminData {
+  /** false = demo mode: no database, so no real users or sync jobs. */
+  backend: boolean;
+  users: { id: string; username: string; email: string; role: "USER" | "ADMIN"; createdAt: string }[];
+  jobs: { job: string; lastRunAt: string | null; lastOkAt: string | null; lastError: string | null }[];
+}
 
 const sections = [
   { value: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -34,28 +41,23 @@ const sections = [
   { value: "users", label: "Users", icon: Users },
 ] as const;
 
-const users = [
-  { name: "ShadowBlade99", email: "shadow@mugenkai.dev", role: "ADMIN", joined: "Jan 2025" },
-  { name: "AkiraFan42", email: "akira@example.com", role: "USER", joined: "Mar 2025" },
-  { name: "MangaLover99", email: "manga@example.com", role: "USER", joined: "Feb 2026" },
-  { name: "NeonKnight", email: "neon@example.com", role: "USER", joined: "Dec 2025" },
-  { name: "SakuraWind", email: "sakura@example.com", role: "USER", joined: "Nov 2025" },
-];
+const JOB_INFO: Record<string, string> = {
+  catalog: "Top anime and manga from AniList, with seasons, episodes and official links. Daily.",
+  airing: "New episodes of airing seasons. Hourly.",
+  manga: "Chapters from MangaDex. Daily.",
+};
 
-export function AdminPage() {
+// Fixed locale and zone: server and browser must render identical text (else a hydration mismatch).
+const fmtDateTime = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
+const fmtDate = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeZone: "UTC" });
+const when = (iso: string | null) => (iso ? `${fmtDateTime.format(new Date(iso))} UTC` : "never");
+
+export function AdminPage({ anime, manga, data }: { anime: AnimeSummary[]; manga: MangaSummary[]; data: AdminData }) {
   const stats = [
-    { label: "Total users", value: "12,847", change: "+12%", icon: Users },
-    { label: "Anime", value: String(animeList.length), change: "+3", icon: Tv },
-    { label: "Manga", value: String(mangaList.length), change: "+2", icon: BookOpen },
-    { label: "Daily streams", value: "34,291", change: "+8%", icon: TrendingUp },
-  ];
-
-  const activity = [
-    { action: "New user registered", detail: "AkiraFan42", time: "2 min ago" },
-    { action: "Episode uploaded", detail: `${animeList[0].title} E${animeList[0].episodes.length}`, time: "15 min ago" },
-    { action: "Chapter published", detail: `${mangaList[3].title} Ch. ${mangaList[3].chapters.length}`, time: "1 hour ago" },
-    { action: "Content reported", detail: `${animeList[7].title} E12`, time: "2 hours ago" },
-    { action: "New user registered", detail: "MangaLover99", time: "3 hours ago" },
+    { label: "Users", value: data.backend ? String(data.users.length) : "demo", icon: Users },
+    { label: "Anime", value: String(anime.length), icon: Tv },
+    { label: "Episodes", value: String(anime.reduce((n, a) => n + a.episodeCount, 0)), icon: TrendingUp },
+    { label: "Manga chapters", value: String(manga.reduce((n, m) => n + m.chapterCount, 0)), icon: BookOpen },
   ];
 
   return (
@@ -88,13 +90,7 @@ export function AdminPage() {
               {stats.map((s) => (
                 <Card key={s.label} className="gap-3 bg-white/[0.02]">
                   <CardContent className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <s.icon className="size-5 text-primary" />
-                      <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400">
-                        <ArrowUp />
-                        {s.change}
-                      </Badge>
-                    </div>
+                    <s.icon className="size-5 text-primary" />
                     <p className="text-3xl font-extrabold text-white" style={{ fontFamily: "var(--font-family-heading)" }}>
                       {s.value}
                     </p>
@@ -104,32 +100,14 @@ export function AdminPage() {
               ))}
             </div>
 
-            <Card className="gap-0 bg-white/[0.02] py-0">
-              <CardHeader className="flex-row items-center gap-2 border-b border-white/5 py-4">
-                <Activity className="size-[18px] text-primary" />
-                <CardTitle>Recent activity</CardTitle>
-              </CardHeader>
-              <CardContent className="px-0">
-                {activity.map((a, i) => (
-                  <div key={i}>
-                    {i > 0 && <Separator className="bg-white/5" />}
-                    <div className="flex items-center justify-between px-6 py-3 text-sm">
-                      <p className="text-zinc-300">
-                        {a.action} <span className="text-lagoon-300">{a.detail}</span>
-                      </p>
-                      <span className="ml-4 shrink-0 text-xs text-muted-foreground">{a.time}</span>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <SyncPanel data={data} />
           </TabsContent>
 
           <TabsContent value="anime">
-            <SeriesTable kind="anime" />
+            <SeriesTable kind="anime" anime={anime} manga={manga} />
           </TabsContent>
           <TabsContent value="manga">
-            <SeriesTable kind="manga" />
+            <SeriesTable kind="manga" anime={anime} manga={manga} />
           </TabsContent>
 
           <TabsContent value="users" className="space-y-6">
@@ -147,15 +125,22 @@ export function AdminPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((u) => (
-                    <TableRow key={u.name}>
+                  {data.users.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="py-8 text-center text-muted-foreground">
+                        {data.backend ? "No users yet." : "Demo mode: connect a database to see real accounts."}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  {data.users.map((u) => (
+                    <TableRow key={u.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar>
-                            <AvatarFallback>{u.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                            <AvatarFallback>{u.username.slice(0, 2).toUpperCase()}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-medium text-white">{u.name}</p>
+                            <p className="font-medium text-white">{u.username}</p>
                             <p className="text-xs text-muted-foreground">{u.email}</p>
                           </div>
                         </div>
@@ -163,9 +148,9 @@ export function AdminPage() {
                       <TableCell>
                         <Badge variant={u.role === "ADMIN" ? "default" : "secondary"}>{u.role}</Badge>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">{u.joined}</TableCell>
+                      <TableCell className="text-muted-foreground">{fmtDate.format(new Date(u.createdAt))}</TableCell>
                       <TableCell className="text-right">
-                        <RowActions label={u.name} />
+                        <RowActions label={u.username} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -206,16 +191,72 @@ function RowActions({ label }: { label: string }) {
   );
 }
 
-function SeriesTable({ kind }: { kind: "anime" | "manga" }) {
+/** Sync job status and a manual trigger (same code path as the cron routes). */
+function SyncPanel({ data }: { data: AdminData }) {
+  const [running, setRunning] = useState<string | null>(null);
+  const run = async (job: string) => {
+    setRunning(job);
+    try {
+      const r = await runSync(job);
+      if (r.ok) toast.success(`${job} finished in ${Math.round(r.ms / 1000)}s`, { description: r.summary });
+      else toast.error(`${job} failed`, { description: r.error });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Sync failed");
+    } finally {
+      setRunning(null);
+    }
+  };
+
+  return (
+    <Card className="gap-0 bg-white/[0.02] py-0">
+      <CardHeader className="flex-row items-center gap-2 border-b border-white/5 py-4">
+        <RefreshCw className="size-[18px] text-primary" />
+        <CardTitle>Data sync</CardTitle>
+      </CardHeader>
+      <CardContent className="px-0">
+        {!data.backend ? (
+          <p className="px-6 py-4 text-sm text-muted-foreground">
+            Demo mode. Set DATABASE_URL and CRON_SECRET (see .env.example) to sync the catalog from AniList and MangaDex automatically.
+          </p>
+        ) : (
+          Object.keys(JOB_INFO).map((job, i) => {
+            const state = data.jobs.find((j) => j.job === job);
+            return (
+              <div key={job}>
+                {i > 0 && <Separator className="bg-white/5" />}
+                <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3 text-sm">
+                  <div className="min-w-0">
+                    <p className="font-medium text-white">{job}</p>
+                    <p className="text-xs text-muted-foreground">{JOB_INFO[job]}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Last success: {when(state?.lastOkAt ?? null)}
+                      {state?.lastError && <span className="block text-destructive">Last error: {state.lastError}</span>}
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" disabled={running !== null} onClick={() => run(job)}>
+                    <RefreshCw className={running === job ? "animate-spin" : ""} />
+                    {running === job ? "Running…" : "Run now"}
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function SeriesTable({ kind, anime, manga }: { kind: "anime" | "manga"; anime: AnimeSummary[]; manga: MangaSummary[] }) {
   const [query, setQuery] = useState("");
   const noun = kind === "anime" ? "Anime" : "Manga";
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = kind === "anime"
-      ? animeList.map((a) => ({ ...a, units: a.episodes.length }))
-      : mangaList.map((m) => ({ ...m, units: m.chapters.length }));
+      ? anime.map((a) => ({ ...a, units: a.episodeCount }))
+      : manga.map((m) => ({ ...m, units: m.chapterCount }));
     return q ? list.filter((r) => r.title.toLowerCase().includes(q)) : list;
-  }, [kind, query]);
+  }, [kind, query, anime, manga]);
 
   return (
     <div className="space-y-6">

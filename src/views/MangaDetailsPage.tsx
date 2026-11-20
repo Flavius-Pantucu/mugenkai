@@ -1,25 +1,16 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { SeriesPage } from "@/components/SeriesPage";
 import { ContentRow } from "@/components/ContentRow";
 import { MangaCard } from "@/components/ContentCard";
-import { mangaList, getVolumes, isNewRelease } from "@/data/mock-data";
+import type { Manga, MangaSummary } from "@/data/schema";
+import { getVolumes } from "@/data/series";
 import { chapterProgress, useProgress } from "@/lib/progress";
-import { NotFoundPage } from "./NotFoundPage";
 
-export function MangaDetailsPage() {
-  const { id } = useParams<{ id: string }>();
-  const progressState = useProgress(); // before the early return: hooks run every render
-  const manga = mangaList.find((m) => m.id === id);
-  if (!manga) return <NotFoundPage />;
-
+export function MangaDetailsPage({ manga, related }: { manga: Manga; related: MangaSummary[] }) {
+  const progressState = useProgress();
   const volumes = getVolumes(manga);
-  const shared = (genres: string[]) => genres.filter((g) => manga.genres.includes(g)).length;
-  const related = mangaList
-    .filter((m) => m.id !== manga.id && shared(m.genres) > 0)
-    .sort((a, b) => shared(b.genres) - shared(a.genres) || b.popularity - a.popularity)
-    .slice(0, 20);
+  const lastChapter = manga.chapters.at(-1);
 
   return (
     <SeriesPage
@@ -33,6 +24,7 @@ export function MangaDetailsPage() {
       genres={manga.genres}
       description={manga.description}
       showProgress
+      seriesId={manga.id}
       threadId={`manga:${manga.id}`}
       groups={volumes.map((v) => ({
         id: v.id,
@@ -49,10 +41,11 @@ export function MangaDetailsPage() {
             title: ch.title,
             image: manga.bannerImage,
             href: `/read/${manga.id}/${ch.id}`,
-            length: `${ch.pageCount} pages`,
+            pageCount: ch.pageCount,
+            length: ch.externalUrl ? "Official site" : `${ch.pageCount} pages`,
             remaining: `${pagesLeft} ${pagesLeft === 1 ? "page" : "pages"} left`,
             progress,
-            isNew: isNewRelease(manga.status, ch.chapterNumber - 1, manga.chapters.length),
+            isNew: manga.status === "ONGOING" && ch === lastChapter,
           };
         }),
       }))}

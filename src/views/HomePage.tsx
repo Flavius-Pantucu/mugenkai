@@ -6,40 +6,69 @@ import { ContentRow } from "@/components/ContentRow";
 import { AnimeCard, MangaCard, ContinueReadingCard, ContinueWatchingCard } from "@/components/ContentCard";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import {
-  animeList,
-  mangaList,
-  trendingAnime,
-  popularAnime,
-  topRatedAnime,
-  newReleases,
-  trendingManga,
-  popularManga,
-  topRatedManga,
-} from "@/data/mock-data";
+import { TrendingRow } from "@/components/TrendingRow";
+import { WeeklySchedule } from "@/components/WeeklySchedule";
+import type { AnimeSummary, MangaSummary, ScheduleEntry, Trending } from "@/data/schema";
+import { homeRows, parseChapterId, parseEpisodeId, similarTo } from "@/data/series";
+import { useList } from "@/lib/list";
 import { useAuth } from "@/context/AuthContext";
 import { continueReading, continueWatching, useProgress } from "@/lib/progress";
 
-const find = <T extends { title: string }>(list: T[], title: string) => list.find((x) => x.title.startsWith(title)) ?? list[0];
+const find = <T extends { title: string }>(list: T[], title: string) => list.find((x) => x.title.startsWith(title));
 
-// Anime and manga alternate in the hero: the app treats them as equals.
-const heroSlides: HeroSlide[] = [
-  { kind: "anime", item: find(animeList, "Frieren") },
-  { kind: "manga", item: find(mangaList, "Berserk") },
-  { kind: "anime", item: find(animeList, "Attack on Titan") },
-  { kind: "manga", item: find(mangaList, "Chainsaw Man") },
-  { kind: "anime", item: find(animeList, "JUJUTSU KAISEN") },
-];
+/** Anime and manga alternate in the hero. Favourites when present, else the most popular of each. */
+function heroSlides(anime: AnimeSummary[], manga: MangaSummary[]): HeroSlide[] {
+  const a = (t: string, i: number) => find(anime, t) ?? anime[i];
+  const m = (t: string, i: number) => find(manga, t) ?? manga[i];
+  const picks: [HeroSlide["kind"], AnimeSummary | MangaSummary | undefined][] = [
+    ["anime", a("Frieren", 0)],
+    ["manga", m("Berserk", 0)],
+    ["anime", a("Attack on Titan", 1)],
+    ["manga", m("Chainsaw Man", 1)],
+    ["anime", a("JUJUTSU KAISEN", 2)],
+  ];
+  const seen = new Set<string>();
+  return picks.flatMap(([kind, item]) => {
+    if (!item || seen.has(item.id)) return [];
+    seen.add(item.id);
+    return [kind === "anime" ? { kind, item: item as AnimeSummary } : { kind, item: item as MangaSummary }];
+  });
+}
 
-export function HomePage() {
+export function HomePage({
+  anime,
+  manga,
+  schedule,
+  trending,
+}: {
+  anime: AnimeSummary[];
+  manga: MangaSummary[];
+  schedule: ScheduleEntry[];
+  trending: Trending;
+}) {
+  const hasTrending = trending.day.length + trending.week.length + trending.month.length > 0;
   const { isAuthenticated } = useAuth();
   const progress = useProgress();
-  const watching = continueWatching(progress);
-  const reading = continueReading(progress);
+  const watching = continueWatching(progress, anime);
+  const reading = continueReading(progress, manga);
+  const list = useList();
+  // Seeds: the show/manga most recently touched, else the newest list entry of that medium.
+  const animeById = new Map(anime.map((a) => [a.id, a]));
+  const mangaById = new Map(manga.map((m) => [m.id, m]));
+  const seen = new Set([
+    ...list.map((e) => e.seriesId),
+    ...Object.keys(progress.episodes).map((id) => parseEpisodeId(id)?.animeId ?? ""),
+    ...Object.keys(progress.chapters).map((id) => parseChapterId(id)?.mangaId ?? ""),
+  ]);
+  const animeSeed = watching[0]?.anime ?? list.map((e) => animeById.get(e.seriesId)).find((a) => a !== undefined);
+  const mangaSeed = reading[0]?.manga ?? list.map((e) => mangaById.get(e.seriesId)).find((m) => m !== undefined);
+  const forAnime = animeSeed ? similarTo(animeSeed, anime, seen) : [];
+  const forManga = mangaSeed ? similarTo(mangaSeed, manga, seen) : [];
+  const { trendingAnime, popularAnime, topRatedAnime, newReleases, trendingManga, popularManga, topRatedManga } = homeRows(anime, manga);
 
   return (
     <div className="min-h-screen bg-ink">
-      <HeroBanner slides={heroSlides} />
+      {anime.length + manga.length > 0 && <HeroBanner slides={heroSlides(anime, manga)} />}
 
       <div className="relative z-10 space-y-10 bg-ink pb-20 pt-8 sm:space-y-12">
         {watching.length > 0 && (
@@ -58,11 +87,34 @@ export function HomePage() {
           </ContentRow>
         )}
 
-        <ContentRow title="Trending anime" subtitle="Most watched right now" href="/anime">
-          {trendingAnime.map((a) => (
-            <AnimeCard key={a.id} anime={a} />
-          ))}
-        </ContentRow>
+        {animeSeed && forAnime.length > 0 && (
+          <ContentRow title={`Because you watched ${animeSeed.title}`} subtitle="Same genres, not started yet">
+            {forAnime.map((a) => (
+              <AnimeCard key={`for-${a.id}`} anime={a} />
+            ))}
+          </ContentRow>
+        )}
+
+        {mangaSeed && forManga.length > 0 && (
+          <ContentRow title={`Because you read ${mangaSeed.title}`} subtitle="Same genres, not started yet">
+            {forManga.map((m) => (
+              <MangaCard key={`for-${m.id}`} manga={m} />
+            ))}
+          </ContentRow>
+        )}
+
+        {hasTrending ? (
+          <TrendingRow trending={trending} />
+        ) : (
+          // AniList unreachable: fall back to the catalog's own ranking.
+          <ContentRow title="Trending anime" subtitle="Most watched right now" href="/anime">
+            {trendingAnime.map((a) => (
+              <AnimeCard key={a.id} anime={a} />
+            ))}
+          </ContentRow>
+        )}
+
+        <WeeklySchedule entries={schedule} />
 
         <ContentRow title="Ongoing manga" subtitle="Still publishing" href="/manga">
           {trendingManga.map((m) => (
@@ -70,7 +122,7 @@ export function HomePage() {
           ))}
         </ContentRow>
 
-        {!isAuthenticated && <JoinBand />}
+        {!isAuthenticated && <JoinBand covers={[anime[1], manga[1], anime[3], manga[3], anime[5]].filter((c) => c !== undefined)} />}
 
         <ContentRow title="Top rated anime" subtitle="Highest scores of all time" href="/anime">
           {topRatedAnime.map((a) => (
@@ -108,8 +160,7 @@ export function HomePage() {
   );
 }
 
-function JoinBand() {
-  const covers = [animeList[1], mangaList[1], animeList[3], mangaList[3], animeList[5]];
+function JoinBand({ covers }: { covers: { id: string; coverImage: string }[] }) {
   return (
     <section className="mx-auto w-[90%]">
       <div className="relative overflow-hidden rounded-2xl bg-lagoon-950 ring-1 ring-lagoon-800/60">

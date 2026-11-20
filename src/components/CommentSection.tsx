@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, ChevronUp, EyeOff, Heart, MessageSquare, Reply, Trash2 } from "lucide-react";
@@ -14,17 +15,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/AuthContext";
 import { CommentInputSchema, type CommentInput } from "@/data/schema";
-import {
-  countComments,
-  deleteComment,
-  postComment,
-  threadComments,
-  toggleLike,
-  useComments,
-  type CommentSort,
-  type ThreadComment,
-} from "@/lib/comments";
+import { countComments, useThread, type CommentSort, type ThreadComment } from "@/lib/comments";
 import { cn } from "@/lib/utils";
+
+type ThreadActions = Pick<ReturnType<typeof useThread>, "post" | "like" | "remove">;
+const Actions = createContext<ThreadActions | null>(null);
+const useActions = () => useContext(Actions)!;
+
+/** Runs a thread action; a failed request (network, rate limit) shows a toast instead of failing silently. */
+const attempt = (fn: () => Promise<void>) => fn().catch((err: Error) => toast.error(err.message || "Something went wrong"));
 
 const MAX_INDENT = 4; // deeper replies stop indenting so long chains stay readable on phones
 
@@ -48,15 +47,14 @@ function timeAgo(ts: number) {
 
 /** Threaded comments for a series ("anime:<id>"), an episode ("episode:<id>") or a chapter ("chapter:<id>"). */
 export function CommentSection({ threadId, title = "Comments", className }: { threadId: string; title?: string; className?: string }) {
-  const { user } = useAuth();
-  const state = useComments();
+  const { user, backend } = useAuth();
   const [sort, setSort] = useState<CommentSort>("newest");
-  const me: Author | null = user ? { name: user.username, avatarUrl: user.avatarUrl } : null;
-
-  const comments = useMemo(() => threadComments(state, threadId, user?.username, sort), [state, threadId, user?.username, sort]);
-  const total = countComments(comments);
+  const me = useMemo<Author | null>(() => (user ? { name: user.username, avatarUrl: user.avatarUrl } : null), [user]);
+  const { comments, total, loading, error, post, like, remove } = useThread(threadId, { backend, me, sort });
+  const actions = useMemo(() => ({ post, like, remove }), [post, like, remove]);
 
   return (
+    <Actions.Provider value={actions}>
     <section aria-labelledby={`${threadId}-title`} className={cn("space-y-6", className)}>
       <div className="flex items-end justify-between gap-4">
         <h2
@@ -91,7 +89,11 @@ export function CommentSection({ threadId, title = "Comments", className }: { th
         </p>
       )}
 
-      {comments.length === 0 ? (
+      {loading ? (
+        <p className="text-sm text-muted-foreground">Loading comments…</p>
+      ) : error ? (
+        <p className="text-sm text-destructive">Comments couldn&apos;t be loaded: {error}</p>
+      ) : comments.length === 0 ? (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <MessageSquare className="size-4" /> No comments yet. Start the conversation.
         </p>
@@ -103,6 +105,7 @@ export function CommentSection({ threadId, title = "Comments", className }: { th
         </ul>
       )}
     </section>
+    </Actions.Provider>
   );
 }
 
@@ -119,15 +122,18 @@ function Composer({
   replyTo?: string;
   onDone?: () => void;
 }) {
+  const { post } = useActions();
   const form = useForm<CommentInput>({ resolver: zodResolver(CommentInputSchema), defaultValues: { body: "", spoiler: false } });
   const body = form.watch("body");
   const isReply = parentId !== null;
 
-  const onSubmit = (values: CommentInput) => {
-    postComment(threadId, values, author, parentId);
-    form.reset();
-    onDone?.();
-  };
+  // Keep the text if posting fails, so nothing typed is lost.
+  const onSubmit = (values: CommentInput) =>
+    attempt(async () => {
+      await post(values, parentId);
+      form.reset();
+      onDone?.();
+    });
 
   return (
     <Form {...form}>
@@ -188,6 +194,7 @@ function Composer({
 }
 
 function CommentItem({ comment: c, me, depth }: { comment: ThreadComment; me: Author | null; depth: number }) {
+  const { like, remove } = useActions();
   const [revealed, setRevealed] = useState(false);
   const [replying, setReplying] = useState(false);
   const [showReplies, setShowReplies] = useState(true);
@@ -235,7 +242,7 @@ function CommentItem({ comment: c, me, depth }: { comment: ThreadComment; me: Au
                   variant="ghost"
                   size="sm"
                   disabled={!me}
-                  onClick={() => toggleLike(c.id)}
+                  onClick={() => attempt(() => like(c.id))}
                   aria-pressed={c.likedByMe}
                   aria-label={c.likedByMe ? "Unlike" : "Like"}
                   className={cn("h-7 gap-1.5 px-2 text-muted-foreground", c.likedByMe && "text-coral-300")}
@@ -250,7 +257,7 @@ function CommentItem({ comment: c, me, depth }: { comment: ThreadComment; me: Au
                   </Button>
                 )}
                 {c.mine && (
-                  <Button variant="ghost" size="sm" onClick={() => deleteComment(c.id)} className="h-7 px-2 text-muted-foreground hover:text-destructive">
+                  <Button variant="ghost" size="sm" onClick={() => attempt(() => remove(c.id))} className="h-7 px-2 text-muted-foreground hover:text-destructive">
                     <Trash2 className="size-3.5" />
                     Delete
                   </Button>

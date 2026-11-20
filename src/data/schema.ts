@@ -56,6 +56,9 @@ export const CatalogSchema = z.object({
   manga: z.array(CatalogMangaSchema).min(1),
 });
 
+/** An official place to watch, e.g. a Crunchyroll episode page. */
+export const StreamingLinkSchema = z.object({ provider: z.string().min(1), url: z.url() });
+
 export const EpisodeSchema = z.object({
   id: z.string().min(1),
   animeId: z.string().min(1),
@@ -65,14 +68,20 @@ export const EpisodeSchema = z.object({
   videoUrl: z.string(),
   duration: z.number().int().positive(),
   thumbnail: z.url(),
+  links: z.array(StreamingLinkSchema).default([]),
 });
 
 export const ChapterSchema = z.object({
   id: z.string().min(1),
   mangaId: z.string().min(1),
-  chapterNumber: z.number().int().positive(),
+  chapterNumber: z.number().nonnegative(), // MangaDex has 0 and 10.5
   title: z.string().min(1),
-  pageCount: z.number().int().positive(),
+  pageCount: z.number().int().nonnegative(),
+  /** Official reader link when MangaDex hosts no pages for this chapter (e.g. MANGA Plus). */
+  externalUrl: z.url().nullable().default(null),
+  mangadexChapterId: z.string().nullable().default(null),
+  /** MangaDex requires crediting the group whose translation is shown. */
+  scanlationGroup: z.string().nullable().default(null),
 });
 
 export const MangaPageSchema = z.object({
@@ -82,28 +91,25 @@ export const MangaPageSchema = z.object({
   pageNumber: z.number().int().positive(),
 });
 
-export const AnimeSchema = CatalogAnimeSchema.extend({ episodes: z.array(EpisodeSchema) });
-export const MangaSchema = CatalogMangaSchema.extend({ chapters: z.array(ChapterSchema) });
+/** List/card shape: everything except the per-episode / per-chapter arrays. */
+export const AnimeSummarySchema = CatalogAnimeSchema;
+export const MangaSummarySchema = CatalogMangaSchema.extend({ firstChapterId: z.string().nullable() });
 
-export const WatchHistorySchema = z.object({
-  id: z.string().min(1),
-  animeId: z.string().min(1),
-  episodeId: z.string().min(1),
-  progress: z.number().min(0).max(100),
-  anime: AnimeSchema,
-  episode: EpisodeSchema,
+export const AnimeSchema = CatalogAnimeSchema.extend({
+  episodes: z.array(EpisodeSchema),
+  links: z.array(StreamingLinkSchema).default([]), // series-level "where to watch"
 });
+export const MangaSchema = CatalogMangaSchema.extend({ chapters: z.array(ChapterSchema) });
 
 export const UserProfileSchema = z.object({
   id: z.string().min(1),
   username: z.string().min(3).max(24),
   email: z.email(),
-  avatarUrl: z.url(),
+  avatarUrl: z.url().nullable(),
   bio: z.string().max(280),
   role: z.enum(["USER", "ADMIN"]),
-  preferredGenres: z.array(z.string()),
-  watchHistory: z.array(WatchHistorySchema),
-  favorites: z.array(z.union([AnimeSchema, MangaSchema])),
+  matureContent: z.boolean(),
+  notifications: z.boolean(),
 });
 
 // Forms (validated client-side now, and by the API once it exists).
@@ -129,10 +135,7 @@ export const RegisterSchema = z
   })
   .refine((v) => v.password === v.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });
 
-export const ProfileSettingsSchema = UserProfileSchema.pick({ username: true, email: true, bio: true }).extend({
-  matureContent: z.boolean(),
-  notifications: z.boolean(),
-});
+export const ProfileSettingsSchema = UserProfileSchema.pick({ username: true, email: true, bio: true, matureContent: true, notifications: true });
 
 // Viewing progress, persisted in the browser until there is an API. Validated on every read.
 export const ProgressStateSchema = z.object({
@@ -177,7 +180,83 @@ export const SeriesFormSchema = z.object({
   coverImage: z.url("Enter a full image URL"),
 });
 
+// ─── API request/response bodies (validated on both ends) ────────────────────
+
+export const EpisodeProgressInputSchema = z.object({
+  episodeId: z.string().min(1).max(64),
+  progress: z.number().min(0).max(100),
+  updatedAt: z.number().int().optional(), // client clock; server keeps the newest write
+});
+
+export const ChapterProgressInputSchema = z.object({
+  chapterId: z.string().min(1).max(64),
+  page: z.number().int().positive(),
+  pageCount: z.number().int().positive(),
+  updatedAt: z.number().int().optional(),
+});
+
+export const CommentPostSchema = CommentInputSchema.extend({
+  threadId: ThreadIdSchema,
+  parentId: z.uuid().nullable().default(null),
+});
+
+/** A comment as the API returns it: author resolved, viewer-specific flags filled in. */
+export const ApiCommentSchema = CommentSchema.extend({
+  likedByMe: z.boolean(),
+  mine: z.boolean(),
+  removed: z.boolean(),
+});
+
+export const LIST_STATUSES = ["CURRENT", "PLANNING", "COMPLETED", "PAUSED", "DROPPED"] as const;
+export const ListStatusSchema = z.enum(LIST_STATUSES);
+export type ListStatus = z.infer<typeof ListStatusSchema>;
+
+export const ListEntrySchema = z.object({ seriesId: z.string().min(1).max(64), status: ListStatusSchema });
+export type ListEntry = z.infer<typeof ListEntrySchema>;
+export const ListEntryInputSchema = z.object({ status: ListStatusSchema.default("PLANNING") });
+
+/** Browser copy of the list, newest first. Accepts the old `{ seriesIds }` shape (everything becomes "Planning"). */
+export const ListStateSchema = z.union([
+  z.object({ entries: z.array(ListEntrySchema) }),
+  z.object({ seriesIds: z.array(z.string()) }).transform(({ seriesIds }) => ({
+    entries: seriesIds.map((seriesId): ListEntry => ({ seriesId, status: "PLANNING" })),
+  })),
+]);
+
+/** One upcoming or just-aired episode on the weekly schedule (AniList airing schedule). */
+export const ScheduleEntrySchema = z.object({
+  id: z.number().int(),
+  airingAt: z.number().int(), // unix seconds
+  episode: z.number().int().positive(),
+  mediaId: z.number().int(),
+  title: z.string().min(1),
+  cover: z.url(),
+  totalEpisodes: z.number().int().positive().nullable(),
+  popularity: z.number().int().nonnegative(),
+  /** Set when the show is in our catalog: links to its series page. */
+  seriesId: z.string().nullable(),
+});
+
+/** One title in a trending window (AniList trend scores summed over the window). */
+export const TrendingEntrySchema = z.object({
+  key: z.string(), // series id when in our catalog, else "anilist:<mediaId>"
+  title: z.string().min(1),
+  cover: z.url(),
+  score: z.number().nonnegative(),
+  /** In our catalog: link to the series page. Otherwise href is the AniList page. */
+  seriesId: z.string().nullable(),
+  href: z.string(),
+  meta: z.string(), // "TV · Episode 8" or genres
+});
+
+export const TRENDING_WINDOWS = ["day", "week", "month"] as const;
+export type TrendingWindow = (typeof TRENDING_WINDOWS)[number];
+export type TrendingEntry = z.infer<typeof TrendingEntrySchema>;
+export type Trending = Record<TrendingWindow, TrendingEntry[]>;
+
 export type Status = z.infer<typeof StatusSchema>;
+export type ScheduleEntry = z.infer<typeof ScheduleEntrySchema>;
+export type ApiComment = z.infer<typeof ApiCommentSchema>;
 export type ProgressState = z.infer<typeof ProgressStateSchema>;
 export type Comment = z.infer<typeof CommentSchema>;
 export type CommentsState = z.infer<typeof CommentsStateSchema>;
@@ -185,12 +264,14 @@ export type CommentInput = z.infer<typeof CommentInputSchema>;
 export type SeriesFormInput = z.infer<typeof SeriesFormSchema>;
 export type ProfileSettingsInput = z.infer<typeof ProfileSettingsSchema>;
 export type Anime = z.infer<typeof AnimeSchema>;
+export type AnimeSummary = z.infer<typeof AnimeSummarySchema>;
+export type MangaSummary = z.infer<typeof MangaSummarySchema>;
+export type StreamingLink = z.infer<typeof StreamingLinkSchema>;
 export type Manga = z.infer<typeof MangaSchema>;
 export type Episode = z.infer<typeof EpisodeSchema>;
 export type AnimeSeason = z.infer<typeof AnimeSeasonSchema>;
 export type Chapter = z.infer<typeof ChapterSchema>;
 export type MangaPage = z.infer<typeof MangaPageSchema>;
-export type WatchHistory = z.infer<typeof WatchHistorySchema>;
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type RegisterInput = z.infer<typeof RegisterSchema>;
