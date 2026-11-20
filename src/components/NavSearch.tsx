@@ -40,7 +40,8 @@ export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
+      // Autofill dispatches keydown events with no `key`.
+      if (e.key?.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((v) => !v);
       } else if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey) {
