@@ -171,15 +171,6 @@ export const CommentInputSchema = z.object({
   spoiler: z.boolean(),
 });
 
-// Admin "add series" dialog.
-export const SeriesFormSchema = z.object({
-  title: z.string().trim().min(1, "Title is required"),
-  description: z.string().trim().min(10, "At least 10 characters"),
-  status: StatusSchema,
-  rating: z.number({ error: "Enter a number" }).min(0, "0 to 10").max(10, "0 to 10"),
-  coverImage: z.url("Enter a full image URL"),
-});
-
 // ─── API request/response bodies (validated on both ends) ────────────────────
 
 export const EpisodeProgressInputSchema = z.object({
@@ -261,7 +252,6 @@ export type ProgressState = z.infer<typeof ProgressStateSchema>;
 export type Comment = z.infer<typeof CommentSchema>;
 export type CommentsState = z.infer<typeof CommentsStateSchema>;
 export type CommentInput = z.infer<typeof CommentInputSchema>;
-export type SeriesFormInput = z.infer<typeof SeriesFormSchema>;
 export type ProfileSettingsInput = z.infer<typeof ProfileSettingsSchema>;
 export type Anime = z.infer<typeof AnimeSchema>;
 export type AnimeSummary = z.infer<typeof AnimeSummarySchema>;

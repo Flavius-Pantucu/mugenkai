@@ -1,15 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { BookOpen, Eye, LayoutDashboard, MoreHorizontal, Pencil, Plus, RefreshCw, Search, Trash2, TrendingUp, Tv, Users } from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState, useTransition } from "react";
+import { Check, LogOut, MoreHorizontal, RefreshCw, Search, ShieldCheck, ShieldOff, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,419 +13,473 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { runSync } from "@/app/admin/actions";
-import { SeriesFormSchema, type AnimeSummary, type MangaSummary, type SeriesFormInput } from "@/data/schema";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
+import { deleteUser, runSync, setUserRole, signOutUser } from "@/app/admin/actions";
+import type { AdminData } from "@/server/admin";
 
-export interface AdminData {
-  /** false = demo mode: no database, so no real users or sync jobs. */
-  backend: boolean;
-  users: { id: string; username: string; email: string; role: "USER" | "ADMIN"; createdAt: string }[];
-  jobs: { job: string; lastRunAt: string | null; lastOkAt: string | null; lastError: string | null }[];
-}
+type User = AdminData["users"][number];
+type Job = AdminData["jobs"][number];
 
-const sections = [
-  { value: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { value: "anime", label: "Anime", icon: Tv },
-  { value: "manga", label: "Manga", icon: BookOpen },
-  { value: "users", label: "Users", icon: Users },
+/** Order, schedule and what "stale" means for each job (twice its interval without a success). */
+const JOBS = [
+  { job: "catalog", what: "Top anime and manga from AniList: seasons, episodes, official links", schedule: "daily 04:00", staleAfterH: 48 },
+  { job: "manga", what: "Chapters from MangaDex for every manga in the catalog", schedule: "daily 04:30", staleAfterH: 48 },
+  { job: "airing", what: "New episodes for seasons that are airing", schedule: "hourly :15", staleAfterH: 2 },
 ] as const;
 
-const JOB_INFO: Record<string, string> = {
-  catalog: "Top anime and manga from AniList, with seasons, episodes and official links. Daily.",
-  airing: "New episodes of airing seasons. Hourly.",
-  manga: "Chapters from MangaDex. Daily.",
-};
+// Fixed locale and zone so server and browser render identical text.
+const fmtDate = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const fmtFull = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
+const fmtNum = new Intl.NumberFormat("en-US");
 
-// Fixed locale and zone: server and browser must render identical text (else a hydration mismatch).
-const fmtDateTime = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
-const fmtDate = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeZone: "UTC" });
-const when = (iso: string | null) => (iso ? `${fmtDateTime.format(new Date(iso))} UTC` : "never");
+/** "4 min ago" relative to the server's render time, so hydration matches. */
+function ago(iso: string | null, now: string) {
+  if (!iso) return "never";
+  const s = (Date.parse(now) - Date.parse(iso)) / 1000;
+  if (s < 60) return "just now";
+  if (s < 3600) return `${Math.floor(s / 60)} min ago`;
+  if (s < 86_400) return `${Math.floor(s / 3600)} h ago`;
+  if (s < 30 * 86_400) return `${Math.floor(s / 86_400)} d ago`;
+  return fmtDate.format(new Date(iso));
+}
 
-export function AdminPage({ anime, manga, data }: { anime: AnimeSummary[]; manga: MangaSummary[]; data: AdminData }) {
-  const stats = [
-    { label: "Users", value: data.backend ? String(data.users.length) : "demo", icon: Users },
-    { label: "Anime", value: String(anime.length), icon: Tv },
-    { label: "Episodes", value: String(anime.reduce((n, a) => n + a.episodeCount, 0)), icon: TrendingUp },
-    { label: "Manga chapters", value: String(manga.reduce((n, m) => n + m.chapterCount, 0)), icon: BookOpen },
-  ];
+const fullTime = (iso: string | null) => (iso ? `${fmtFull.format(new Date(iso))} UTC` : undefined);
+
+export function AdminPage({ data }: { data: AdminData | null }) {
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-ink pt-16">
+        <div className="mx-auto max-w-xl px-4 py-24">
+          <h1 className="text-2xl font-bold text-white">Admin</h1>
+          <p className="mt-3 text-pretty text-zinc-400">
+            The admin console reads the database, and this deployment runs without one. Set <code className="text-lagoon-200">DATABASE_URL</code> and{" "}
+            <code className="text-lagoon-200">CRON_SECRET</code> (see <code className="text-lagoon-200">.env.example</code>), then sign in with an
+            address listed in <code className="text-lagoon-200">ADMIN_EMAILS</code>.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-ink pt-16">
-      <Tabs defaultValue="dashboard" orientation="vertical" className="flex-col gap-0 md:flex-row">
-        <aside className="border-b border-white/5 bg-sidebar p-4 md:min-h-[calc(100vh-4rem)] md:w-60 md:border-b-0 md:border-r">
-          <h2 className="mb-4 hidden px-3 text-lg font-bold text-white md:block" style={{ fontFamily: "var(--font-family-heading)" }}>
-            Admin panel
-          </h2>
-          <TabsList className="h-auto w-full justify-start gap-1 bg-transparent p-0 md:flex-col md:items-stretch">
-            {sections.map((s) => (
-              <TabsTrigger
-                key={s.value}
-                value={s.value}
-                className="flex-none justify-start gap-3 border-0 px-3 py-2.5 text-muted-foreground data-[state=active]:bg-primary/15 data-[state=active]:text-lagoon-200 data-[state=active]:shadow-none dark:data-[state=active]:border-0 dark:data-[state=active]:bg-primary/15 md:w-full"
-              >
-                <s.icon />
-                {s.label}
-              </TabsTrigger>
+      <div className="mx-auto w-full max-w-6xl px-4 pb-24 sm:px-6">
+        <header className="flex flex-wrap items-end justify-between gap-4 pb-2 pt-8">
+          <h1 className="text-2xl font-bold text-white">Admin</h1>
+          <nav aria-label="Sections" className="flex gap-1 text-sm">
+            {["Sync", "Catalog", "Users"].map((s) => (
+              <a key={s} href={`#${s.toLowerCase()}`} className="rounded-md px-2.5 py-1 text-zinc-400 transition-colors hover:bg-white/5 hover:text-white">
+                {s}
+              </a>
             ))}
-          </TabsList>
-        </aside>
+          </nav>
+        </header>
 
-        <div className="flex-1 p-4 sm:p-6 lg:p-8">
-          <TabsContent value="dashboard" className="space-y-6">
-            <h1 className="text-2xl font-extrabold text-white" style={{ fontFamily: "var(--font-family-heading)" }}>
-              Dashboard
-            </h1>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {stats.map((s) => (
-                <Card key={s.label} className="gap-3 bg-white/[0.02]">
-                  <CardContent className="space-y-3">
-                    <s.icon className="size-5 text-primary" />
-                    <p className="text-3xl font-extrabold text-white" style={{ fontFamily: "var(--font-family-heading)" }}>
-                      {s.value}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{s.label}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <SyncPanel data={data} />
-          </TabsContent>
-
-          <TabsContent value="anime">
-            <SeriesTable kind="anime" anime={anime} manga={manga} />
-          </TabsContent>
-          <TabsContent value="manga">
-            <SeriesTable kind="manga" anime={anime} manga={manga} />
-          </TabsContent>
-
-          <TabsContent value="users" className="space-y-6">
-            <h1 className="text-2xl font-extrabold text-white" style={{ fontFamily: "var(--font-family-heading)" }}>
-              Users
-            </h1>
-            <Card className="bg-white/[0.02] py-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Joined</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data.users.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={4} className="py-8 text-center text-muted-foreground">
-                        {data.backend ? "No users yet." : "Demo mode: connect a database to see real accounts."}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                  {data.users.map((u) => (
-                    <TableRow key={u.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar>
-                            <AvatarFallback>{u.username.slice(0, 2).toUpperCase()}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium text-white">{u.username}</p>
-                            <p className="text-xs text-muted-foreground">{u.email}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={u.role === "ADMIN" ? "default" : "secondary"}>{u.role}</Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{fmtDate.format(new Date(u.createdAt))}</TableCell>
-                      <TableCell className="text-right">
-                        <RowActions label={u.username} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
-          </TabsContent>
-        </div>
-      </Tabs>
+        <SyncSection data={data} />
+        <CatalogSection data={data} />
+        <UsersSection data={data} />
+      </div>
     </div>
   );
 }
 
-function RowActions({ label }: { label: string }) {
+function Section({ id, title, meta, children }: { id: string; title: string; meta?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={`Actions for ${label}`}>
-          <MoreHorizontal />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <Eye />
-          View
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Pencil />
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onSelect={() => toast(`Deleting "${label}" is not wired up yet`)}>
-          <Trash2 />
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <section id={id} aria-labelledby={`${id}-title`} className="mt-8 scroll-mt-20 border-t border-white/[0.06] pt-6">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 id={`${id}-title`} className="text-lg font-semibold text-white">
+          {title}
+        </h2>
+        {meta && <div className="text-sm text-zinc-400">{meta}</div>}
+      </div>
+      {children}
+    </section>
   );
 }
 
-/** Sync job status and a manual trigger (same code path as the cron routes). */
-function SyncPanel({ data }: { data: AdminData }) {
+// ─── Sync ────────────────────────────────────────────────────────────────────
+
+type Health = "ok" | "failed" | "stale" | "never" | "running";
+const HEALTH: Record<Health, { label: string; dot: string; text: string }> = {
+  ok: { label: "Healthy", dot: "bg-lagoon-400", text: "text-lagoon-200" },
+  failed: { label: "Failed", dot: "bg-red-400", text: "text-red-300" },
+  stale: { label: "Stale", dot: "bg-amber-400", text: "text-amber-200" },
+  never: { label: "Never run", dot: "bg-zinc-500", text: "text-zinc-400" },
+  running: { label: "Running", dot: "bg-lagoon-300 animate-pulse", text: "text-lagoon-200" },
+};
+
+function health(state: Job | undefined, staleAfterH: number, now: string): Health {
+  if (!state?.lastRunAt) return "never";
+  if (state.lastError) return "failed";
+  if (!state.lastOkAt || Date.parse(now) - Date.parse(state.lastOkAt) > staleAfterH * 3_600_000) return "stale";
+  return "ok";
+}
+
+function SyncSection({ data }: { data: AdminData }) {
   const [running, setRunning] = useState<string | null>(null);
+  const states = JOBS.map((j) => health(data.jobs.find((s) => s.job === j.job), j.staleAfterH, data.now));
+  const problems = states.filter((h) => h === "failed" || h === "stale").length;
+
   const run = async (job: string) => {
     setRunning(job);
     try {
       const r = await runSync(job);
-      if (r.ok) toast.success(`${job} finished in ${Math.round(r.ms / 1000)}s`, { description: r.summary });
+      if (r.ok) toast.success(`${job} finished in ${Math.max(1, Math.round(r.ms / 1000))} s`);
       else toast.error(`${job} failed`, { description: r.error });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Sync failed");
+      toast.error(`Couldn't start ${job}`, { description: err instanceof Error ? err.message : undefined });
     } finally {
       setRunning(null);
     }
   };
 
   return (
-    <Card className="gap-0 bg-white/[0.02] py-0">
-      <CardHeader className="flex-row items-center gap-2 border-b border-white/5 py-4">
-        <RefreshCw className="size-[18px] text-primary" />
-        <CardTitle>Data sync</CardTitle>
-      </CardHeader>
-      <CardContent className="px-0">
-        {!data.backend ? (
-          <p className="px-6 py-4 text-sm text-muted-foreground">
-            Demo mode. Set DATABASE_URL and CRON_SECRET (see .env.example) to sync the catalog from AniList and MangaDex automatically.
-          </p>
-        ) : (
-          Object.keys(JOB_INFO).map((job, i) => {
-            const state = data.jobs.find((j) => j.job === job);
-            return (
-              <div key={job}>
-                {i > 0 && <Separator className="bg-white/5" />}
-                <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3 text-sm">
-                  <div className="min-w-0">
-                    <p className="font-medium text-white">{job}</p>
-                    <p className="text-xs text-muted-foreground">{JOB_INFO[job]}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Last success: {when(state?.lastOkAt ?? null)}
-                      {state?.lastError && <span className="block text-destructive">Last error: {state.lastError}</span>}
-                    </p>
+    <Section
+      id="sync"
+      title="Sync"
+      meta={problems === 0 ? "All jobs healthy" : <span className="text-amber-200">{problems === 1 ? "1 job needs attention" : `${problems} jobs need attention`}</span>}
+    >
+      <ul className="divide-y divide-white/[0.06] overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
+        {JOBS.map((j, i) => {
+          const state = data.jobs.find((s) => s.job === j.job);
+          const h = HEALTH[running === j.job ? "running" : states[i]];
+          return (
+            <li key={j.job} className="bg-ink-raised/60 px-4 py-3.5">
+              <div className="grid items-center gap-x-6 gap-y-2 sm:grid-cols-[minmax(0,1fr)_9rem_8rem_auto]">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-medium text-white">{j.job}</span>
+                    <span className={cn("inline-flex items-center gap-1.5 text-xs", h.text)}>
+                      <span aria-hidden className={cn("size-1.5 rounded-full", h.dot)} />
+                      {h.label}
+                    </span>
                   </div>
-                  <Button size="sm" variant="outline" disabled={running !== null} onClick={() => run(job)}>
-                    <RefreshCw className={running === job ? "animate-spin" : ""} />
-                    {running === job ? "Running…" : "Run now"}
-                  </Button>
+                  <p className="mt-0.5 truncate text-[13px] text-zinc-400">{j.what}</p>
                 </div>
+                <Field label="Schedule" value={`${j.schedule} UTC`} />
+                <Field label="Last success" value={ago(state?.lastOkAt ?? null, data.now)} title={fullTime(state?.lastOkAt ?? null)} />
+                <Button size="sm" variant="outline" disabled={running !== null} onClick={() => run(j.job)} className="justify-self-start sm:justify-self-end">
+                  <RefreshCw className={cn(running === j.job && "animate-spin")} />
+                  {running === j.job ? "Running…" : "Run now"}
+                </Button>
               </div>
-            );
-          })
-        )}
-      </CardContent>
-    </Card>
+
+              {state?.summary && !state.lastError && <Summary summary={state.summary} />}
+              {state?.lastError && (
+                <p className="mt-3 rounded-md bg-red-500/[0.08] px-3 py-2 font-mono text-xs leading-relaxed text-red-200 ring-1 ring-red-400/20 [overflow-wrap:anywhere]">
+                  <span className="text-red-300">Failed {ago(state.lastRunAt, data.now)}:</span> {state.lastError}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </Section>
   );
 }
 
-function SeriesTable({ kind, anime, manga }: { kind: "anime" | "manga"; anime: AnimeSummary[]; manga: MangaSummary[] }) {
-  const [query, setQuery] = useState("");
-  const noun = kind === "anime" ? "Anime" : "Manga";
-  const rows = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const list = kind === "anime"
-      ? anime.map((a) => ({ ...a, units: a.episodeCount }))
-      : manga.map((m) => ({ ...m, units: m.chapterCount }));
-    return q ? list.filter((r) => r.title.toLowerCase().includes(q)) : list;
-  }, [kind, query, anime, manga]);
-
+function Field({ label, value, title }: { label: string; value: string; title?: string }) {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-white" style={{ fontFamily: "var(--font-family-heading)" }}>
-          Manage {kind}
-        </h1>
-        <AddSeriesDialog noun={noun} />
-      </div>
-
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Search ${kind}…`} className="h-10 pl-9" aria-label={`Search ${kind}`} />
-      </div>
-
-      <Card className="bg-white/[0.02] py-0">
-        <Table className="min-w-[640px]">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Rating</TableHead>
-              <TableHead>{kind === "anime" ? "Episodes" : "Chapters"}</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rows.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <img src={item.coverImage} alt="" loading="lazy" className="h-14 w-10 rounded object-cover" />
-                    <div className="min-w-0">
-                      <p className="truncate font-medium text-white">{item.title}</p>
-                      <p className="text-xs text-muted-foreground">{item.genres.slice(0, 2).join(", ")}</p>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant={item.status === "ONGOING" ? "default" : "secondary"}>{item.status === "ONGOING" ? "Ongoing" : "Completed"}</Badge>
-                </TableCell>
-                <TableCell className="text-yellow-400 tabular-nums">{item.rating.toFixed(1)}</TableCell>
-                <TableCell className="tabular-nums text-muted-foreground">{item.units}</TableCell>
-                <TableCell className="text-right">
-                  <RowActions label={item.title} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+    <div className="flex items-baseline gap-2 text-[13px] sm:block">
+      <span className="text-zinc-400 sm:block sm:text-[11px] sm:uppercase sm:tracking-wide">{label}</span>
+      <span className="tabular-nums text-zinc-200" title={title}>
+        {value}
+      </span>
     </div>
   );
 }
 
-function AddSeriesDialog({ noun }: { noun: string }) {
-  const [open, setOpen] = useState(false);
-  const form = useForm<SeriesFormInput>({
-    resolver: zodResolver(SeriesFormSchema),
-    defaultValues: { title: "", description: "", status: "ONGOING", rating: 0, coverImage: "" },
-  });
+/** The job's last result, e.g. { anime: 50, seasons: 126 }. Only flat numbers and strings are shown. */
+function Summary({ summary }: { summary: Record<string, unknown> }) {
+  const parts = Object.entries(summary).filter(([, v]) => typeof v === "number" || typeof v === "string");
+  if (parts.length === 0) return null;
+  return (
+    <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-400">
+      {parts.map(([k, v]) => (
+        <span key={k}>
+          <span className="tabular-nums text-zinc-300">{typeof v === "number" ? fmtNum.format(v) : String(v)}</span> {k.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()}
+        </span>
+      ))}
+    </p>
+  );
+}
 
-  const onSubmit = (values: SeriesFormInput) => {
-    toast.success(`${noun} "${values.title}" created`);
-    form.reset();
-    setOpen(false);
-  };
+// ─── Catalog ─────────────────────────────────────────────────────────────────
+
+function CatalogSection({ data }: { data: AdminData }) {
+  const c = data.counts;
+  const { mangaWithoutChapters, animeWithoutLinks, airing } = data.gaps;
+  const totals = [
+    [c.anime, "anime"],
+    [c.seasons, "seasons"],
+    [c.episodes, "episodes"],
+    [c.manga, "manga"],
+    [c.chapters, "chapters"],
+    [c.links, "streaming links"],
+  ] as const;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus />
-          Add {noun.toLowerCase()}
+    <Section id="catalog" title="Catalog">
+      <dl className="mb-6 flex flex-wrap gap-x-8 gap-y-3">
+        {totals.map(([n, label]) => (
+          <div key={label} className="flex flex-col-reverse">
+            <dt className="text-xs text-zinc-400">{label}</dt>
+            <dd className="text-xl font-semibold tabular-nums text-white">{fmtNum.format(n)}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="grid gap-x-8 gap-y-8 lg:grid-cols-3">
+        <GapList
+          title="Manga without chapters"
+          why="MangaDex had no match or no English chapters. The reader has nothing to show."
+          empty="Every manga has chapters."
+          items={mangaWithoutChapters.map((m) => ({ id: m.id, href: `/manga/${m.id}`, title: m.title, meta: String(m.year) }))}
+        />
+        <GapList
+          title="Anime without streaming links"
+          why="AniList lists no official stream. The watch page has nowhere to send people."
+          empty="Every anime has a streaming link."
+          items={animeWithoutLinks.map((a) => ({ id: a.id, href: `/anime/${a.id}`, title: a.title, meta: String(a.year) }))}
+        />
+        <GapList
+          title="Airing now"
+          why="Seasons the hourly airing job checks for new episodes."
+          empty="Nothing in the catalog is airing."
+          neutral
+          items={airing.map((s) => ({
+            id: s.id,
+            href: `/anime/${s.series.id}`,
+            title: s.number > 1 ? `${s.series.title} · S${s.number}` : s.series.title,
+            meta: `${s.episodeCount} ep`,
+          }))}
+        />
+      </div>
+    </Section>
+  );
+}
+
+function GapList({
+  title,
+  why,
+  empty,
+  items,
+  neutral,
+}: {
+  title: string;
+  why: string;
+  empty: string;
+  items: { id: string; href: string; title: string; meta: string }[];
+  neutral?: boolean;
+}) {
+  return (
+    <div className="min-w-0">
+      <h3 className="flex items-baseline gap-2 text-sm font-medium text-white">
+        {title}
+        <span className={cn("tabular-nums", items.length > 0 && !neutral ? "text-amber-200" : "text-zinc-400")}>{items.length}</span>
+      </h3>
+      <p className="mt-1 text-[13px] leading-snug text-zinc-400">{why}</p>
+      {items.length === 0 ? (
+        <p className="mt-3 flex items-center gap-2 text-[13px] text-lagoon-200">
+          <Check className="size-3.5" />
+          {empty}
+        </p>
+      ) : (
+        <ul className="mt-3 max-h-72 divide-y divide-white/[0.05] overflow-y-auto border-y border-white/[0.06]">
+          {items.map((it) => (
+            <li key={it.id}>
+              <Link href={it.href} className="flex items-baseline justify-between gap-3 px-1 py-2 text-[13px] transition-colors hover:bg-white/[0.03]">
+                <span className="truncate text-zinc-200">{it.title}</span>
+                <span className="shrink-0 tabular-nums text-zinc-400">{it.meta}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+function UsersSection({ data }: { data: AdminData }) {
+  const [query, setQuery] = useState("");
+  const [role, setRole] = useState<"all" | "ADMIN">("all");
+  const [deleting, setDeleting] = useState<User | null>(null);
+  const admins = data.users.filter((u) => u.role === "ADMIN").length;
+
+  const rows = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return data.users.filter(
+      (u) => (role === "all" || u.role === role) && (!q || u.username.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)),
+    );
+  }, [data.users, query, role]);
+
+  return (
+    <Section
+      id="users"
+      title="Users"
+      meta={`${fmtNum.format(data.users.length)} ${data.users.length === 1 ? "account" : "accounts"} · ${admins} ${admins === 1 ? "admin" : "admins"}`}
+    >
+      <div className="mb-3 flex flex-wrap items-center gap-3">
+        <div className="relative w-full max-w-xs">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
+          <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name or email" aria-label="Search users" className="h-9 pl-8" />
+        </div>
+        <ToggleGroup type="single" value={role} onValueChange={(v) => v && setRole(v as typeof role)} variant="outline" size="sm" aria-label="Role">
+          <ToggleGroupItem value="all">All</ToggleGroupItem>
+          <ToggleGroupItem value="ADMIN">Admins</ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+
+      <div className="overflow-hidden rounded-lg ring-1 ring-white/[0.06]">
+        <Table className="min-w-[760px]">
+          <TableHeader>
+            <TableRow className="border-white/[0.06] hover:bg-transparent">
+              <TableHead>User</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Joined</TableHead>
+              <TableHead>Last sign-in</TableHead>
+              <TableHead className="text-right">List</TableHead>
+              <TableHead className="text-right">Progress</TableHead>
+              <TableHead className="text-right">Comments</TableHead>
+              <TableHead className="w-12">
+                <span className="sr-only">Actions</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length === 0 && (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={8} className="py-10 text-center text-sm text-zinc-400">
+                  {data.users.length === 0 ? "No accounts yet. They appear here as people register." : "No account matches that search."}
+                </TableCell>
+              </TableRow>
+            )}
+            {rows.map((u) => (
+              <TableRow key={u.id} className="border-white/[0.06]">
+                <TableCell className="max-w-64">
+                  <p className="truncate font-medium text-white">
+                    {u.username}
+                    {u.id === data.meId && <span className="ml-2 text-xs font-normal text-zinc-400">you</span>}
+                  </p>
+                  <p className="truncate text-xs text-zinc-400">{u.email}</p>
+                </TableCell>
+                <TableCell>
+                  {u.role === "ADMIN" ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-lagoon-200">
+                      <ShieldCheck className="size-3.5" />
+                      Admin
+                    </span>
+                  ) : (
+                    <span className="text-xs text-zinc-400">User</span>
+                  )}
+                </TableCell>
+                <TableCell className="tabular-nums text-zinc-400">{fmtDate.format(new Date(u.createdAt))}</TableCell>
+                <TableCell className="tabular-nums text-zinc-400" title={fullTime(u.lastSignIn)}>
+                  {ago(u.lastSignIn, data.now)}
+                </TableCell>
+                <Count n={u.list} />
+                <Count n={u.progress} />
+                <Count n={u.comments} />
+                <TableCell className="text-right">{u.id !== data.meId && <UserActions user={u} onDelete={() => setDeleting(u)} />}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <DeleteUserDialog user={deleting} onClose={() => setDeleting(null)} />
+    </Section>
+  );
+}
+
+const Count = ({ n }: { n: number }) => (
+  <TableCell className={cn("text-right tabular-nums", n === 0 ? "text-zinc-500" : "text-zinc-300")}>{fmtNum.format(n)}</TableCell>
+);
+
+/** Runs a server action with a pending flag and a toast either way. */
+function useAction() {
+  const [pending, start] = useTransition();
+  const act = (fn: () => Promise<void>, done: string) =>
+    start(async () => {
+      try {
+        await fn();
+        toast.success(done);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "That didn't work. Try again.");
+      }
+    });
+  return { pending, act };
+}
+
+function UserActions({ user, onDelete }: { user: User; onDelete: () => void }) {
+  const { pending, act } = useAction();
+  const admin = user.role === "ADMIN";
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" disabled={pending} aria-label={`Actions for ${user.username}`}>
+          {pending ? <RefreshCw className="animate-spin" /> : <MoreHorizontal />}
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-52">
+        <DropdownMenuItem
+          onSelect={() =>
+            act(() => setUserRole(user.id, admin ? "USER" : "ADMIN"), admin ? `${user.username} is no longer an admin` : `${user.username} is now an admin`)
+          }
+        >
+          {admin ? <ShieldOff /> : <ShieldCheck />}
+          {admin ? "Remove admin" : "Make admin"}
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled={!user.lastSignIn} onSelect={() => act(() => signOutUser(user.id), `${user.username} was signed out everywhere`)}>
+          <LogOut />
+          Sign out everywhere
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive" onSelect={onDelete}>
+          <Trash2 />
+          Delete account…
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function DeleteUserDialog({ user, onClose }: { user: User | null; onClose: () => void }) {
+  const { pending, act } = useAction();
+  const comments = user?.comments ?? 0;
+  return (
+    <Dialog open={user !== null} onOpenChange={(open) => !open && !pending && onClose()}>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add {noun.toLowerCase()}</DialogTitle>
-          <DialogDescription>Fields are validated before anything is saved.</DialogDescription>
+          <DialogTitle>Delete {user?.username}?</DialogTitle>
+          <DialogDescription>
+            This removes the account, its list and its progress
+            {comments > 0 ? `, plus ${comments === 1 ? "1 comment" : `${comments} comments`} and any replies under them` : ""}. It can&apos;t be undone.
+          </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea rows={3} className="resize-none" placeholder="Synopsis" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="ONGOING">Ongoing</SelectItem>
-                        <SelectItem value="COMPLETED">Completed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="rating"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Rating</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        min={0}
-                        max={10}
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="coverImage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cover image URL</FormLabel>
-                  <FormControl>
-                    <Input type="url" placeholder="https://…" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Create</Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={pending}>
+            Keep account
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={pending}
+            onClick={() =>
+              user &&
+              act(async () => {
+                await deleteUser(user.id);
+                onClose();
+              }, `${user.username} was deleted`)
+            }
+          >
+            {pending ? "Deleting…" : "Delete account"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
