@@ -1,0 +1,16 @@
+import { LogoMark } from "@/components/Logo";
+
+/** Shown by Next while any route below the root layout loads (navbar stays put above it). */
+export default function Loading() {
+  return (
+    <div role="status" aria-live="polite" className="fixed inset-0 z-40 grid place-items-center bg-ink/80 backdrop-blur-sm">
+      <div className="flex flex-col items-center gap-4">
+        <span className="relative grid size-16 place-items-center">
+          <span className="absolute inset-0 rounded-full border-2 border-white/10 border-t-primary motion-safe:animate-spin" />
+          <LogoMark className="h-6 w-8 opacity-90" />
+        </span>
+        <span className="text-xs tracking-wide text-zinc-400">Loading…</span>
+      </div>
+    </div>
+  );
+}
