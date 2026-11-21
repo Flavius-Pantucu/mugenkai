@@ -6,8 +6,8 @@ const optional = z.preprocess((v) => (v === "" ? undefined : v), z.string().min(
 const EnvSchema = z.object({
   DATABASE_URL: optional,
   CRON_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16, "CRON_SECRET must be at least 16 characters").optional()),
-  SYNC_TOP_ANIME: z.coerce.number().int().min(1).max(500).default(50),
-  SYNC_TOP_MANGA: z.coerce.number().int().min(1).max(500).default(50),
+  SYNC_TOP_ANIME: z.coerce.number().int().min(1).max(2000).default(250),
+  SYNC_TOP_MANGA: z.coerce.number().int().min(1).max(2000).default(250),
   MANGADEX_USER_AGENT: z.string().default("Mugenkai/1.0"),
   ADMIN_EMAILS: z
     .string()

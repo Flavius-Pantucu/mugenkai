@@ -4,7 +4,8 @@ import { animeList, getPages, mangaList } from "@/data/mock-data";
 import type { Anime, AnimeSummary, Chapter, Manga, MangaPage, MangaSummary } from "@/data/schema";
 import { db } from "./db";
 import { backendEnabled } from "./env";
-import { chapterPages } from "./sync/mangadex";
+import { chapterPages, fetchLiveMangaChapters } from "./sync/mangadex";
+import { airedEpisodes, cleanDescription, toStatus } from "./sync/parse";
 
 // Read side of the catalog. Database when DATABASE_URL is set (cached under the "catalog" tag,
 // which every sync job revalidates), otherwise the bundled demo catalog.
@@ -159,6 +160,208 @@ const dbManga = unstable_cache(
   CACHE,
 );
 
+// ─── Live Dynamic Resolvers (AniList fallback for un-prefetched items) ──────
+
+const liveAnimeCache = new Map<string, { anime: Anime; timestamp: number }>();
+const liveMangaCache = new Map<string, { manga: Manga; timestamp: number }>();
+const LIVE_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+const ANILIST_GRAPHQL = "https://graphql.anilist.co";
+
+async function fetchLiveAniListAnime(id: string): Promise<Anime | null> {
+  const numId = Number(id);
+  if (!numId || isNaN(numId)) return null;
+
+  const cached = liveAnimeCache.get(id);
+  if (cached && Date.now() - cached.timestamp < LIVE_CACHE_TTL) {
+    return cached.anime;
+  }
+
+  try {
+    const res = await fetch(ANILIST_GRAPHQL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        query: `
+          query ($id: Int) {
+            Media(id: $id, type: ANIME) {
+              id
+              title { english romaji native }
+              description
+              coverImage { extraLarge large medium color }
+              bannerImage
+              status
+              averageScore
+              popularity
+              seasonYear
+              startDate { year }
+              episodes
+              duration
+              genres
+              trailer { site id }
+              studios(isMain: true) { nodes { name } }
+              nextAiringEpisode { episode }
+            }
+          }
+        `,
+        variables: { id: numId },
+      }),
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) return null;
+    const json = await res.json();
+    const m = json.data?.Media;
+    if (!m) return null;
+
+    const title = m.title?.english || m.title?.romaji || `Anime ${m.id}`;
+    const nativeTitle = m.title?.romaji || m.title?.native || title;
+    const year = m.seasonYear || m.startDate?.year || new Date().getFullYear();
+    const epCount = airedEpisodes(m);
+    const coverImage = m.coverImage?.extraLarge || m.coverImage?.large || m.coverImage?.medium || "";
+    const bannerImage = m.bannerImage || coverImage;
+    const duration = m.duration || 24;
+
+    const anime: Anime = {
+      id: String(m.id),
+      title,
+      nativeTitle,
+      description: cleanDescription(m.description),
+      coverImage,
+      bannerImage,
+      color: m.coverImage?.color || null,
+      status: toStatus(m.status),
+      rating: m.averageScore ? Number((m.averageScore / 10).toFixed(1)) : 7.5,
+      popularity: m.popularity || 0,
+      year,
+      genres: m.genres || [],
+      studio: m.studios?.nodes?.[0]?.name || "Unknown",
+      episodeCount: epCount,
+      episodeDuration: duration,
+      trailerYoutubeId: m.trailer?.site === "youtube" ? m.trailer.id : null,
+      seasons: [
+        {
+          id: String(m.id),
+          number: 1,
+          title,
+          year,
+          episodeCount: epCount,
+          coverImage,
+          bannerImage,
+        },
+      ],
+      links: [],
+      episodes: Array.from({ length: epCount }, (_, i) => ({
+        id: `${m.id}-s1-e${i + 1}`,
+        animeId: String(m.id),
+        seasonNumber: 1,
+        episodeNumber: i + 1,
+        title: `Episode ${i + 1}`,
+        videoUrl: "",
+        duration,
+        thumbnail: bannerImage,
+        links: [],
+      })),
+    };
+
+    liveAnimeCache.set(id, { anime, timestamp: Date.now() });
+    return anime;
+  } catch (err) {
+    console.error(`[fetchLiveAniListAnime] Error for ${id}:`, err);
+    return null;
+  }
+}
+
+async function fetchLiveAniListManga(id: string): Promise<Manga | null> {
+  const numId = Number(id);
+  if (!numId || isNaN(numId)) return null;
+
+  const cached = liveMangaCache.get(id);
+  if (cached && Date.now() - cached.timestamp < LIVE_CACHE_TTL) {
+    return cached.manga;
+  }
+
+  try {
+    const res = await fetch(ANILIST_GRAPHQL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        query: `
+          query ($id: Int) {
+            Media(id: $id, type: MANGA) {
+              id
+              title { english romaji native }
+              description
+              coverImage { extraLarge large medium color }
+              bannerImage
+              status
+              averageScore
+              popularity
+              startDate { year }
+              chapters
+              volumes
+              genres
+              staff(perPage: 2) {
+                edges {
+                  role
+                  node { name { full } }
+                }
+              }
+            }
+          }
+        `,
+        variables: { id: numId },
+      }),
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) return null;
+    const json = await res.json();
+    const m = json.data?.Media;
+    if (!m) return null;
+
+    const title = m.title?.english || m.title?.romaji || `Manga ${m.id}`;
+    const nativeTitle = m.title?.romaji || m.title?.native || title;
+    const year = m.startDate?.year || new Date().getFullYear();
+    const coverImage = m.coverImage?.extraLarge || m.coverImage?.large || m.coverImage?.medium || "";
+    const bannerImage = m.bannerImage || coverImage;
+    const chapterCount = m.chapters || 0;
+
+    const manga: Manga = {
+      id: String(m.id),
+      title,
+      nativeTitle,
+      description: cleanDescription(m.description),
+      coverImage,
+      bannerImage,
+      color: m.coverImage?.color || null,
+      status: toStatus(m.status),
+      rating: m.averageScore ? Number((m.averageScore / 10).toFixed(1)) : 7.5,
+      popularity: m.popularity || 0,
+      year,
+      genres: m.genres || [],
+      author: m.staff?.edges?.[0]?.node?.name?.full || "Unknown",
+      chapterCount,
+      volumeCount: m.volumes || null,
+      chapters: Array.from({ length: chapterCount || 10 }, (_, i) => ({
+        id: `${m.id}-ch-${i + 1}`,
+        mangaId: String(m.id),
+        chapterNumber: i + 1,
+        title: `Chapter ${i + 1}`,
+        pageCount: 18,
+        externalUrl: null,
+        mangadexChapterId: null,
+        scanlationGroup: null,
+      })),
+    };
+
+    liveMangaCache.set(id, { manga, timestamp: Date.now() });
+    return manga;
+  } catch (err) {
+    console.error(`[fetchLiveAniListManga] Error for ${id}:`, err);
+    return null;
+  }
+}
+
 // ─── Public API ──────────────────────────────────────────────────────────────
 
 // connection(): with a database, render per request (from cache) instead of at build time,
@@ -170,28 +373,71 @@ export async function getCatalog(): Promise<Catalog> {
 }
 
 export async function getAnime(id: string): Promise<Anime | null> {
-  if (!backendEnabled) return animeList.find((a) => a.id === id) ?? null;
-  await connection();
-  return dbAnime(id);
+  let anime: Anime | null = null;
+  if (!backendEnabled) {
+    anime = animeList.find((a) => a.id === id) ?? null;
+  } else {
+    await connection();
+    anime = await dbAnime(id);
+  }
+
+  if (!anime) {
+    anime = await fetchLiveAniListAnime(id);
+  }
+
+  return anime;
 }
 
 export async function getManga(id: string): Promise<Manga | null> {
-  if (!backendEnabled) return mangaList.find((m) => m.id === id) ?? null;
-  await connection();
-  return dbManga(id);
+  let manga: Manga | null = null;
+  if (!backendEnabled) {
+    manga = mangaList.find((m) => m.id === id) ?? null;
+  } else {
+    await connection();
+    manga = await dbManga(id);
+  }
+
+  if (!manga) {
+    manga = await fetchLiveAniListManga(id);
+  }
+
+  if (!manga) return null;
+
+  // Always attempt to fetch real chapters live from MangaDex
+  try {
+    const liveChapters = await fetchLiveMangaChapters(manga.title, manga.id, manga.id);
+    if (liveChapters && liveChapters.length > 0) {
+      return {
+        ...manga,
+        chapterCount: liveChapters.length,
+        chapters: liveChapters,
+      };
+    }
+  } catch (err) {
+    console.warn(`[getManga] MangaDex live chapter fetch failed for ${manga.title}:`, err);
+  }
+
+  return manga;
 }
 
 /** Live page URLs for a chapter. Empty when the chapter is external-only or MangaDex is unreachable. */
 export async function getChapterPages(manga: Manga, chapter: Chapter): Promise<MangaPage[]> {
-  if (!backendEnabled) return getPages(manga, chapter);
-  if (!chapter.mangadexChapterId || chapter.externalUrl) return [];
-  try {
-    const urls = await chapterPages(chapter.mangadexChapterId);
-    return urls.map((imageUrl, i) => ({ id: `${chapter.id}-pg-${i + 1}`, chapterId: chapter.id, imageUrl, pageNumber: i + 1 }));
-  } catch (err) {
-    console.error(err);
-    return [];
+  if (chapter.mangadexChapterId && !chapter.externalUrl) {
+    try {
+      const urls = await chapterPages(chapter.mangadexChapterId);
+      if (urls.length > 0) {
+        return urls.map((imageUrl, i) => ({
+          id: `${chapter.id}-pg-${i + 1}`,
+          chapterId: chapter.id,
+          imageUrl,
+          pageNumber: i + 1,
+        }));
+      }
+    } catch (err) {
+      console.error("[getChapterPages] MangaDex error:", err);
+    }
   }
+  return getPages(manga, chapter);
 }
 
 /** AniList id of any season → our series id (sequel seasons trend and air under their own ids). */

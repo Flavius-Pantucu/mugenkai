@@ -38,6 +38,8 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  if (pathname.startsWith("/embed")) return null;
+
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
@@ -129,7 +131,7 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
 export function MobileTabBar() {
   const pathname = usePathname();
   const { isAuthenticated } = useAuth();
-  if (pathname.startsWith("/read/")) return null;
+  if (pathname.startsWith("/read/") || pathname.startsWith("/embed")) return null;
   const tabs = [...navLinks, isAuthenticated ? { label: "Profile", to: "/profile", icon: User } : { label: "Sign in", to: "/login", icon: User }];
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 
 interface Particle {
@@ -10,11 +11,13 @@ interface Particle {
 }
 
 export function CustomCursor() {
+  const pathname = usePathname();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<Particle[]>([]);
   const [isMoving, setIsMoving] = useState(false);
 
   useEffect(() => {
+    if (pathname.startsWith("/embed")) return;
     let timeout: ReturnType<typeof setTimeout>;
     let particleId = 0;
 
@@ -45,7 +48,9 @@ export function CustomCursor() {
       window.removeEventListener("mousemove", handleMouseMove);
       clearTimeout(timeout);
     };
-  }, []);
+  }, [pathname]);
+
+  if (pathname.startsWith("/embed")) return null;
 
   return (
     <>

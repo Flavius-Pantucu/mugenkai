@@ -1,4 +1,5 @@
 import type { Prisma } from "@/generated/prisma/client";
+import type { Chapter } from "@/data/schema";
 import { db } from "../db";
 import { env } from "../env";
 import { pickChapters, type MdChapter } from "./parse";
@@ -89,4 +90,55 @@ export async function syncMangaChapters() {
 export async function chapterPages(mangadexChapterId: string): Promise<string[]> {
   const at = await get<{ baseUrl: string; chapter: { hash: string; data: string[] } }>(`/at-home/server/${mangadexChapterId}`);
   return at.chapter.data.map((file) => `${at.baseUrl}/data/${at.chapter.hash}/${file}`);
+}
+
+const liveChapterCache = new Map<string, { chapters: Chapter[]; timestamp: number }>();
+const CHAPTER_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+
+/**
+ * Fetch real chapters live from MangaDex for any manga, using its title and AniList id.
+ */
+export async function fetchLiveMangaChapters(title: string, anilistId: string, seriesId: string): Promise<Chapter[]> {
+  const cacheKey = seriesId || anilistId;
+  const cached = liveChapterCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CHAPTER_CACHE_TTL) {
+    return cached.chapters;
+  }
+
+  try {
+    let mdId = await findMangadexId(title, anilistId);
+    if (!mdId) {
+      const searchRes = await get<{ data: MdManga[] }>(`/manga?title=${encodeURIComponent(title)}&limit=5&${RATINGS}`);
+      mdId = searchRes.data?.find((m) => m.attributes.links?.al === anilistId)?.id || searchRes.data?.[0]?.id || null;
+    }
+
+    if (!mdId) return [];
+
+    const rows: MdChapter[] = [];
+    for (let offset = 0; offset < 10_000; offset += 500) {
+      const page = await get<{ data: MdChapter[]; total: number }>(
+        `/manga/${mdId}/feed?translatedLanguage[]=en&order[chapter]=asc&limit=500&offset=${offset}&includes[]=scanlation_group&${RATINGS}`,
+      );
+      rows.push(...page.data);
+      if (offset + 500 >= page.total) break;
+    }
+
+    const picked = pickChapters(rows);
+    const chapters: Chapter[] = picked.map(([n, c]) => ({
+      id: `${seriesId}-ch-${n}`,
+      mangaId: seriesId,
+      chapterNumber: n,
+      title: c.attributes.title?.trim() || `Chapter ${n}`,
+      pageCount: c.attributes.externalUrl ? 0 : c.attributes.pages,
+      mangadexChapterId: c.id,
+      externalUrl: c.attributes.externalUrl,
+      scanlationGroup: c.relationships?.find((r) => r.type === "scanlation_group")?.attributes?.name ?? null,
+    }));
+
+    liveChapterCache.set(cacheKey, { chapters, timestamp: Date.now() });
+    return chapters;
+  } catch (err: any) {
+    console.warn(`[MangaDex] Live chapters error for "${title}":`, err?.message || err);
+    return [];
+  }
 }
