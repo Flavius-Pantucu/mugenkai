@@ -16,6 +16,7 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    environment: Staging
     timeout-minutes: 7
     steps:
       - name: Call cron endpoint
