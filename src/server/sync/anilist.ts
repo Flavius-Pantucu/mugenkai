@@ -88,8 +88,10 @@ async function byIds(ids: number[]) {
 const isSequelOf = (formats: string[]) => (e: Media["relations"]["edges"][number]) =>
   (e.relationType === "PREQUEL" || e.relationType === "PARENT") && formats.includes(e.node.format ?? "");
 
-const nextTvSequel = (m: Media) =>
-  m.relations.edges.find((e) => e.relationType === "SEQUEL" && e.node.type === "ANIME" && e.node.format === "TV")?.node.id;
+// TV first; ONA covers streaming-first seasons (JoJo's Stone Ocean onward is ONA on AniList).
+const nextSequelOf = (m: Media, format: string) =>
+  m.relations.edges.find((e) => e.relationType === "SEQUEL" && e.node.type === "ANIME" && e.node.format === format)?.node.id;
+const nextTvSequel = (m: Media) => nextSequelOf(m, "TV") ?? nextSequelOf(m, "ONA");
 
 async function topMedia(type: "ANIME" | "MANGA", formats: string[], n: number) {
   const out: Media[] = [];
