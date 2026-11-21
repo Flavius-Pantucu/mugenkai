@@ -1908,6 +1908,7 @@ export function EmbedPlayer({
 
     postToParent("PLAYER_EVENT", {
       type: "source_change",
+      server: srvCode,
       sourceId: src.id,
       serverName: src.serverName,
       audio: newType,

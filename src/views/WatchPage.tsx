@@ -58,6 +58,9 @@ export function WatchPage({
   const progress = useProgress();
 
   const [server, setServer] = useState<ServerId>("flow");
+  // What the player reports it is actually playing; it can switch servers on its own (menu or failover).
+  const [playing, setPlaying] = useState<ServerId | null>(null);
+  const [reloads, setReloads] = useState(0);
   const [audio, setAudio] = useState<"sub" | "dub">("sub");
   const [autoSkip, setAutoSkip] = useState(true);
 
@@ -85,6 +88,7 @@ export function WatchPage({
 
   // Sync audio with server (zuri is sub-only)
   const handleAudioChange = (newAudio: "sub" | "dub") => {
+    setPlaying(null);
     setAudio(newAudio);
     if (newAudio === "dub" && server === "zuri") {
       setServer("flow");
@@ -101,6 +105,12 @@ export function WatchPage({
     const handleMessage = (event: MessageEvent) => {
       const msg = event.data;
       if (msg?.source !== "aniembed") return;
+
+      if (msg.name === "PLAYER_EVENT" && (msg.data?.type === "ready" || msg.data?.type === "source_change")) {
+        const reported = SERVERS.find((s) => s.id === msg.data.server);
+        if (reported) setPlaying(reported.id);
+        return;
+      }
 
       if (msg.name === "progress" && typeof msg.data?.percent === "number") {
         const p = Math.round(msg.data.percent);
@@ -157,7 +167,7 @@ export function WatchPage({
               <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black">
                 {streamUrl ? (
                   <iframe
-                    key={streamUrl}
+                    key={`${streamUrl}#${reloads}`}
                     src={streamUrl}
                     title={`${anime.title} - Episode ${episode.episodeNumber}`}
                     className="absolute inset-0 h-full w-full border-0"
@@ -183,14 +193,20 @@ export function WatchPage({
                       Server:
                     </span>
                     {SERVERS.map((s) => {
-                      const isSelected = server === s.id;
+                      const isSelected = (playing ?? server) === s.id;
                       const isDubDisabled = audio === "dub" && s.id === "zuri";
                       return (
                         <button
                           key={s.id}
                           type="button"
                           disabled={isDubDisabled}
-                          onClick={() => setServer(s.id)}
+                          onClick={() => {
+                            if (isSelected) return;
+                            setPlaying(null);
+                            // Same URL as before (player had switched away on its own): force a reload.
+                            if (s.id === server) setReloads((n) => n + 1);
+                            else setServer(s.id);
+                          }}
                           title={s.tip}
                           className={cn(
                             "rounded-md px-2.5 py-1 text-xs font-medium transition-all cursor-pointer",
@@ -457,7 +473,7 @@ export function WatchPage({
         title={`${
           multiSeason ? `Season ${episode.seasonNumber} · ` : ""
         }Episode ${episode.episodeNumber} comments`}
-        className="mx-auto w-[90%] max-w-3xl py-12"
+        className="mx-auto w-[90%] py-12"
       />
     </div>
   );
