@@ -8,7 +8,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { searchIndex } from "@/data/series";
 import { getCatalog } from "@/server/catalog";
 
-export const metadata: Metadata = { title: "Mugenkai", icons: "/favicon.svg" };
+const description = "Watch anime and read manga, all in one place. Track every episode and chapter you finish.";
+
+// Icons and the link-preview image come from app/icon.svg, apple-icon.tsx and opengraph-image.tsx.
+export const metadata: Metadata = {
+  title: "Mugenkai",
+  description,
+  openGraph: { title: "Mugenkai", description, siteName: "Mugenkai", type: "website" },
+  twitter: { card: "summary_large_image", title: "Mugenkai", description },
+};
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { anime, manga } = await getCatalog();
