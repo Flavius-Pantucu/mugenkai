@@ -17,7 +17,7 @@ interface Result {
   rating: number;
 }
 
-function toResult(r: { id: number; kind: Kind; title: string; altTitle: string; cover: string; format: string | null; year: number | null; count: number | null; rating: number }): Result {
+function toResult(r: { id: number; kind: Kind; title: string; altTitle: string; cover: string; format: string | null; year: number | null; count: number | null; rating: number; parentId?: string | null }): Result {
   const unit = r.kind === "ANIME" ? "eps" : "chs";
   return {
     id: String(r.id),
@@ -25,7 +25,8 @@ function toResult(r: { id: number; kind: Kind; title: string; altTitle: string; 
     title: r.title,
     nativeTitle: r.altTitle,
     cover: r.cover,
-    href: `/${r.kind.toLowerCase()}/${r.id}`,
+    // A later season stored under its series (Stone Ocean under JoJo) opens the series page.
+    href: `/${r.kind.toLowerCase()}/${r.parentId ?? r.id}`,
     meta: [r.year, r.format?.replace(/_/g, " "), r.count ? `${r.count} ${unit}` : "Ongoing"].filter(Boolean).join(" · "),
     rating: r.rating,
   };
@@ -35,13 +36,16 @@ function toResult(r: { id: number; kind: Kind; title: string; altTitle: string; 
 async function localSearch(q: string, kind: Kind | null) {
   const like = q.toLowerCase().replace(/[\\%_]/g, "\\$&");
   const rows = await db().$queryRaw<Parameters<typeof toResult>[0][]>`
-    SELECT id, kind::text AS kind, title, "altTitle", cover, format, year, count, rating
-    FROM "SearchEntry"
-    WHERE (terms LIKE ${`%${like}%`} OR ${q.toLowerCase()} <% terms)
-      ${kind ? Prisma.sql`AND kind = ${kind}::"SeriesKind"` : Prisma.empty}
-    ORDER BY terms LIKE ${`%${like}%`} DESC, lower(title) LIKE ${`${like}%`} DESC, popularity DESC
+    SELECT e.id, e.kind::text AS kind, e.title, e."altTitle", e.cover, e.format, e.year, e.count, e.rating, s."seriesId" AS "parentId"
+    FROM "SearchEntry" e
+    LEFT JOIN "Season" s ON s.id = e.id::text AND s."seriesId" <> s.id
+    WHERE (e.terms LIKE ${`%${like}%`} OR ${q.toLowerCase()} <% e.terms)
+      ${kind ? Prisma.sql`AND e.kind = ${kind}::"SeriesKind"` : Prisma.empty}
+    ORDER BY e.terms LIKE ${`%${like}%`} DESC, lower(e.title) LIKE ${`${like}%`} DESC, e.popularity DESC
     LIMIT 20`;
-  return rows.map(toResult);
+  // Several seasons of one series collapse to its best-ranked hit.
+  const seen = new Set<string>();
+  return rows.map(toResult).filter((r) => !seen.has(r.href) && seen.add(r.href));
 }
 
 // Fallback for an empty index (fresh database, or seeding still running).

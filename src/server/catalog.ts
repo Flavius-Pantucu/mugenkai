@@ -372,6 +372,14 @@ export async function getCatalog(): Promise<Catalog> {
   return dbCatalog();
 }
 
+/** A later season's AniList id (e.g. Stone Ocean) → the id of the series it is stored under; null otherwise. */
+export async function parentSeries(id: string): Promise<string | null> {
+  if (!backendEnabled) return null;
+  await connection();
+  const season = await db().season.findUnique({ where: { id }, select: { seriesId: true } });
+  return season && season.seriesId !== id ? season.seriesId : null;
+}
+
 export async function getAnime(id: string): Promise<Anime | null> {
   let anime: Anime | null = null;
   if (!backendEnabled) {
