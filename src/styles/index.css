@@ -2,8 +2,11 @@
 @import './tailwind.css';
 @import './theme.css';
 
+/* Only where CustomCursor is mounted (not inside the /embed player iframe, which keeps the system cursor). */
 @media (min-width: 1024px) {
-  body, a, button {
+  html.has-custom-cursor body,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button {
     cursor: none !important;
   }
 }

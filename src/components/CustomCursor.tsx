@@ -15,13 +15,21 @@ export function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<Particle[]>([]);
   const [isMoving, setIsMoving] = useState(false);
+  // Off over iframes (the parent gets no mouse events in there) and once the pointer leaves the window.
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     if (pathname.startsWith("/embed")) return;
+    document.documentElement.classList.add("has-custom-cursor");
     let timeout: ReturnType<typeof setTimeout>;
     let particleId = 0;
 
+    const handleOver = (e: MouseEvent) => setHidden(e.target instanceof HTMLIFrameElement);
+    const handleLeave = () => setHidden(true);
+
     const handleMouseMove = (e: MouseEvent) => {
+      if (e.target instanceof HTMLIFrameElement) return;
+      setHidden(false);
       setMousePosition({ x: e.clientX, y: e.clientY });
       setIsMoving(true);
 
@@ -43,14 +51,19 @@ export function CustomCursor() {
     };
 
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseover", handleOver);
+    document.documentElement.addEventListener("mouseleave", handleLeave);
 
     return () => {
+      document.documentElement.classList.remove("has-custom-cursor");
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseover", handleOver);
+      document.documentElement.removeEventListener("mouseleave", handleLeave);
       clearTimeout(timeout);
     };
   }, [pathname]);
 
-  if (pathname.startsWith("/embed")) return null;
+  if (pathname.startsWith("/embed") || hidden) return null;
 
   return (
     <>
