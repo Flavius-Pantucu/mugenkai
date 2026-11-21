@@ -1,9 +1,10 @@
 import { ImageResponse } from "next/og";
+import sharp from "sharp";
 import { getCatalog } from "@/server/catalog";
 
 export const alt = "Mugenkai: watch anime and read manga";
 export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 
 /** Link preview: a random anime banner each request (getCatalog reads the DB per request, so this is never prerendered). */
 export default async function OpengraphImage() {
@@ -20,7 +21,7 @@ export default async function OpengraphImage() {
     }
   } catch {}
 
-  return new ImageResponse(
+  const png = new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: "#061013" }}>
         {banner && (
@@ -65,4 +66,8 @@ export default async function OpengraphImage() {
     ),
     size,
   );
+
+  // ImageResponse only makes PNG (1-2 MB for a photo); WhatsApp and Messenger skip previews that large.
+  const jpeg = await sharp(Buffer.from(await png.arrayBuffer())).jpeg({ quality: 80, mozjpeg: true }).toBuffer();
+  return new Response(new Uint8Array(jpeg), { headers: { "Content-Type": contentType } });
 }
