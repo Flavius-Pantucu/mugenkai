@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@/styles/index.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { Navbar } from "@/components/Navbar";
@@ -7,6 +7,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { searchIndex } from "@/data/series";
 import { getCatalog } from "@/server/catalog";
+
+// Android: the keyboard shrinks the layout instead of covering it (iOS ignores this; search pins to the top).
+export const viewport: Viewport = { interactiveWidget: "resizes-content" };
 
 const description = "Watch anime and read manga, all in one place. Track every episode and chapter you finish.";
 

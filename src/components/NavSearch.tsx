@@ -233,6 +233,8 @@ export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
       </Button>
 
       <CommandDialog
+        // Phones: pin to the top so the on-screen keyboard covers nothing; centered from sm up.
+        className="top-3 translate-y-0 sm:top-[50%] sm:translate-y-[-50%]"
         open={open}
         onOpenChange={(o) => {
           setOpen(o);
@@ -284,6 +286,8 @@ export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
         </div>
 
         <CommandInput
+          // 16px on phones: iOS zooms the page into any focused input smaller than that.
+          className="text-base sm:text-sm"
           placeholder={
             filterType === "ANIME"
               ? "Search all anime…"
@@ -296,7 +300,7 @@ export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
           onValueChange={setQuery}
         />
 
-        <CommandList className="max-h-[min(60vh,520px)]">
+        <CommandList className="max-h-[45svh] sm:max-h-[min(60vh,520px)]">
           {isLive ? (
             <>
               {!loading && shown.length === 0 ? (
