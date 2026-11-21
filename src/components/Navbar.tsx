@@ -54,20 +54,21 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
           <LogoMark className="h-9 w-12" />
         </Link>
 
-        <div className="hidden items-center gap-1 md:flex">
+        {/* Phones get icons only so logo, links, search and account fit one row. */}
+        <div className="flex items-center gap-0.5 sm:gap-1">
           {navLinks.map((link) => (
             <Button
               key={link.label}
               asChild
               variant="ghost"
               className={cn(
-                "px-4 text-[14px] font-normal hover:bg-white/5 hover:text-white",
+                "px-2.5 text-[14px] font-normal hover:bg-white/5 hover:text-white sm:px-4",
                 isActive(link.to) ? "bg-white/10 text-white" : "text-zinc-400",
               )}
             >
-              <Link href={link.to} aria-current={isActive(link.to) ? "page" : undefined}>
+              <Link href={link.to} aria-label={link.label} aria-current={isActive(link.to) ? "page" : undefined}>
                 <link.icon />
-                {link.label}
+                <span className="hidden sm:inline">{link.label}</span>
               </Link>
             </Button>
           ))}
@@ -124,45 +125,5 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
         </div>
       </div>
     </nav>
-  );
-}
-
-/** Phones: Home / Anime / Manga / Profile within thumb reach. Hidden in the reader, which has its own bottom bar. */
-export function MobileTabBar() {
-  const pathname = usePathname();
-  const { isAuthenticated } = useAuth();
-  if (pathname.startsWith("/read/") || pathname.startsWith("/embed")) return null;
-  const tabs = [...navLinks, isAuthenticated ? { label: "Profile", to: "/profile", icon: User } : { label: "Sign in", to: "/login", icon: User }];
-  const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
-
-  return (
-    <>
-      <div aria-hidden className="h-[calc(4rem+env(safe-area-inset-bottom))] md:hidden" />
-      <nav
-        aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-white/5 bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
-      >
-        <ul className="grid h-16 grid-cols-4">
-          {tabs.map((t) => {
-            const active = isActive(t.to);
-            return (
-              <li key={t.to}>
-                <Link
-                  href={t.to}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "flex h-full flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors",
-                    active ? "text-primary" : "text-zinc-400 active:text-white",
-                  )}
-                >
-                  <t.icon className="size-5" />
-                  {t.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </>
   );
 }
