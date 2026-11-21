@@ -149,7 +149,7 @@ export function WatchPage({
 
         <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/70 to-ink" />
 
-        <div className="relative mx-auto grid w-[90%] gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-12">
+        <div className="relative mx-auto grid w-[90%] grid-cols-[minmax(0,1fr)] gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-12">
           {/* Main content */}
           <div className="space-y-6">
             {/* Back to anime */}
