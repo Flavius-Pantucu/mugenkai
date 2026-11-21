@@ -1,0 +1,26 @@
+# Hourly sync jobs. Vercel Hobby only allows daily crons, so GitHub calls the same endpoints.
+# Needs repo secrets SITE_URL (e.g. https://mugenkai.vercel.app) and CRON_SECRET (same value as on Vercel).
+name: Hourly sync
+on:
+  schedule:
+    - cron: "15 * * * *" # airing
+    - cron: "45 * * * *" # search index
+  workflow_dispatch:
+    inputs:
+      job:
+        description: Job to run
+        default: search
+        type: choice
+        options: [search, airing, catalog, manga]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Call cron endpoint
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          JOB: ${{ inputs.job || (github.event.schedule == '15 * * * *' && 'airing' || 'search') }}
+        run: curl --fail-with-body -sS -m 330 -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/$JOB"

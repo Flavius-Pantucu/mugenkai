@@ -265,3 +265,23 @@ model SyncState {
   lastError String?
   summary   Json?
 }
+
+/// One thin row per title that exists upstream (not only the curated catalog), so search never
+/// leaves our database. `terms` holds every title variant lowercased, under a trigram index
+/// (the pg_trgm extension is created in the migration).
+model SearchEntry {
+  id         Int        @id
+  kind       SeriesKind
+  title      String
+  altTitle   String
+  terms      String
+  cover      String
+  format     String?
+  year       Int?
+  count      Int?
+  rating     Float
+  popularity Int
+
+  @@index([kind, popularity(sort: Desc)])
+  @@index([terms(ops: raw("gin_trgm_ops"))], type: Gin, map: "SearchEntry_terms_trgm_idx")
+}

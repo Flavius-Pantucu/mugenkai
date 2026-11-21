@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { CalendarDays, ChevronDown, ExternalLink } from "lucide-react";
+import { CalendarDays, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,7 +45,7 @@ export function WeeklySchedule({ entries }: { entries: ScheduleEntry[] }) {
 
   const active = days?.find((d) => d.key === selected) ?? days?.find((d) => d.isToday) ?? days?.[0];
 
-  // Nothing to show at all (e.g. AniList unreachable): leave the home page as it was.
+  // Nothing to show at all (e.g. upstream unreachable): leave the home page as it was.
   if (entries.length === 0) return null;
 
   return (
@@ -131,14 +131,9 @@ function ScheduleRow({ entry: e, now }: { entry: ScheduleEntry; now: number }) {
           {e.totalEpisodes ? ` of ${e.totalEpisodes}` : ""}
         </span>
       </span>
-      {e.seriesId ? (
+      {e.seriesId && (
         <Badge variant="outline" className="hidden border-primary/30 text-lagoon-200 sm:inline-flex">
           In library
-        </Badge>
-      ) : (
-        <Badge variant="outline" className="hidden border-white/10 text-muted-foreground sm:inline-flex" title="Not in our catalog yet; opens AniList">
-          AniList
-          <ExternalLink />
         </Badge>
       )}
       <span className={cn("w-20 shrink-0 text-right text-[12px] tabular-nums", aired ? "text-muted-foreground" : "text-primary")}>{untilLabel(at - now)}</span>
@@ -146,21 +141,9 @@ function ScheduleRow({ entry: e, now }: { entry: ScheduleEntry; now: number }) {
   );
   return (
     <li>
-      {e.seriesId ? (
-        <Link href={`/anime/${e.seriesId}`} className="flex items-center gap-3 px-3 py-1.5 transition-colors hover:bg-white/[0.04] focus-visible:bg-white/[0.04] focus-visible:outline-none">
-          {body}
-        </Link>
-      ) : (
-        // Not in our catalog: its AniList page still tells the user what it is.
-        <a
-          href={`https://anilist.co/anime/${e.mediaId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 px-3 py-1.5 transition-colors hover:bg-white/[0.04] focus-visible:bg-white/[0.04] focus-visible:outline-none"
-        >
-          {body}
-        </a>
-      )}
+      <Link href={`/anime/${e.seriesId ?? e.mediaId}`} className="flex items-center gap-3 px-3 py-1.5 transition-colors hover:bg-white/[0.04] focus-visible:bg-white/[0.04] focus-visible:outline-none">
+        {body}
+      </Link>
     </li>
   );
 }

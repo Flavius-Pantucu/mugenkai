@@ -233,7 +233,7 @@ export function ReadPage({ manga, chapter, pages }: { manga: Manga; chapter: Cha
             <p className="text-sm text-muted-foreground">End of chapter {chapter.chapterNumber}</p>
             {chapter.scanlationGroup && (
               <p className="-mt-4 text-xs text-muted-foreground">
-                Translation by {chapter.scanlationGroup} · via MangaDex
+                Translation by {chapter.scanlationGroup}
               </p>
             )}
             <div className="flex gap-3">

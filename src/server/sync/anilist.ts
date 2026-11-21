@@ -60,7 +60,7 @@ interface Media {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function gql<T>(query: string, variables: Record<string, unknown>, attempt = 0): Promise<T> {
+export async function gql<T>(query: string, variables: Record<string, unknown>, attempt = 0): Promise<T> {
   const res = await fetch(ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },

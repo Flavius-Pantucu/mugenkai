@@ -25,9 +25,10 @@ type Job = AdminData["jobs"][number];
 
 /** Order, schedule and what "stale" means for each job (twice its interval without a success). */
 const JOBS = [
-  { job: "catalog", what: "Top anime and manga from AniList: seasons, episodes, official links", schedule: "daily 04:00", staleAfterH: 48 },
-  { job: "manga", what: "Chapters from MangaDex for every manga in the catalog", schedule: "daily 04:30", staleAfterH: 48 },
+  { job: "catalog", what: "Top anime and manga: seasons, episodes, official links", schedule: "daily 04:00", staleAfterH: 48 },
+  { job: "manga", what: "Chapters for every manga in the catalog", schedule: "daily 04:30", staleAfterH: 48 },
   { job: "airing", what: "New episodes for seasons that are airing", schedule: "hourly :15", staleAfterH: 2 },
+  { job: "search", what: "Search index of every title: new and edited titles", schedule: "hourly :45", staleAfterH: 2 },
 ] as const;
 
 // Fixed locale and zone so server and browser render identical text.
@@ -235,13 +236,13 @@ function CatalogSection({ data }: { data: AdminData }) {
       <div className="grid gap-x-8 gap-y-8 lg:grid-cols-3">
         <GapList
           title="Manga without chapters"
-          why="MangaDex had no match or no English chapters. The reader has nothing to show."
+          why="No chapter source matched, or no English chapters. The reader has nothing to show."
           empty="Every manga has chapters."
           items={mangaWithoutChapters.map((m) => ({ id: m.id, href: `/manga/${m.id}`, title: m.title, meta: String(m.year) }))}
         />
         <GapList
           title="Anime without streaming links"
-          why="AniList lists no official stream. The watch page has nowhere to send people."
+          why="No official stream is listed. The watch page has nowhere to send people."
           empty="Every anime has a streaming link."
           items={animeWithoutLinks.map((a) => ({ id: a.id, href: `/anime/${a.id}`, title: a.title, meta: String(a.year) }))}
         />

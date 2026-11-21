@@ -43,7 +43,7 @@ export function Footer() {
 
         <Separator className="mt-10 bg-white/5" />
         <p className="pt-6 text-center text-xs text-zinc-600 sm:text-left">
-          2026 Mugenkai. Catalog data from AniList; titles and artwork belong to their owners.
+          2026 Mugenkai. Titles and artwork belong to their owners.
         </p>
       </div>
     </footer>

@@ -3,6 +3,7 @@ import { db } from "../db";
 import { env } from "../env";
 import { syncAiring, syncCatalog } from "./anilist";
 import { syncMangaChapters } from "./mangadex";
+import { syncSearch } from "./search";
 
 export const JOBS = {
   /** Daily. Top anime (all seasons, episodes, official links) and top manga metadata from AniList. */
@@ -11,6 +12,9 @@ export const JOBS = {
   airing: () => syncAiring(),
   /** Daily, after catalog. Chapters from MangaDex. */
   manga: () => syncMangaChapters(),
+  /** Hourly. Search index of every title: seeds over the first runs, then new and edited titles. */
+  search: async () =>
+    syncSearch((await db().syncState.findUnique({ where: { job: "search" } }))?.lastOkAt ?? null),
 } as const;
 
 export type JobName = keyof typeof JOBS;

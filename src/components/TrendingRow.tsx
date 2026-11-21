@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { TRENDING_WINDOWS, type Trending, type TrendingEntry, type TrendingWindow } from "@/data/schema";
@@ -10,7 +9,7 @@ import { TRENDING_WINDOWS, type Trending, type TrendingEntry, type TrendingWindo
 const LABEL: Record<TrendingWindow, string> = { day: "Today", week: "This week", month: "This month" };
 const isWindow = (v: string): v is TrendingWindow => (TRENDING_WINDOWS as readonly string[]).includes(v);
 
-/** Top 10 anime by real AniList trend score, switchable between today, this week and this month. */
+/** Top 10 anime by trend score, switchable between today, this week and this month. */
 export function TrendingRow({ trending }: { trending: Trending }) {
   const [window, setWindow] = useState<TrendingWindow>("week");
   const available = TRENDING_WINDOWS.filter((w) => trending[w].length > 0);
@@ -63,7 +62,6 @@ export function TrendingRow({ trending }: { trending: Trending }) {
 }
 
 function RankCard({ entry: e, rank }: { entry: TrendingEntry; rank: number }) {
-  const external = e.seriesId === null;
   const content = (
     <>
       {/* Outlined rank numeral sits behind the poster's left edge, Top-10 style. */}
@@ -78,11 +76,6 @@ function RankCard({ entry: e, rank }: { entry: TrendingEntry; rank: number }) {
         <span className="relative block aspect-[2/3] overflow-hidden rounded-lg bg-ink-raised ring-1 ring-white/5 transition-transform duration-300 group-hover:-translate-y-1">
           <img src={e.cover} alt="" loading="lazy" className="h-full w-full object-cover" />
           <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-          {external && (
-            <span className="absolute right-1.5 top-1.5 grid size-6 place-items-center rounded-md bg-black/60 text-white/80 backdrop-blur-sm" title="Opens AniList">
-              <ExternalLink className="size-3.5" />
-            </span>
-          )}
           <span className="absolute inset-x-0 bottom-0 p-2">
             <span className="line-clamp-2 text-[12.5px] font-semibold leading-tight text-white">{e.title}</span>
             <span className="mt-0.5 block truncate text-[10.5px] text-zinc-400">{e.meta}</span>
@@ -92,13 +85,8 @@ function RankCard({ entry: e, rank }: { entry: TrendingEntry; rank: number }) {
     </>
   );
   const className = "group flex items-end rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring";
-  const label = `#${rank} ${e.title}${external ? " (opens AniList)" : ""}`;
-  return external ? (
-    <a href={e.href} target="_blank" rel="noopener noreferrer" className={className} aria-label={label}>
-      {content}
-    </a>
-  ) : (
-    <Link href={e.href} className={className} aria-label={label}>
+  return (
+    <Link href={e.href} className={className} aria-label={`#${rank} ${e.title}`}>
       {content}
     </Link>
   );

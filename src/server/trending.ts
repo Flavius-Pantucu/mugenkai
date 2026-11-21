@@ -79,7 +79,7 @@ async function trendingFor(window: TrendingWindow, catalog: Catalog): Promise<Tr
         cover: series?.coverImage ?? m.coverImage.large,
         score: t.trending,
         seriesId: series?.id ?? null,
-        href: series ? `/anime/${series.id}` : `https://anilist.co/anime/${t.mediaId}`,
+        href: `/anime/${series?.id ?? t.mediaId}`,
         meta: series ? series.genres.slice(0, 2).join(" / ") : (FORMAT[m.format ?? ""] ?? "Anime"),
         latestEpisode: t.episode,
       });

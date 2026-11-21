@@ -43,7 +43,7 @@ Demo mode needs no setup, so the app runs before a database exists.
 | `manga` | daily 04:30 UTC | Maps each manga to MangaDex (exact match on its AniList id) and adds new English chapters. |
 | `airing` | hourly | Re-reads franchises with a currently airing season so new episodes appear. |
 
-Each run is recorded in the `SyncState` table (last success, last error), shown on the admin page and at `/api/health`. All writes are idempotent upserts keyed on AniList ids, so re-running a job is harmless. Vercel's Hobby plan may only allow daily crons; the hourly `airing` job needs Pro or an external scheduler calling the same URL.
+Each run is recorded in the `SyncState` table (last success, last error), shown on the admin page and at `/api/health`. All writes are idempotent upserts keyed on AniList ids, so re-running a job is harmless. Vercel's Hobby plan only allows daily crons, so the hourly `airing` and `search` jobs run from `.github/workflows/cron.yml` (repo secrets `SITE_URL` and `CRON_SECRET`).
 
 ## API
 
