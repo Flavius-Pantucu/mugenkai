@@ -290,6 +290,7 @@ export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
               ? "Search all manga…"
               : "Search all anime & manga…"
           }
+          autoFocus
           value={query}
           onValueChange={setQuery}
         />
