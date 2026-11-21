@@ -57,7 +57,7 @@ export function WatchPage({
   const router = useRouter();
   const progress = useProgress();
 
-  const [server, setServer] = useState<ServerId>("flow");
+  const [server, setServer] = useState<ServerId>("buzz");
   // What the player reports it is actually playing; it can switch servers on its own (menu or failover).
   const [playing, setPlaying] = useState<ServerId | null>(null);
   const [reloads, setReloads] = useState(0);
@@ -91,7 +91,7 @@ export function WatchPage({
     setPlaying(null);
     setAudio(newAudio);
     if (newAudio === "dub" && server === "zuri") {
-      setServer("flow");
+      setServer("buzz");
     }
   };
 
