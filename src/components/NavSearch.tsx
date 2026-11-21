@@ -246,7 +246,8 @@ export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
         filter={isLive ? () => 1 : matchScore}
       >
         {/* Search Type Filter Buttons */}
-        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10 bg-zinc-900/60">
+        {/* pr-12 keeps the spinner clear of the dialog's absolute close button */}
+        <div className="flex items-center gap-1.5 pl-3 pr-12 py-2 border-b border-white/10 bg-zinc-900/60">
           <span className="text-[12px] text-zinc-400 mr-1 font-medium">Search:</span>
           {(
             [
