@@ -256,6 +256,8 @@ export function EmbedPlayer({
 
   // Operational refs
   const hideControlsTimer = useRef<NodeJS.Timeout | null>(null);
+  // Pointer resting on the controls bar: never auto-hide under it.
+  const overControlsRef = useRef(false);
   const progressSaveTimer = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef<boolean>(false);
   const showControlsRef = useRef<boolean>(true);
@@ -372,7 +374,7 @@ export function EmbedPlayer({
     if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
     if (isPlayingRef.current) {
       hideControlsTimer.current = setTimeout(() => {
-        if (!showSettingsMenu) {
+        if (!showSettingsMenu && !overControlsRef.current) {
           setShowControls(false);
           showControlsRef.current = false;
         }
@@ -2124,6 +2126,8 @@ export function EmbedPlayer({
     <div
       ref={containerRef}
       onMouseMove={handleUserActivity}
+      onPointerDown={handleUserActivity}
+      onMouseLeave={() => (overControlsRef.current = false)}
       onClick={handleScreenClick}
       onTouchEnd={handleTouchEnd}
       onDoubleClick={handleDoubleClick}
@@ -2496,6 +2500,11 @@ export function EmbedPlayer({
       {!fatalError && (
         <div
           data-controls-bar="true"
+          onMouseEnter={() => (overControlsRef.current = true)}
+          onMouseLeave={() => {
+            overControlsRef.current = false;
+            handleUserActivity();
+          }}
           onDoubleClick={(e) => e.stopPropagation()}
           className={cn(
             "absolute bottom-0 left-0 right-0 px-3 py-2.5 sm:px-5 sm:py-4 z-30 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] font-product-sans",
