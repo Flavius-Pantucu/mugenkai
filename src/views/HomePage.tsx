@@ -14,33 +14,14 @@ import { useList } from "@/lib/list";
 import { useAuth } from "@/context/AuthContext";
 import { continueReading, continueWatching, useProgress } from "@/lib/progress";
 
-const find = <T extends { title: string }>(list: T[], title: string) => list.find((x) => x.title.startsWith(title));
-
-/** Anime and manga alternate in the hero. Favourites when present, else the most popular of each. */
-function heroSlides(anime: AnimeSummary[], manga: MangaSummary[]): HeroSlide[] {
-  const a = (t: string, i: number) => find(anime, t) ?? anime[i];
-  const m = (t: string, i: number) => find(manga, t) ?? manga[i];
-  const picks: [HeroSlide["kind"], AnimeSummary | MangaSummary | undefined][] = [
-    ["anime", a("Frieren", 0)],
-    ["manga", m("Berserk", 0)],
-    ["anime", a("Attack on Titan", 1)],
-    ["manga", m("Chainsaw Man", 1)],
-    ["anime", a("JUJUTSU KAISEN", 2)],
-  ];
-  const seen = new Set<string>();
-  return picks.flatMap(([kind, item]) => {
-    if (!item || seen.has(item.id)) return [];
-    seen.add(item.id);
-    return [kind === "anime" ? { kind, item: item as AnimeSummary } : { kind, item: item as MangaSummary }];
-  });
-}
-
 export function HomePage({
   anime,
   manga,
   schedule,
   trending,
+  hero,
 }: {
+  hero: HeroSlide[];
   anime: AnimeSummary[];
   manga: MangaSummary[];
   schedule: ScheduleEntry[];
@@ -68,7 +49,7 @@ export function HomePage({
 
   return (
     <div className="min-h-screen bg-ink">
-      {anime.length + manga.length > 0 && <HeroBanner slides={heroSlides(anime, manga)} />}
+      {hero.length > 0 && <HeroBanner slides={hero} />}
 
       <div className="relative z-10 space-y-10 bg-ink pb-20 pt-8 sm:space-y-12">
         {watching.length > 0 && (

@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { episodeId, parseChapterId, parseEpisodeId, similarTo } from "../src/data/series.ts";
 import { hashPassword, verifyPassword } from "../src/server/password.ts";
-import { airedEpisodes, assignStreamingEpisodes, cleanDescription, parseStreamingTitle, pickChapters, type MdChapter } from "../src/server/sync/parse.ts";
+import { airedEpisodes, assignStreamingEpisodes, cleanDescription, parseChapterNumber, parseStreamingTitle, pickChapters, type MdChapter } from "../src/server/sync/parse.ts";
 
 test("AniList streaming titles map to episode number and title", () => {
   assert.deepEqual(parseStreamingTitle("Episode 12 - The Hero's Return"), { number: 12, title: "The Hero's Return" });
@@ -91,4 +91,12 @@ test("release-style subtitle names become readable labels", async () => {
   assert.equal(n({ label: "English 2" }), "English 2");
   assert.equal(n({ label: "spanish" }), "Spanish");
   assert.equal(n({ language: "eng" }), "English");
+});
+
+test("parseChapterNumber extracts chapter numbers accurately", () => {
+  assert.equal(parseChapterNumber("Chapter 1052.5"), 1052.5);
+  assert.equal(parseChapterNumber("one-piece-chapter-1100"), 1100);
+  assert.equal(parseChapterNumber("4143-10143000/spy-x-family-chapter-143"), 143);
+  assert.equal(parseChapterNumber("Chapter 14", 0), 14);
+  assert.equal(parseChapterNumber(99), 99);
 });

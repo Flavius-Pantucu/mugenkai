@@ -68,3 +68,15 @@ export function pickChapters(rows: MdChapter[]): [number, MdChapter][] {
   }
   return [...best.entries()].sort((a, b) => a[0] - b[0]);
 }
+
+/** Parses chapter number from title, slug, or chapter string (e.g. "Chapter 1052.5" -> 1052.5). */
+export function parseChapterNumber(raw: string | number | undefined, index = 0): number {
+  if (typeof raw === "number") return raw;
+  if (!raw) return index + 1;
+  const match = raw.match(/chapter\s*[-_]?\s*([\d.]+)/i) || raw.match(/([\d.]+)/);
+  if (match) {
+    const num = parseFloat(match[1]);
+    if (!isNaN(num)) return num;
+  }
+  return index + 1;
+}

@@ -4,7 +4,7 @@ import { animeList, getPages, mangaList } from "@/data/mock-data";
 import type { Anime, AnimeSummary, Chapter, Manga, MangaPage, MangaSummary } from "@/data/schema";
 import { db } from "./db";
 import { backendEnabled } from "./env";
-import { chapterPages, fetchLiveMangaChapters } from "./sync/mangadex";
+import { fetchChapterPagesWithFallback, fetchMangaChaptersWithFallback } from "./sync/manga-providers";
 import { airedEpisodes, cleanDescription, toStatus } from "./sync/parse";
 
 // Read side of the catalog. Database when DATABASE_URL is set (cached under the "catalog" tag,
@@ -409,11 +409,9 @@ export async function getManga(id: string): Promise<Manga | null> {
 
   if (!manga) return null;
 
-  // Live MangaDex fills titles the daily sync hasn't reached and chapters released since it ran.
-  // The count stays AniList's total: MangaDex having 16 English chapters doesn't make a 200-chapter series short.
   try {
-    const liveChapters = await fetchLiveMangaChapters(manga.title, manga.id, manga.id);
-    if (liveChapters.length > manga.chapters.length) {
+    const liveChapters = await fetchMangaChaptersWithFallback(manga.title, manga.id, manga.id);
+    if (liveChapters.length > 0) {
       return {
         ...manga,
         chapterCount: Math.max(manga.chapterCount, liveChapters.length),
@@ -421,17 +419,17 @@ export async function getManga(id: string): Promise<Manga | null> {
       };
     }
   } catch (err) {
-    console.warn(`[getManga] MangaDex live chapter fetch failed for ${manga.title}:`, err);
+    console.warn(`[getManga] Chapter fetch failed for ${manga.title}:`, err);
   }
 
   return manga;
 }
 
-/** Live page URLs for a chapter. Empty when the chapter is external-only or MangaDex is unreachable. */
+/** Live page URLs for a chapter. Empty when the chapter is external-only or providers are unreachable. */
 export async function getChapterPages(manga: Manga, chapter: Chapter): Promise<MangaPage[]> {
   if (chapter.mangadexChapterId && !chapter.externalUrl) {
     try {
-      const urls = await chapterPages(chapter.mangadexChapterId);
+      const urls = await fetchChapterPagesWithFallback(chapter.mangadexChapterId);
       if (urls.length > 0) {
         return urls.map((imageUrl, i) => ({
           id: `${chapter.id}-pg-${i + 1}`,
@@ -441,7 +439,7 @@ export async function getChapterPages(manga: Manga, chapter: Chapter): Promise<M
         }));
       }
     } catch (err) {
-      console.error("[getChapterPages] MangaDex error:", err);
+      console.error("[getChapterPages] provider error:", err);
     }
   }
   // Demo catalog only: placeholder art. With real data an empty list shows "unavailable" instead of fake pages.
