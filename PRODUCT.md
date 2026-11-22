@@ -25,8 +25,9 @@ Desktop browser first, also phone. Sessions are browse, then watch or read; the 
 ## Capabilities and Constraints
 
 - Next.js 16 app (App Router), React 19, Tailwind CSS 4, motion, lucide-react. Deployed on Vercel.
-- All catalog and user data is mock (`src/data/mock-data.ts`). Auth is mocked; any email and password logs in.
-- Backend is hello-world placeholders under `src/services`; database not created yet.
+- Catalog comes from AniList (daily sync into Postgres via Prisma; live AniList fallback for titles outside it). Without `DATABASE_URL` the app runs on the bundled demo catalog (`src/data/catalog.json`).
+- Real accounts (cookie sessions), progress, lists with scores, comments and AniList list import live in the database.
+- Episodes play through the embedded multi-server player; chapters come from MangaDex, which lacks most licensed English chapters, so manga pages link to official readers for the rest.
 - Routes: one home at `/`, anime and manga browse, details, watch, read, profile, admin, login, register.
 
 ## Brand Commitments
@@ -38,7 +39,7 @@ Desktop browser first, also phone. Sessions are browse, then watch or read; the 
 ## Evidence on Hand
 
 - Portfolio / demo project. No licensed catalog, no real users, no testimonials, no metrics.
-- Images are Unsplash URLs in `mock-data.ts`. Do not invent claims of licensing, catalog size or user counts.
+- Artwork comes from AniList. Do not invent claims of licensing, catalog size or user counts.
 
 ## Product Principles
 

@@ -36,6 +36,7 @@ export const animeList: Anime[] = catalog.anime.map((a) => ({
 
 
 export const mangaList: Manga[] = catalog.manga.map((m) => ({
+  links: [],
   ...m,
   chapters: Array.from({ length: m.chapterCount }, (_, i) => ({
     id: `${m.id}-ch-${i + 1}`,

@@ -8,7 +8,7 @@ export const GET = route(async () => {
   const entries = await db().listEntry.findMany({
     where: { userId: user.id },
     orderBy: { updatedAt: "desc" },
-    select: { seriesId: true, status: true },
+    select: { seriesId: true, status: true, score: true },
   });
   return json({ entries });
 });

@@ -96,6 +96,8 @@ model Series {
   // manga
   author           String?
   volumeCount      Int?
+  /// AniList's chapter count (null while publishing). MangaDex often has far fewer in English.
+  chapterTotal     Int?
   createdAt        DateTime      @default(now())
   syncedAt         DateTime      @updatedAt
 
@@ -246,6 +248,8 @@ model ListEntry {
   userId    String
   seriesId  String
   status    ListStatus @default(PLANNING)
+  /// The user's own score, 1-10.
+  score     Int?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { z } from "zod";
 import {
   Check,
   CheckCheck,
@@ -11,6 +12,8 @@ import {
   Radio,
   RotateCcw,
   Server,
+  Share2,
+  SkipForward,
   Sparkles,
   Tv,
 } from "lucide-react";
@@ -26,9 +29,12 @@ import type { Anime } from "@/data/schema";
 import { episodeLabel } from "@/data/series";
 import {
   episodeProgress,
+  getProgress,
   saveEpisodeProgress,
   useProgress,
+  WATCHED_AT,
 } from "@/lib/progress";
+import { createLocalStore } from "@/lib/local-store";
 
 import { NotFoundPage } from "./NotFoundPage";
 
@@ -41,6 +47,12 @@ const SERVERS = [
 ] as const;
 
 type ServerId = (typeof SERVERS)[number]["id"];
+
+// Player choices carry over between episodes and visits on this device.
+const PrefsSchema = z.object({ audio: z.enum(["sub", "dub"]), autoSkip: z.boolean(), autoNext: z.boolean() });
+const prefsStore = createLocalStore("mugenkai:watch-prefs", PrefsSchema, { audio: "sub", autoSkip: true, autoNext: true });
+const setPref = (p: Partial<z.infer<typeof PrefsSchema>>) => prefsStore.write((cur) => ({ ...cur, ...p }));
+const AUTO_NEXT_SECONDS = 8;
 
 /**
  * Episodes are embedded through AniFlow's multi-source engine.
@@ -61,10 +73,38 @@ export function WatchPage({
   // What the player reports it is actually playing; it can switch servers on its own (menu or failover).
   const [playing, setPlaying] = useState<ServerId | null>(null);
   const [reloads, setReloads] = useState(0);
-  const [audio, setAudio] = useState<"sub" | "dub">("sub");
-  const [autoSkip, setAutoSkip] = useState(true);
+  const { audio, autoSkip, autoNext } = prefsStore.useValue();
+  const setAudio = (a: "sub" | "dub") => setPref({ audio: a });
+  const searchParams = useSearchParams();
+  // Where playback starts: a shared ?t= link, else where this episode was left. Resolved after
+  // hydration (saved progress isn't known on the server), and only once per episode: changing the
+  // iframe URL afterwards would restart the stream.
+  const [startAt, setStartAt] = useState<number | null>(null);
+  const currentTime = useRef(0);
+  const [countdown, setCountdown] = useState<number | null>(null);
 
   const episode = anime.episodes.find((e) => e.id === episodeId);
+
+  useEffect(() => {
+    if (!episode) return;
+    const shared = Number(searchParams.get("t"));
+    const saved = getProgress().episodes[episode.id]?.progress ?? 0;
+    setStartAt(shared > 0 ? shared : saved > 2 && saved < WATCHED_AT ? Math.round((saved / 100) * episode.duration * 60) : 0);
+    setCountdown(null);
+    currentTime.current = 0;
+  }, [episode?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-next: count down after the episode ends; Cancel or leaving the page stops it.
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown <= 0) {
+      const next = episode && anime.episodes[anime.episodes.indexOf(episode) + 1];
+      if (next) router.push(`/watch/${anime.id}/${next.id}`);
+      return;
+    }
+    const t = setTimeout(() => setCountdown((c) => (c === null ? null : c - 1)), 1000);
+    return () => clearTimeout(t);
+  }, [countdown]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!episode) return <NotFoundPage />;
 
@@ -96,9 +136,25 @@ export function WatchPage({
   };
 
   // Embedded through the local AniFlow embed route
-  const streamUrl = season
-    ? `/embed/ani/${season.id}/${episode.episodeNumber}/${audio}?server=${server}&autoskipIntro=${autoSkip ? 1 : 0}&autoskipOutro=${autoSkip ? 1 : 0}`
-    : null;
+  const streamUrl =
+    season && startAt !== null
+      ? `/embed/ani/${season.id}/${episode.episodeNumber}/${audio}?server=${server}&autoskipIntro=${autoSkip ? 1 : 0}&autoskipOutro=${autoSkip ? 1 : 0}&startAt=${startAt}`
+      : null;
+
+  const share = async () => {
+    const t = Math.floor(currentTime.current);
+    const url = `${window.location.origin}/watch/${anime.id}/${episode.id}${t > 0 ? `?t=${t}` : ""}`;
+    const at = t > 0 ? ` at ${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}` : "";
+    try {
+      if (navigator.share) await navigator.share({ title: `${anime.title} · ${episodeLabel(anime, episode)}`, url });
+      else {
+        await navigator.clipboard.writeText(url);
+        toast.success(`Link copied${at}`);
+      }
+    } catch {
+      // share sheet dismissed
+    }
+  };
 
   // Listen for playback progress from AniFlow's postMessage bridge
   useEffect(() => {
@@ -112,20 +168,23 @@ export function WatchPage({
         return;
       }
 
-      if (msg.name === "progress" && typeof msg.data?.percent === "number") {
-        const p = Math.round(msg.data.percent);
+      // The player reports `percentage` (0-100) and `currentTime` (seconds) every few seconds.
+      if (msg.name === "progress" && typeof msg.data?.percentage === "number") {
+        if (typeof msg.data.currentTime === "number") currentTime.current = msg.data.currentTime;
+        const p = Math.round(msg.data.percentage);
         if (p > 0) {
           saveEpisodeProgress(episode.id, p);
         }
       } else if (msg.name === "ended") {
         saveEpisodeProgress(episode.id, 100);
-        toast.success(`${episodeLabel(anime, episode)} finished!`);
+        if (nextEp && prefsStore.read().autoNext) setCountdown(AUTO_NEXT_SECONDS);
+        else toast.success(`${episodeLabel(anime, episode)} finished!`);
       }
     };
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [episode.id, anime, episode]);
+  }, [episode.id, anime, episode, nextEp]);
 
   const markWatched = (goNext: boolean) => {
     saveEpisodeProgress(episode.id, 100);
@@ -175,10 +234,27 @@ export function WatchPage({
                     allow="autoplay; fullscreen; picture-in-picture"
                     scrolling="no"
                   />
-                ) : (
+                ) : season ? null : (
                   <div className="flex h-full items-center justify-center p-6 text-center text-sm text-zinc-400">
                     Could not find this episode's season. Check the season data
                     in your catalog.
+                  </div>
+                )}
+                {countdown !== null && nextEp && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-ink/85 p-6 text-center backdrop-blur-sm">
+                    <p className="text-sm text-zinc-300">Up next in {countdown}s</p>
+                    <p className="text-lg font-bold text-white">
+                      {episodeLabel(anime, nextEp)} · {nextEp.title}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button onClick={() => setCountdown(0)}>
+                        <SkipForward />
+                        Play now
+                      </Button>
+                      <Button variant="outline" onClick={() => setCountdown(null)}>
+                        Cancel
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -253,7 +329,7 @@ export function WatchPage({
 
                     <button
                       type="button"
-                      onClick={() => setAutoSkip((prev) => !prev)}
+                      onClick={() => setPref({ autoSkip: !autoSkip })}
                       className={cn(
                         "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-medium transition-colors ring-1 ring-white/10 cursor-pointer",
                         autoSkip
@@ -264,6 +340,30 @@ export function WatchPage({
                     >
                       <Sparkles className="size-3.5" />
                       Auto-Skip: {autoSkip ? "ON" : "OFF"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPref({ autoNext: !autoNext })}
+                      aria-pressed={autoNext}
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-medium transition-colors ring-1 ring-white/10 cursor-pointer",
+                        autoNext ? "bg-primary/15 text-primary ring-primary/30" : "bg-black/40 text-zinc-400 hover:text-white",
+                      )}
+                      title="Play the next episode when this one ends"
+                    >
+                      <SkipForward className="size-3.5" />
+                      Auto-Next: {autoNext ? "ON" : "OFF"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={share}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-black/40 px-2.5 py-1.5 font-medium text-zinc-400 ring-1 ring-white/10 transition-colors hover:text-white cursor-pointer"
+                      title="Share a link that starts at the current moment"
+                    >
+                      <Share2 className="size-3.5" />
+                      Share
                     </button>
                   </div>
                 </div>

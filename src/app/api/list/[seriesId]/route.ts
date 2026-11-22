@@ -6,16 +6,16 @@ import { hasPrismaCode } from "@/server/prisma-errors";
 
 type Ctx = { params: Promise<{ seriesId: string }> };
 
-/** Add a title or change its status. Body: { status } (defaults to PLANNING). */
+/** Add a title or change its status / score. Body: { status, score? } (status defaults to PLANNING). */
 export const PUT = route(async (req: Request, ctx: Ctx) => {
-  const { status } = await readJson(req, ListEntryInputSchema);
+  const { status, score } = await readJson(req, ListEntryInputSchema);
   const user = await requireUser();
   const { seriesId } = await ctx.params;
   try {
     await db().listEntry.upsert({
       where: { userId_seriesId: { userId: user.id, seriesId } },
-      create: { userId: user.id, seriesId, status },
-      update: { status },
+      create: { userId: user.id, seriesId, status, score },
+      update: { status, score },
     });
   } catch (err) {
     if (hasPrismaCode(err, "P2003")) throw new HttpError(404, "unknown_series");

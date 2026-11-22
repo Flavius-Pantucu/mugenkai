@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 import { LIST_STATUSES, type ListStatus, type Status } from "@/data/schema";
-import { listLabel, setListStatus, useListStatus } from "@/lib/list";
+import { listLabel, setListScore, setListStatus, useListEntry } from "@/lib/list";
 import { markFinished } from "@/lib/progress";
 import { CommentSection } from "./CommentSection";
 import { ResponsiveArt } from "./ResponsiveArt";
@@ -68,6 +68,10 @@ export interface SeriesPageProps {
   seriesId: string;
   threadId: string; // comment thread for the whole series, e.g. "anime:16498"
   related: React.ReactNode;
+  /** Above the episode/chapter grid, e.g. "16 of 201 chapters here, read the rest on Tapas". */
+  notice?: React.ReactNode;
+  /** Between the grid and the comments: characters, trailer, adaptations, recommendations. */
+  extras?: React.ReactNode;
 }
 
 const NOUN = {
@@ -90,7 +94,8 @@ export function SeriesPage(props: SeriesPageProps) {
   const [activeId, setActiveId] = useState(resumeGroup?.id ?? groups[0]?.id ?? "");
   const [newestFirst, setNewestFirst] = useState(false);
   const [hideDone, setHideDone] = useState(false);
-  const listStatus = useListStatus(props.seriesId);
+  const listEntry = useListEntry(props.seriesId);
+  const listStatus = listEntry?.status;
   const [shown, setShown] = useState(PAGE);
 
   // Saved progress arrives after hydration: jump to the resume season/volume once, the first time it's known.
@@ -186,12 +191,16 @@ export function SeriesPage(props: SeriesPageProps) {
               </Button>
             )}
             <ListStatusMenu kind={kind} seriesId={props.seriesId} status={listStatus} />
+            <ScoreMenu seriesId={props.seriesId} score={listEntry?.score ?? null} />
           </div>
         </div>
       </header>
 
       <main className="mx-auto w-[90%] pb-20">
+        {props.notice && <div className="mt-8 sm:mt-10">{props.notice}</div>}
+
         {/* Toolbar: pick a season or volume, then order / filter what it contains. */}
+        {groups.length > 0 && (
         <div className="mt-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3 sm:mt-10">
           <div>
             {groups.length > 1 ? (
@@ -245,6 +254,9 @@ export function SeriesPage(props: SeriesPageProps) {
           </div>
         </div>
 
+        )}
+
+        {groups.length > 0 && (
         <div id="series-units" className="mt-5">
           {units.length === 0 ? (
             <Card className="bg-transparent text-center">
@@ -285,6 +297,9 @@ export function SeriesPage(props: SeriesPageProps) {
             </>
           )}
         </div>
+        )}
+
+        {props.extras}
 
         <CommentSection threadId={props.threadId} className="mt-16 max-w-3xl" />
       </main>
@@ -329,6 +344,43 @@ function ListStatusMenu({ kind, seriesId, status }: { kind: "anime" | "manga"; s
     </DropdownMenu>
   );
 }
+
+/** The user's own 1-10 score. Rating a title not on the list adds it as Completed. */
+function ScoreMenu({ seriesId, score }: { seriesId: string; score: number | null }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="lg" variant="ghost" className="font-semibold text-white hover:bg-white/10" aria-label={score ? `Your score: ${score} of 10` : "Rate"}>
+          <Star className={cn(score && "fill-coral-400 text-coral-400")} />
+          {score ? `${score}/10` : "Rate"}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-40">
+        <DropdownMenuRadioGroup value={score ? String(score) : ""} onValueChange={(v) => setListScore(seriesId, Number(v))}>
+          {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((n) => (
+            <DropdownMenuRadioItem key={n} value={String(n)}>
+              {n}
+              <span className="text-xs text-muted-foreground">{SCORE_WORDS[n]}</span>
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+        {score && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => setListScore(seriesId, null)}>
+              <X />
+              Clear score
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+const SCORE_WORDS: Record<number, string> = {
+  10: "Masterpiece", 9: "Great", 8: "Very good", 7: "Good", 6: "Fine", 5: "Average", 4: "Bad", 3: "Very bad", 2: "Horrible", 1: "Appalling",
+};
 
 function UnitCard({ unit, showProgress, current, doneWord }: { unit: SeriesUnit; showProgress: boolean; current: boolean; doneWord: string }) {
   const done = showProgress && unit.progress >= 100;

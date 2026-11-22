@@ -151,7 +151,8 @@ export function getSeasons(a: Anime): Season[] {
 
 /** Group chapters into the real volume count when known, else 10 per volume. */
 export function getVolumes(m: Manga): Volume[] {
-  const size = m.volumeCount ? Math.ceil(m.chapters.length / m.volumeCount) : 10;
+  // Split by the series total, not what's readable here: 16 of 201 chapters over 18 volumes is still ~11 per volume.
+  const size = m.volumeCount ? Math.max(1, Math.ceil(Math.max(m.chapterCount, m.chapters.length) / m.volumeCount)) : 10;
   const volumes: Volume[] = [];
   for (let start = 0, n = 1; start < m.chapters.length; start += size, n++) {
     volumes.push({

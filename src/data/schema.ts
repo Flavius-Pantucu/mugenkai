@@ -99,7 +99,10 @@ export const AnimeSchema = CatalogAnimeSchema.extend({
   episodes: z.array(EpisodeSchema),
   links: z.array(StreamingLinkSchema).default([]), // series-level "where to watch"
 });
-export const MangaSchema = CatalogMangaSchema.extend({ chapters: z.array(ChapterSchema) });
+export const MangaSchema = CatalogMangaSchema.extend({
+  chapters: z.array(ChapterSchema), // what can be read here; chapterCount is the series total
+  links: z.array(StreamingLinkSchema).default([]), // official readers
+});
 
 export const UserProfileSchema = z.object({
   id: z.string().min(1),
@@ -202,15 +205,23 @@ export const LIST_STATUSES = ["CURRENT", "PLANNING", "COMPLETED", "PAUSED", "DRO
 export const ListStatusSchema = z.enum(LIST_STATUSES);
 export type ListStatus = z.infer<typeof ListStatusSchema>;
 
-export const ListEntrySchema = z.object({ seriesId: z.string().min(1).max(64), status: ListStatusSchema });
+export const ListScoreSchema = z.number().int().min(1).max(10);
+export const ListEntrySchema = z.object({
+  seriesId: z.string().min(1).max(64),
+  status: ListStatusSchema,
+  score: ListScoreSchema.nullable().default(null), // the user's own rating
+});
 export type ListEntry = z.infer<typeof ListEntrySchema>;
-export const ListEntryInputSchema = z.object({ status: ListStatusSchema.default("PLANNING") });
+export const ListEntryInputSchema = z.object({
+  status: ListStatusSchema.default("PLANNING"),
+  score: ListScoreSchema.nullable().optional(), // omitted = keep the current score
+});
 
 /** Browser copy of the list, newest first. Accepts the old `{ seriesIds }` shape (everything becomes "Planning"). */
 export const ListStateSchema = z.union([
   z.object({ entries: z.array(ListEntrySchema) }),
   z.object({ seriesIds: z.array(z.string()) }).transform(({ seriesIds }) => ({
-    entries: seriesIds.map((seriesId): ListEntry => ({ seriesId, status: "PLANNING" })),
+    entries: seriesIds.map((seriesId): ListEntry => ({ seriesId, status: "PLANNING", score: null })),
   })),
 ]);
 

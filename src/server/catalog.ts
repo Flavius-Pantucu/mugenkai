@@ -90,7 +90,8 @@ const dbCatalog = unstable_cache(
         catalog.manga.push({
           ...base(r),
           author: r.author ?? "Unknown",
-          chapterCount: r._count.chapters,
+          // AniList's total when known: MangaDex often lacks licensed chapters in English.
+          chapterCount: Math.max(r.chapterTotal ?? 0, r._count.chapters),
           volumeCount: r.volumeCount,
           firstChapterId: r.chapters[0]?.id ?? null,
         });
@@ -137,13 +138,14 @@ const dbAnime = unstable_cache(
 
 const dbManga = unstable_cache(
   async (id: string): Promise<Manga | null> => {
-    const r = await db().series.findUnique({ where: { id, kind: "MANGA" }, include: { chapters: { orderBy: { number: "asc" } } } });
+    const r = await db().series.findUnique({ where: { id, kind: "MANGA" }, include: { chapters: { orderBy: { number: "asc" } }, links: true } });
     if (!r) return null;
     const summary = (await dbCatalog()).manga.find((m) => m.id === id);
     if (!summary) return null;
     const { firstChapterId: _first, ...rest } = summary;
     return {
       ...rest,
+      links: r.links.map((l) => ({ provider: l.provider, url: l.url })),
       chapters: r.chapters.map((c) => ({
         id: c.id,
         mangaId: c.seriesId,
@@ -300,6 +302,7 @@ async function fetchLiveAniListManga(id: string): Promise<Manga | null> {
               chapters
               volumes
               genres
+              externalLinks { url site type language }
               staff(perPage: 2) {
                 edges {
                   role
@@ -342,16 +345,11 @@ async function fetchLiveAniListManga(id: string): Promise<Manga | null> {
       author: m.staff?.edges?.[0]?.node?.name?.full || "Unknown",
       chapterCount,
       volumeCount: m.volumes || null,
-      chapters: Array.from({ length: chapterCount || 10 }, (_, i) => ({
-        id: `${m.id}-ch-${i + 1}`,
-        mangaId: String(m.id),
-        chapterNumber: i + 1,
-        title: `Chapter ${i + 1}`,
-        pageCount: 18,
-        externalUrl: null,
-        mangadexChapterId: null,
-        scanlationGroup: null,
-      })),
+      // Real chapters come from MangaDex in getManga; none here rather than fake ones.
+      chapters: [],
+      links: (m.externalLinks ?? [])
+        .filter((l: { type: string; language: string | null }) => l.type === "STREAMING" && (!l.language || l.language === "English"))
+        .map((l: { site: string; url: string }) => ({ provider: l.site, url: l.url })),
     };
 
     liveMangaCache.set(id, { manga, timestamp: Date.now() });
@@ -411,13 +409,14 @@ export async function getManga(id: string): Promise<Manga | null> {
 
   if (!manga) return null;
 
-  // Always attempt to fetch real chapters live from MangaDex
+  // Live MangaDex fills titles the daily sync hasn't reached and chapters released since it ran.
+  // The count stays AniList's total: MangaDex having 16 English chapters doesn't make a 200-chapter series short.
   try {
     const liveChapters = await fetchLiveMangaChapters(manga.title, manga.id, manga.id);
-    if (liveChapters && liveChapters.length > 0) {
+    if (liveChapters.length > manga.chapters.length) {
       return {
         ...manga,
-        chapterCount: liveChapters.length,
+        chapterCount: Math.max(manga.chapterCount, liveChapters.length),
         chapters: liveChapters,
       };
     }
@@ -445,7 +444,8 @@ export async function getChapterPages(manga: Manga, chapter: Chapter): Promise<M
       console.error("[getChapterPages] MangaDex error:", err);
     }
   }
-  return getPages(manga, chapter);
+  // Demo catalog only: placeholder art. With real data an empty list shows "unavailable" instead of fake pages.
+  return backendEnabled ? [] : getPages(manga, chapter);
 }
 
 /** AniList id of any season → our series id (sequel seasons trend and air under their own ids). */

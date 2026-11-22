@@ -7,7 +7,7 @@ import type { Anime, AnimeSummary } from "@/data/schema";
 import { episodeLabel, getSeasons } from "@/data/series";
 import { episodeProgress, useProgress } from "@/lib/progress";
 
-export function AnimeDetailsPage({ anime, related }: { anime: Anime; related: AnimeSummary[] }) {
+export function AnimeDetailsPage({ anime, related, extras }: { anime: Anime; related: AnimeSummary[]; extras?: React.ReactNode }) {
   const progressState = useProgress();
   const seasons = getSeasons(anime);
   const lastEpisode = anime.episodes.at(-1);
@@ -53,6 +53,7 @@ export function AnimeDetailsPage({ anime, related }: { anime: Anime; related: An
           };
         }),
       }))}
+      extras={extras}
       related={
         related.length > 0 && (
           <ContentRow title="More like this">

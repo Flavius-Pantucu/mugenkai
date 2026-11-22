@@ -9,7 +9,7 @@ import { searchIndex } from "@/data/series";
 import { getCatalog } from "@/server/catalog";
 
 // Android: the keyboard shrinks the layout instead of covering it (iOS ignores this; search pins to the top).
-export const viewport: Viewport = { interactiveWidget: "resizes-content" };
+export const viewport: Viewport = { interactiveWidget: "resizes-content", themeColor: "#061013" };
 
 const description = "Watch anime and read manga, all in one place. Track every episode and chapter you finish.";
 
@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   description,
   openGraph: { title: "Mugenkai", description, siteName: "Mugenkai", type: "website" },
   twitter: { card: "summary_large_image", title: "Mugenkai", description },
+  // Installed on an iPhone home screen: opens without browser chrome, dark status bar.
+  appleWebApp: { capable: true, title: "Mugenkai", statusBarStyle: "black" },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

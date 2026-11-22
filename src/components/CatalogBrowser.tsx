@@ -45,6 +45,23 @@ const SORTS: Record<Sort, { label: string; compare: (a: CatalogItem, b: CatalogI
   title: { label: "A–Z", compare: (a, b) => a.title.localeCompare(b.title) },
 };
 
+// Decades and score floors for the extra filters. "any" = no filter.
+const ERAS: Record<string, { label: string; test: (year: number) => boolean }> = {
+  any: { label: "Any year", test: () => true },
+  "2020": { label: "2020s", test: (y) => y >= 2020 },
+  "2010": { label: "2010s", test: (y) => y >= 2010 && y < 2020 },
+  "2000": { label: "2000s", test: (y) => y >= 2000 && y < 2010 },
+  "1990": { label: "1990s", test: (y) => y >= 1990 && y < 2000 },
+  older: { label: "Before 1990", test: (y) => y < 1990 },
+};
+const SCORES: Record<string, { label: string; min: number }> = {
+  any: { label: "Any score", min: 0 },
+  "8": { label: "8+", min: 8 },
+  "7": { label: "7+", min: 7 },
+  "6": { label: "6+", min: 6 },
+};
+const PAGE = 48; // grid items rendered per step of the infinite scroll
+
 const isSort = (v: string): v is Sort => v in SORTS;
 const isStatus = (v: string): v is StatusFilter => v === "ALL" || v === "ONGOING" || v === "COMPLETED";
 
@@ -53,6 +70,9 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
   const [status, setStatus] = useState<StatusFilter>("ALL");
   const [genres, setGenres] = useState<string[]>([]);
   const [sort, setSort] = useState<Sort>("popular");
+  const [era, setEra] = useState("any");
+  const [score, setScore] = useState("any");
+  const [shown, setShown] = useState(PAGE);
 
   // Genres actually present, most common first.
   const genreOptions = useMemo(() => {
@@ -68,17 +88,33 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
         (i) =>
           (!q || i.title.toLowerCase().includes(q) || i.nativeTitle.toLowerCase().includes(q)) &&
           (status === "ALL" || i.status === status) &&
-          genres.every((g) => i.genres.includes(g)),
+          genres.every((g) => i.genres.includes(g)) &&
+          ERAS[era].test(i.year) &&
+          i.rating >= SCORES[score].min,
       )
       .sort(SORTS[sort].compare);
-  }, [items, query, status, genres, sort]);
+  }, [items, query, status, genres, sort, era, score]);
 
-  const filtered = query !== "" || status !== "ALL" || genres.length > 0;
+  const filtered = query !== "" || status !== "ALL" || genres.length > 0 || era !== "any" || score !== "any";
   const clear = () => {
     setQuery("");
     setStatus("ALL");
     setGenres([]);
+    setEra("any");
+    setScore("any");
   };
+
+  // Infinite scroll: a sentinel under the grid renders the next page as it nears the viewport.
+  useEffect(() => setShown(PAGE), [results]);
+  const sentinel = useRef<HTMLDivElement>(null);
+  const more = results.length > shown;
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el || !more) return;
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setShown((n) => n + PAGE), { rootMargin: "800px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [more, shown]);
 
   // Wallpaper: banner of the most popular title, fading into the page.
   // Random pick from the 15 most popular, chosen after mount so server and client HTML match.
@@ -179,6 +215,32 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
 
             <GenrePicker options={genreOptions} value={genres} onChange={setGenres} />
 
+            <Select value={era} onValueChange={setEra}>
+              <SelectTrigger aria-label="Year" className="w-[130px] bg-ink-raised">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(ERAS).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>
+                    {v.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={score} onValueChange={setScore}>
+              <SelectTrigger aria-label="Minimum score" className="w-[120px] bg-ink-raised">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(SCORES).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>
+                    {v.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <div className="ml-auto flex items-center gap-2">
               <Label htmlFor="catalog-sort" className="text-[13px] font-normal text-muted-foreground">
                 Sort
@@ -199,6 +261,13 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
           </div>
 
           {/* Active filters as removable badges; nothing shows when no genre is picked. */}
+          {filtered && genres.length === 0 && (era !== "any" || score !== "any") && (
+            <div className="mt-3">
+              <Button variant="link" size="sm" onClick={clear} className="h-auto px-1">
+                Clear all filters
+              </Button>
+            </div>
+          )}
           {genres.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center gap-2">
               {genres.map((g) => (
@@ -224,18 +293,30 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
           <Card className="mt-10 bg-transparent text-center">
             <CardContent className="py-10">
               <p className="text-[15px] text-zinc-200">No {noun} matches these filters.</p>
-              <p className="mt-1 text-[13px] text-muted-foreground">Try fewer genres or a shorter search.</p>
+              <p className="mt-1 text-[13px] text-muted-foreground">
+                Try fewer filters. This page lists the most popular titles; the search at the top finds everything else.
+              </p>
               <Button onClick={clear} className="mt-4">
                 Clear filters
               </Button>
             </CardContent>
           </Card>
         ) : (
-          <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {results.map((i) => (
-              <li key={i.id}>{renderItem(i)}</li>
-            ))}
-          </ul>
+          <>
+            <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {results.slice(0, shown).map((i) => (
+                <li key={i.id}>{renderItem(i)}</li>
+              ))}
+            </ul>
+            {more && (
+              <div ref={sentinel} className="mt-10 flex justify-center">
+                <Button variant="outline" onClick={() => setShown((n) => n + PAGE)}>
+                  Show more
+                  <span className="text-muted-foreground">· {results.length - shown} left</span>
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </main>
       <Footer />

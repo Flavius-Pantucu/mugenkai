@@ -3,6 +3,11 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
+import { z } from "zod";
+import { createLocalStore } from "@/lib/local-store";
+
+/** Per-device switch (footer). Reduced-motion and touch-only devices never get the custom cursor. */
+export const cursorStore = createLocalStore("mugenkai:custom-cursor", z.boolean(), true);
 
 interface Particle {
   id: number;
@@ -17,9 +22,21 @@ export function CustomCursor() {
   const [isMoving, setIsMoving] = useState(false);
   // Off over iframes (the parent gets no mouse events in there) and once the pointer leaves the window.
   const [hidden, setHidden] = useState(false);
+  const enabled = cursorStore.useValue();
+  const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
-    if (pathname.startsWith("/embed")) return;
+    const q = window.matchMedia("(prefers-reduced-motion: no-preference) and (pointer: fine)");
+    const update = () => setAllowed(q.matches);
+    update();
+    q.addEventListener("change", update);
+    return () => q.removeEventListener("change", update);
+  }, []);
+
+  const on = enabled && allowed && !pathname.startsWith("/embed");
+
+  useEffect(() => {
+    if (!on) return;
     document.documentElement.classList.add("has-custom-cursor");
     let timeout: ReturnType<typeof setTimeout>;
     let particleId = 0;
@@ -61,9 +78,9 @@ export function CustomCursor() {
       document.documentElement.removeEventListener("mouseleave", handleLeave);
       clearTimeout(timeout);
     };
-  }, [pathname]);
+  }, [on]);
 
-  if (pathname.startsWith("/embed") || hidden) return null;
+  if (!on || hidden) return null;
 
   return (
     <>

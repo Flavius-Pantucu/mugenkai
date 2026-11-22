@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BookOpen, Clock, Heart, LogOut, Settings, Shield, Tv, User } from "lucide-react";
+import { BookOpen, Clock, Heart, LogOut, Settings, Shield, Star, Tv, User } from "lucide-react";
 import { toast } from "sonner";
 import { AnimeCard, MangaCard } from "@/components/ContentCard";
 import { Footer } from "@/components/Footer";
@@ -22,7 +22,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/AuthContext";
 import { LIST_STATUSES, ProfileSettingsSchema, type ListStatus, type AnimeSummary, type MangaSummary, type ProfileSettingsInput, type UserProfile } from "@/data/schema";
 import { episodeLabel, parseChapterId, parseEpisodeId } from "@/data/series";
-import { listLabel, useList } from "@/lib/list";
+import { importFromAniList, listLabel, useList } from "@/lib/list";
+import { isRemote } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { continueWatching, useProgress, WATCHED_AT } from "@/lib/progress";
 
@@ -43,12 +44,12 @@ export function ProfilePage({ anime, manga }: { anime: AnimeSummary[]; manga: Ma
     const duration = animeById.get(parseEpisodeId(id)?.animeId ?? "")?.episodeDuration ?? 24;
     return sum + (Math.min(e.progress, WATCHED_AT) / WATCHED_AT) * duration;
   }, 0);
-  type ListItem = ({ kind: "anime"; item: AnimeSummary } | { kind: "manga"; item: MangaSummary }) & { status: ListStatus };
-  const listItems = list.flatMap(({ seriesId: id, status }): ListItem[] => {
+  type ListItem = ({ kind: "anime"; item: AnimeSummary } | { kind: "manga"; item: MangaSummary }) & { status: ListStatus; score: number | null };
+  const listItems = list.flatMap(({ seriesId: id, status, score }): ListItem[] => {
     const a = animeById.get(id);
-    if (a) return [{ kind: "anime", item: a, status }];
+    if (a) return [{ kind: "anime", item: a, status, score }];
     const m = manga.find((x) => x.id === id);
-    return m ? [{ kind: "manga", item: m, status }] : [];
+    return m ? [{ kind: "manga", item: m, status, score }] : [];
   });
   const shownItems = listFilter === "ALL" ? listItems : listItems.filter((i) => i.status === listFilter);
   const countOf = (f: ListStatus | "ALL") => (f === "ALL" ? listItems.length : listItems.filter((i) => i.status === f).length);
@@ -193,6 +194,7 @@ export function ProfilePage({ anime, manga }: { anime: AnimeSummary[]; manga: Ma
           </TabsContent>
 
           <TabsContent value="list" className="space-y-6">
+            <AniListImport />
             {listItems.length === 0 ? (
               <EmptyState
                 title="Your list is empty"
@@ -226,7 +228,15 @@ export function ProfilePage({ anime, manga }: { anime: AnimeSummary[]; manga: Ma
                     {shownItems.map((s) => (
                       <li key={s.item.id} className="space-y-1.5">
                         {s.kind === "anime" ? <AnimeCard anime={s.item} fluid /> : <MangaCard manga={s.item} fluid />}
-                        <Badge variant="secondary" className="rounded">{listLabel(s.status, s.kind)}</Badge>
+                        <div className="flex items-center gap-1.5">
+                          <Badge variant="secondary" className="rounded">{listLabel(s.status, s.kind)}</Badge>
+                          {s.score && (
+                            <span className="inline-flex items-center gap-0.5 text-[12.5px] font-semibold tabular-nums text-white">
+                              <Star className="size-3 fill-coral-400 text-coral-400" />
+                              {s.score}
+                            </span>
+                          )}
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -259,6 +269,41 @@ function EmptyState({ title, body, actions }: { title: string; body: string; act
         ))}
       </div>
     </Card>
+  );
+}
+
+/** Pulls a public AniList list (MyAnimeList users can import into AniList first). Needs an account. */
+function AniListImport() {
+  const [username, setUsername] = useState("");
+  const [busy, setBusy] = useState(false);
+  if (!isRemote()) return null;
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username.trim()) return;
+    setBusy(true);
+    try {
+      const { imported, skipped } = await importFromAniList(username.trim());
+      toast.success(`Imported ${imported} ${imported === 1 ? "title" : "titles"}${skipped ? ` · ${skipped} not in our catalog` : ""}`);
+      setUsername("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Import failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <form onSubmit={submit} className="flex flex-wrap items-end gap-2 rounded-xl border border-white/10 bg-ink-raised p-4">
+      <label className="min-w-[200px] flex-1 text-[13px] text-muted-foreground">
+        Import from AniList
+        <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="AniList username" autoComplete="off" className="mt-1.5" />
+      </label>
+      <Button type="submit" disabled={busy || !username.trim()}>
+        {busy ? "Importing…" : "Import"}
+      </Button>
+      <p className="w-full text-[12px] text-muted-foreground">
+        Overwrites matching titles. On MyAnimeList? Import your MAL list into AniList first, then import here.
+      </p>
+    </form>
   );
 }
 

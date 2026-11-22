@@ -106,12 +106,8 @@ export async function fetchLiveMangaChapters(title: string, anilistId: string, s
   }
 
   try {
-    let mdId = await findMangadexId(title, anilistId);
-    if (!mdId) {
-      const searchRes = await get<{ data: MdManga[] }>(`/manga?title=${encodeURIComponent(title)}&limit=5&${RATINGS}`);
-      mdId = searchRes.data?.find((m) => m.attributes.links?.al === anilistId)?.id || searchRes.data?.[0]?.id || null;
-    }
-
+    // Exact AniList match only: the first search hit is often a spin-off or a different series.
+    const mdId = await findMangadexId(title, anilistId);
     if (!mdId) return [];
 
     const rows: MdChapter[] = [];

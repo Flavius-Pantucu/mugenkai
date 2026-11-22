@@ -19,6 +19,7 @@ import { useAuth } from "@/context/AuthContext";
 import type { SearchIndex } from "@/data/series";
 import { LogoMark } from "./Logo";
 import { NavSearch } from "./NavSearch";
+import { NotificationBell } from "./NotificationBell";
 
 const navLinks = [
   { label: "Home", to: "/", icon: Home },
@@ -76,6 +77,7 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
 
         <div className="col-start-3 flex items-center gap-1.5 justify-self-end">
           <NavSearch index={searchIndex} />
+          <NotificationBell />
 
           {isAuthenticated && user ? (
             <DropdownMenu>

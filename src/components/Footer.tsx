@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { cursorStore } from "./CustomCursor";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { LogoMark } from "./Logo";
@@ -42,10 +45,25 @@ export function Footer() {
         </div>
 
         <Separator className="mt-10 bg-white/5" />
-        <p className="pt-6 text-center text-xs text-zinc-600 sm:text-left">
-          2026 Mugenkai. Titles and artwork belong to their owners.
-        </p>
+        <div className="flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
+          <p className="text-center text-xs text-zinc-600 sm:text-left">2026 Mugenkai. Titles and artwork belong to their owners.</p>
+          <CursorToggle />
+        </div>
       </div>
     </footer>
+  );
+}
+
+function CursorToggle() {
+  const on = cursorStore.useValue();
+  return (
+    <button
+      type="button"
+      onClick={() => cursorStore.write((v) => !v)}
+      aria-pressed={on}
+      className="hidden text-xs text-zinc-500 underline-offset-4 hover:text-lagoon-300 hover:underline lg:block"
+    >
+      Glow cursor: {on ? "on" : "off"}
+    </button>
   );
 }

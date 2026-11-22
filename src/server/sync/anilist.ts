@@ -248,8 +248,17 @@ async function writeManga(m: Media) {
     status: toStatus(m.status),
     author: m.staff.edges.find((e) => /story/i.test(e.role))?.node.name.full ?? m.staff.edges[0]?.node.name.full ?? "Unknown",
     volumeCount: m.volumes,
+    chapterTotal: m.chapters,
   };
   await db().series.upsert({ where: { id }, create: { id, ...series }, update: series });
+  // Official English readers: where to send people for chapters MangaDex can't host.
+  for (const l of streamingLinks(m).filter((l) => !l.language || l.language === "English")) {
+    await db().streamingLink.upsert({
+      where: { url: l.url },
+      create: { url: l.url, provider: l.site, language: l.language, seriesId: id },
+      update: { provider: l.site, language: l.language, seriesId: id },
+    });
+  }
 }
 
 // ─── Jobs ────────────────────────────────────────────────────────────────────
