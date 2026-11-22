@@ -159,9 +159,9 @@ async function writeAnime(chain: Media[], full: boolean) {
   const counts = chain.map(airedEpisodes);
   const streaming = assignStreamingEpisodes(chain.map((s, i) => ({ episodeCount: counts[i], streamingEpisodes: s.streamingEpisodes })));
   // Kitsu only for seasons with gaps, one season at a time to stay polite.
-  const kitsu: Map<number, { title: string; thumbnail: string | null }>[] = [];
+  const kitsu: Awaited<ReturnType<typeof kitsuEpisodes>>[] = [];
   for (const [i, s] of chain.entries())
-    kitsu.push(full && streaming[i].length < counts[i] ? await kitsuEpisodes(String(s.id), counts[i]) : new Map());
+    kitsu.push(full ? await kitsuEpisodes(String(s.id), counts[i]) : new Map()); // full pass: air dates for every season
 
   await db().$transaction(
     async (tx) => {
@@ -205,12 +205,13 @@ async function writeAnime(chain: Media[], full: boolean) {
             id: `${seriesId}-s${number}-e${n}`,
             title: a?.title ?? k?.title ?? `Episode ${n}`,
             thumbnail: a?.thumbnail ?? k?.thumbnail ?? (full ? banner : null),
+            airedAt: k?.airedAt ?? null,
           };
         });
         if (rows.length > 0) {
           await tx.$executeRaw`
-            UPDATE "Episode" AS e SET title = t.title, thumbnail = COALESCE(t.thumb, e.thumbnail)
-            FROM unnest(${rows.map((r) => r.id)}::text[], ${rows.map((r) => r.title)}::text[], ${rows.map((r) => r.thumbnail)}::text[]) AS t(id, title, thumb)
+            UPDATE "Episode" AS e SET title = t.title, thumbnail = COALESCE(t.thumb, e.thumbnail), "airedAt" = COALESCE(t.aired, e."airedAt")
+            FROM unnest(${rows.map((r) => r.id)}::text[], ${rows.map((r) => r.title)}::text[], ${rows.map((r) => r.thumbnail)}::text[], ${rows.map((r) => r.airedAt)}::timestamp[]) AS t(id, title, thumb, aired)
             WHERE e.id = t.id`;
         }
 

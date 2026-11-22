@@ -1,5 +1,5 @@
 import type { Chapter } from "@/data/schema";
-import { parseChapterNumber } from "./parse";
+import { dropBulkDates, parseChapterNumber } from "./parse";
 
 // In-memory cache for chapters & pages
 const providerChaptersCache = new Map<string, { chapters: Chapter[]; timestamp: number }>();
@@ -119,6 +119,11 @@ async function fetchMangaPillChapters(title: string, seriesId: string, nativeTit
   }
 }
 
+const toIso = (d: unknown) => {
+  const t = typeof d === "string" ? Date.parse(d) : NaN;
+  return Number.isNaN(t) ? null : new Date(t).toISOString();
+};
+
 /**
  * Secondary Provider: WeebCentral
  * High-definition official digital scans archive.
@@ -171,12 +176,13 @@ async function fetchWeebCentralChapters(title: string, seriesId: string, nativeT
           externalUrl: null,
           mangadexChapterId: `weebcentral:${c.id}`,
           scanlationGroup: "WeebCentral / Digital",
+          releasedAt: toIso(c.releaseDate),
         });
       }
 
       if (mapped.length > 0) {
         mapped.sort((a, b) => a.chapterNumber - b.chapterNumber);
-        return mapped;
+        return dropBulkDates(mapped);
       }
     }
 
@@ -203,29 +209,18 @@ export async function fetchMangaChaptersWithFallback(
     return cached.chapters;
   }
 
-  // 1. Try MangaPill (complete archives, all chapters, unblocked)
-  try {
-    const pillChapters = await fetchMangaPillChapters(title, seriesId, nativeTitle);
-    if (pillChapters.length > 0) {
-      providerChaptersCache.set(cacheKey, { chapters: pillChapters, timestamp: Date.now() });
-      return pillChapters;
-    }
-  } catch (e: any) {
-    console.warn(`[MangaProviders] MangaPill error for "${title}":`, e?.message || e);
-  }
+  // Both in parallel: MangaPill is the primary chapter source (complete archives), WeebCentral the
+  // fallback, and also the only one with chapter dates, which are borrowed by chapter number.
+  // (Both fetchers already catch and return [] on failure.)
+  const [pillChapters, wcChapters] = await Promise.all([
+    fetchMangaPillChapters(title, seriesId, nativeTitle),
+    fetchWeebCentralChapters(title, seriesId, nativeTitle),
+  ]);
+  const dates = new Map(wcChapters.map((c) => [c.chapterNumber, c.releasedAt]));
+  const chapters = pillChapters.length > 0 ? pillChapters.map((c) => ({ ...c, releasedAt: dates.get(c.chapterNumber) ?? null })) : wcChapters;
 
-  // 2. Fallback to WeebCentral (official high-res digital scans)
-  try {
-    const wcChapters = await fetchWeebCentralChapters(title, seriesId, nativeTitle);
-    if (wcChapters.length > 0) {
-      providerChaptersCache.set(cacheKey, { chapters: wcChapters, timestamp: Date.now() });
-      return wcChapters;
-    }
-  } catch (e: any) {
-    console.warn(`[MangaProviders] WeebCentral error for "${title}":`, e?.message || e);
-  }
-
-  return [];
+  if (chapters.length > 0) providerChaptersCache.set(cacheKey, { chapters, timestamp: Date.now() });
+  return chapters;
 }
 
 /**

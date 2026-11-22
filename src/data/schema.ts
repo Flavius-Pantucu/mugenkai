@@ -69,6 +69,7 @@ export const EpisodeSchema = z.object({
   duration: z.number().int().positive(),
   thumbnail: z.url(),
   links: z.array(StreamingLinkSchema).default([]),
+  releasedAt: z.iso.datetime().nullish(), // first air date, when known
 });
 
 export const ChapterSchema = z.object({
@@ -82,6 +83,7 @@ export const ChapterSchema = z.object({
   mangadexChapterId: z.string().nullable().default(null),
   /** MangaDex requires crediting the group whose translation is shown. */
   scanlationGroup: z.string().nullable().default(null),
+  releasedAt: z.iso.datetime().nullish(), // when the chapter was published, when known
 });
 
 export const MangaPageSchema = z.object({

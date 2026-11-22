@@ -30,6 +30,7 @@ export function MangaDetailsPage({ manga, related, extras }: { manga: Manga; rel
         href: `/read/${manga.id}/${ch.id}`,
         pageCount: ch.pageCount,
         length: hasPageCount ? `${ch.pageCount} pages` : "Chapter",
+        releasedAt: ch.releasedAt,
         remaining: pagesLeft > 0 ? `${pagesLeft} ${pagesLeft === 1 ? "page" : "pages"} left` : `${Math.round(progress)}% read`,
         progress,
         isNew: manga.status === "ONGOING" && ch === lastChapter,

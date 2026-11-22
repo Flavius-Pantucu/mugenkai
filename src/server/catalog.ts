@@ -156,6 +156,7 @@ const dbAnime = unstable_cache(
         duration: e.duration,
         thumbnail: e.thumbnail,
         links: e.links.map((l) => ({ provider: l.provider, url: l.url })),
+        releasedAt: e.airedAt?.toISOString() ?? null,
       })),
     };
   },
@@ -182,6 +183,7 @@ const dbManga = unstable_cache(
         externalUrl: c.externalUrl,
         mangadexChapterId: c.mangadexChapterId,
         scanlationGroup: c.scanlationGroup,
+        releasedAt: c.publishedAt?.toISOString() ?? null,
       })),
     };
   },

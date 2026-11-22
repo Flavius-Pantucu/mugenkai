@@ -27,6 +27,10 @@ import { CommentSection } from "./CommentSection";
 import { ResponsiveArt } from "./ResponsiveArt";
 import { Footer } from "./Footer";
 
+// Fixed locale and UTC so server and client render the same text (no hydration mismatch).
+const releaseFmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const released = (iso?: string | null) => (iso ? releaseFmt.format(new Date(iso)) : null);
+
 /** One episode or chapter, normalized so anime and manga share the page. */
 export interface SeriesUnit {
   id: string;
@@ -38,6 +42,7 @@ export interface SeriesUnit {
   length: string; // "24 min" or "18 pages"
   pageCount?: number; // chapters only
   remaining?: string; // "13 min left", shown when partly done
+  releasedAt?: string | null; // ISO date it aired / was published
   progress: number; // 0-100
   isNew: boolean;
 }
@@ -348,6 +353,11 @@ export function SeriesPage(props: SeriesPageProps) {
                             >
                               {u.title}
                             </p>
+                            {u.releasedAt && !partial && (
+                              <p className="text-[11px] tabular-nums text-zinc-500">
+                                <time dateTime={u.releasedAt}>{released(u.releasedAt)}</time>
+                              </p>
+                            )}
                             {partial && (
                               <p className="text-[11px] text-amber-400 font-medium">
                                 {u.remaining || `${Math.round(u.progress)}% completed`}
@@ -516,6 +526,7 @@ function UnitCard({ unit, showProgress, current, doneWord }: { unit: SeriesUnit;
       <span className={cn("mt-2.5 block truncate text-[14px] font-bold", current ? "text-lagoon-200" : "text-white")}>{unit.title}</span>
       <span className="mt-0.5 block text-[12.5px] tabular-nums text-muted-foreground">
         {unit.length}
+        {unit.releasedAt && !partial ? ` · ${released(unit.releasedAt)}` : ""}
         {partial && unit.remaining ? ` · ${unit.remaining}` : ""}
         {done ? ` · ${doneWord[0].toUpperCase()}${doneWord.slice(1)}` : ""}
       </span>

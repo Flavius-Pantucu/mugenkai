@@ -80,3 +80,14 @@ export function parseChapterNumber(raw: string | number | undefined, index = 0):
   }
   return index + 1;
 }
+
+/**
+ * Back catalogs get uploaded in one go, so many chapters share one timestamp that says nothing about
+ * when they came out. Those dates are cleared; a date only a chapter or two share is kept.
+ */
+// ponytail: exact-timestamp match; WeebCentral imports observed with identical ms. Widen to same-minute if imports drift.
+export function dropBulkDates<T extends { releasedAt?: string | null }>(chapters: T[], maxShared = 2): T[] {
+  const counts = new Map<string, number>();
+  for (const c of chapters) if (c.releasedAt) counts.set(c.releasedAt, (counts.get(c.releasedAt) ?? 0) + 1);
+  return chapters.map((c) => (c.releasedAt && counts.get(c.releasedAt)! > maxShared ? { ...c, releasedAt: null } : c));
+}

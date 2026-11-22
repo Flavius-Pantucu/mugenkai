@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { episodeId, parseChapterId, parseEpisodeId, similarTo } from "../src/data/series.ts";
 import { hashPassword, verifyPassword } from "../src/server/password.ts";
-import { airedEpisodes, assignStreamingEpisodes, cleanDescription, parseChapterNumber, parseStreamingTitle, pickChapters, type MdChapter } from "../src/server/sync/parse.ts";
+import { airedEpisodes, assignStreamingEpisodes, dropBulkDates, cleanDescription, parseChapterNumber, parseStreamingTitle, pickChapters, type MdChapter } from "../src/server/sync/parse.ts";
 
 test("AniList streaming titles map to episode number and title", () => {
   assert.deepEqual(parseStreamingTitle("Episode 12 - The Hero's Return"), { number: 12, title: "The Hero's Return" });
@@ -99,4 +99,16 @@ test("parseChapterNumber extracts chapter numbers accurately", () => {
   assert.equal(parseChapterNumber("4143-10143000/spy-x-family-chapter-143"), 143);
   assert.equal(parseChapterNumber("Chapter 14", 0), 14);
   assert.equal(parseChapterNumber(99), 99);
+});
+
+test("bulk-uploaded chapter dates are dropped, real ones kept", () => {
+  const bulk = "2024-09-07T17:04:15.717Z";
+  const out = dropBulkDates([
+    { n: 1, releasedAt: bulk },
+    { n: 2, releasedAt: bulk },
+    { n: 3, releasedAt: bulk },
+    { n: 385, releasedAt: "2026-06-25T15:46:45.598Z" },
+    { n: 386, releasedAt: null },
+  ]);
+  assert.deepEqual(out.map((c) => c.releasedAt), [null, null, null, "2026-06-25T15:46:45.598Z", null]);
 });

@@ -48,6 +48,7 @@ export function AnimeDetailsPage({ anime, related, extras }: { anime: Anime; rel
             href: `/watch/${anime.id}/${ep.id}`,
             length: `${ep.duration} min`,
             remaining: `${Math.max(1, Math.round(ep.duration * (1 - progress / 100)))} min left`,
+            releasedAt: ep.releasedAt,
             progress,
             isNew: anime.status === "ONGOING" && ep === lastEpisode,
           };

@@ -1,10 +1,10 @@
 // Kitsu public JSON:API (https://kitsu.docs.apiary.io). No key. Fills episode titles and thumbnails
-// that AniList's streamingEpisodes lack (most sequels). Failures return nothing; AniList stays the source of truth.
+// that AniList's streamingEpisodes lack (most sequels), plus each episode's air date. Failures return nothing; AniList stays the source of truth.
 const API = "https://kitsu.io/api/edge";
 const PAGE = 20; // Kitsu's maximum page size
 
 interface KitsuEpisode {
-  attributes: { number: number | null; canonicalTitle: string | null; thumbnail: { original?: string } | null };
+  attributes: { number: number | null; canonicalTitle: string | null; thumbnail: { original?: string } | null; airdate: string | null };
 }
 
 async function get<T>(path: string): Promise<T> {
@@ -13,9 +13,9 @@ async function get<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-/** Episode number → title and thumbnail for one AniList media (one season). */
+/** Episode number → title, thumbnail and air date for one AniList media (one season). Title is null when Kitsu only has "Episode N". */
 export async function kitsuEpisodes(anilistId: string, episodeCount: number) {
-  const out = new Map<number, { title: string; thumbnail: string | null }>();
+  const out = new Map<number, { title: string | null; thumbnail: string | null; airedAt: Date | null }>();
   try {
     const mapping = await get<{ included?: { id: string }[] }>(
       `/mappings?filter[externalSite]=anilist/anime&filter[externalId]=${anilistId}&include=item`,
@@ -36,8 +36,12 @@ export async function kitsuEpisodes(anilistId: string, episodeCount: number) {
     }
     for (const { attributes: a } of episodes) {
       const title = a.canonicalTitle?.trim();
-      if (!a.number || a.number > episodeCount || !title || /^episode \d+$/i.test(title)) continue;
-      out.set(a.number, { title, thumbnail: a.thumbnail?.original ?? null });
+      if (!a.number || a.number > episodeCount) continue;
+      out.set(a.number, {
+        title: title && !/^episode \d+$/i.test(title) ? title : null,
+        thumbnail: a.thumbnail?.original ?? null,
+        airedAt: a.airdate ? new Date(`${a.airdate}T00:00:00Z`) : null,
+      });
     }
   } catch (err) {
     console.warn(`kitsu ${anilistId}:`, err instanceof Error ? err.message : err);
