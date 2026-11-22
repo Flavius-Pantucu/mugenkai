@@ -353,7 +353,7 @@ export function SeriesPage(props: SeriesPageProps) {
                             >
                               {u.title}
                             </p>
-                            {u.releasedAt && !partial && (
+                            {u.releasedAt && (
                               <p className="text-[11px] tabular-nums text-zinc-500">
                                 <time dateTime={u.releasedAt}>{released(u.releasedAt)}</time>
                               </p>
@@ -526,7 +526,7 @@ function UnitCard({ unit, showProgress, current, doneWord }: { unit: SeriesUnit;
       <span className={cn("mt-2.5 block truncate text-[14px] font-bold", current ? "text-lagoon-200" : "text-white")}>{unit.title}</span>
       <span className="mt-0.5 block text-[12.5px] tabular-nums text-muted-foreground">
         {unit.length}
-        {unit.releasedAt && !partial ? ` · ${released(unit.releasedAt)}` : ""}
+        {unit.releasedAt ? ` · ${released(unit.releasedAt)}` : ""}
         {partial && unit.remaining ? ` · ${unit.remaining}` : ""}
         {done ? ` · ${doneWord[0].toUpperCase()}${doneWord.slice(1)}` : ""}
       </span>

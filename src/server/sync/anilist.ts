@@ -158,10 +158,17 @@ async function writeAnime(chain: Media[], full: boolean) {
   };
   const counts = chain.map(airedEpisodes);
   const streaming = assignStreamingEpisodes(chain.map((s, i) => ({ episodeCount: counts[i], streamingEpisodes: s.streamingEpisodes })));
-  // Kitsu only for seasons with gaps, one season at a time to stay polite.
+  // Kitsu only for seasons with gaps (missing titles or air dates), one season at a time to stay polite.
+  // Dated seasons are skipped, so after the first fill the daily run stays inside Vercel's time limit.
+  const dated = full
+    ? await db().episode.groupBy({ by: ["seasonId"], where: { seasonId: { in: chain.map((s) => String(s.id)) }, airedAt: { not: null } }, _count: true })
+    : [];
+  const datedCount = new Map(dated.map((d) => [d.seasonId, d._count]));
   const kitsu: Awaited<ReturnType<typeof kitsuEpisodes>>[] = [];
-  for (const [i, s] of chain.entries())
-    kitsu.push(full ? await kitsuEpisodes(String(s.id), counts[i]) : new Map()); // full pass: air dates for every season
+  for (const [i, s] of chain.entries()) {
+    const gaps = streaming[i].length < counts[i] || (datedCount.get(String(s.id)) ?? 0) < counts[i];
+    kitsu.push(full && gaps ? await kitsuEpisodes(String(s.id), counts[i]) : new Map());
+  }
 
   await db().$transaction(
     async (tx) => {
