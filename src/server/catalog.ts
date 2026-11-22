@@ -15,7 +15,7 @@ export interface Catalog {
   manga: MangaSummary[];
 }
 
-const CACHE = { tags: ["catalog"], revalidate: 3600 };
+const CACHE = { tags: ["catalog", "catalog-summaries"], revalidate: 3600 };
 
 // ─── Demo mode ───────────────────────────────────────────────────────────────
 
@@ -66,6 +66,7 @@ const dbCatalog = unstable_cache(
         _count: { select: { chapters: true } },
       },
     });
+    const catalogMangaMap = new Map(mangaList.map((m) => [m.id, m]));
     const catalog: Catalog = { anime: [], manga: [] };
     for (const r of rows) {
       if (r.kind === "ANIME") {
@@ -87,16 +88,42 @@ const dbCatalog = unstable_cache(
           })),
         });
       } else {
+        const bundled = catalogMangaMap.get(r.id);
+        const resolvedTotal =
+          (r.chapterTotal && r.chapterTotal > 0 ? r.chapterTotal : null) ??
+          (bundled && bundled.chapterCount > 0 && bundled.chapterCount !== 150 ? bundled.chapterCount : null) ??
+          (r.status === "COMPLETED" ? r._count.chapters : 0);
+
         catalog.manga.push({
           ...base(r),
-          author: r.author ?? "Unknown",
-          // AniList's total when known: MangaDex often lacks licensed chapters in English.
-          chapterCount: Math.max(r.chapterTotal ?? 0, r._count.chapters),
-          volumeCount: r.volumeCount,
-          firstChapterId: r.chapters[0]?.id ?? null,
+          author: r.author ?? bundled?.author ?? "Unknown",
+          chapterCount: resolvedTotal,
+          volumeCount: r.volumeCount ?? bundled?.volumeCount ?? null,
+          firstChapterId: r.chapters[0]?.id ?? bundled?.chapters[0]?.id ?? null,
         });
       }
     }
+
+    // Supplement with bundled catalog if DB has fewer entries
+    if (catalog.anime.length < animeList.length) {
+      const seenAnime = new Set(catalog.anime.map((a) => a.id));
+      for (const a of animeList) {
+        if (!seenAnime.has(a.id)) {
+          const { episodes: _e, links: _l, ...summary } = a;
+          catalog.anime.push(summary);
+        }
+      }
+    }
+    if (catalog.manga.length < mangaList.length) {
+      const seenManga = new Set(catalog.manga.map((m) => m.id));
+      for (const m of mangaList) {
+        if (!seenManga.has(m.id)) {
+          const { chapters: _c, links: _l, ...summary } = m;
+          catalog.manga.push({ ...summary, firstChapterId: m.chapters[0]?.id ?? null });
+        }
+      }
+    }
+
     return catalog;
   },
   ["catalog-summaries"],
