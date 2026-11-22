@@ -29,7 +29,7 @@ import {
 import { formatSecondsToTime, cn } from "@/lib/utils";
 import { SubtitleSettingsDialog, SubtitleStyles } from "./subtitle-settings-dialog";
 import { attachAvSyncGuard } from "./player-core/av-sync-guard";
-import { collectScopedSubtitles } from "./player-core/subtitle-scope";
+import { collectScopedSubtitles, isSignsOnly } from "./player-core/subtitle-scope";
 import { adaptSkipTimes } from "@/lib/skip-times-adapter";
 
 export interface SubtitleTrack {
@@ -649,9 +649,11 @@ export function EmbedPlayer({
 
         if (mappedSubs.length > 0) {
           setAllAvailableSubtitles(mappedSubs);
+          // Never default to a signs-only track (Flow marks its first, forced, track as default).
+          const dialogue = mappedSubs.filter((s) => !isSignsOnly(s));
           const defaultSub =
-            mappedSubs.find((s) => s.default) ||
-            mappedSubs.find((s) => s.language?.toLowerCase().startsWith("en") || s.label?.toLowerCase().includes("english")) ||
+            dialogue.find((s) => s.default) ||
+            dialogue.find((s) => s.language?.toLowerCase().startsWith("en") || s.label?.toLowerCase().includes("english")) ||
             mappedSubs[0];
           if (defaultSub) {
             setActiveSubtitleTrack(defaultSub.id || defaultSub.url);

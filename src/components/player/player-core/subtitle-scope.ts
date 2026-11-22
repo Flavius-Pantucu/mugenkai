@@ -187,7 +187,37 @@ export function normaliseSubtitleLabel(sub: RawSubtitle): string {
 
   const mapped = LANG_MAP[raw.toLowerCase()] || raw;
   if (mapped.toLowerCase() === "english (dialogue)") return "English";
-  return mapped;
+  return /[[(]|_\d+$/.test(mapped) ? prettySubtitleLabel(mapped) : capitalise(mapped);
+}
+
+const capitalise = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
+
+/**
+ * Release-style names → readable ones:
+ *   "English (English Forced [Coalgirls])"          → "English · Coalgirls · Signs only"
+ *   "Language (enm) (English [Honorific] [MTBB])"   → "English · MTBB · Honorifics"
+ *   "Portuguese (Portuguese (BR) [Crunchyroll])"    → "Portuguese (BR) · Crunchyroll"
+ *   "english (- (crunchyroll))"                     → "English · Crunchyroll"
+ * A trailing "_1" (same release listed twice) is dropped so dedupe merges the pair.
+ */
+export function prettySubtitleLabel(raw: string): string {
+  let s = raw.replace(/_\d+$/, "").replace(/^Language\s*\(\w+\)\s*/i, "");
+  const bracketed = [...s.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1].trim());
+  s = s.replace(/\[[^\]]*\]/g, " ");
+  const forced = /\bforced\b/i.test(s);
+  const words = s.replace(/[()-]/g, " ").split(/\s+/).filter((w) => w && !/^(forced|ocr)$/i.test(w));
+  if (words.length === 0) return raw;
+
+  const [first, ...rest] = words;
+  const region = rest.find((w) => /^[A-Z]{2}$/.test(w));
+  const others = rest.filter((w) => w.toLowerCase() !== first.toLowerCase() && w !== region);
+  const numbers = others.filter((w) => /^\d+$/.test(w));
+  const name = [capitalise(first), region && `(${region})`, ...numbers].filter(Boolean).join(" ");
+
+  const isHonorific = (t: string) => /^honorifics?$/i.test(t);
+  const sources = [...bracketed, ...others.filter((w) => !numbers.includes(w)).map(capitalise)].filter((t) => !isHonorific(t));
+  const notes = [bracketed.some(isHonorific) && "Honorifics", forced && "Signs only"].filter(Boolean);
+  return [name, ...sources, ...notes].join(" · ");
 }
 
 /**
@@ -255,8 +285,11 @@ function dedupeWithinScope(tracks: ScopedSubtitle[]): ScopedSubtitle[] {
     }
   }
 
-  return result;
+  // Signs-only tracks last: releases list them first, and they carry no dialogue.
+  return result.sort((a, b) => Number(isSignsOnly(a)) - Number(isSignsOnly(b)));
 }
+
+export const isSignsOnly = (t: { label?: string | null }) => !!t.label?.endsWith("Signs only");
 
 /**
  * Builds the subtitle list for the source that is playing.

@@ -78,3 +78,17 @@ test("recommendations share genres, skip seen titles, rank by overlap then ratin
     ["b", "d", "a"],
   );
 });
+
+test("release-style subtitle names become readable labels", async () => {
+  const { normaliseSubtitleLabel: n } = await import("../src/components/player/player-core/subtitle-scope.ts");
+  assert.equal(n({ label: "English (English [Crunchyroll])" }), "English · Crunchyroll");
+  assert.equal(n({ label: "English (English Forced [Coalgirls])" }), "English · Coalgirls · Signs only");
+  assert.equal(n({ label: "English (English [USBD] (OCR))_1" }), "English · USBD");
+  assert.equal(n({ label: "Language (enm) (English [Honorific] [MTBB])" }), "English · MTBB · Honorifics");
+  assert.equal(n({ label: "Portuguese (Portuguese (BR) [Crunchyroll])" }), "Portuguese (BR) · Crunchyroll");
+  assert.equal(n({ label: "English (English [Crunchyroll TL + Baal/SCY TS])" }), "English · Crunchyroll TL + Baal/SCY TS");
+  assert.equal(n({ label: "english (- (crunchyroll))" }), "English · Crunchyroll");
+  assert.equal(n({ label: "English 2" }), "English 2");
+  assert.equal(n({ label: "spanish" }), "Spanish");
+  assert.equal(n({ language: "eng" }), "English");
+});
