@@ -7,7 +7,7 @@ import { MangaDetailsPage } from "@/views/MangaDetailsPage";
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [manga, catalog, details] = await Promise.all([getManga(id), getCatalog(), getSeriesDetails(id)]);
-  if (!manga) notFound();
+  if (!manga || manga.chapters.length === 0) notFound();
   const summary = catalog.manga.find((m) => m.id === id) ?? {
     ...manga,
     firstChapterId: manga.chapters[0]?.id ?? null,

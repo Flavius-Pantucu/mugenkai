@@ -414,7 +414,7 @@ export async function getManga(id: string): Promise<Manga | null> {
     if (liveChapters.length > 0) {
       return {
         ...manga,
-        chapterCount: Math.max(manga.chapterCount, liveChapters.length),
+        chapterCount: liveChapters.length,
         chapters: liveChapters,
       };
     }
@@ -422,7 +422,8 @@ export async function getManga(id: string): Promise<Manga | null> {
     console.warn(`[getManga] Chapter fetch failed for ${manga.title}:`, err);
   }
 
-  return manga;
+  // If chapters cannot be fetched and listed, do not show the manga
+  return null;
 }
 
 /** Live page URLs for a chapter. Empty when the chapter is external-only or providers are unreachable. */

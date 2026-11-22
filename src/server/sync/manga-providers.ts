@@ -1,8 +1,7 @@
 import type { Chapter } from "@/data/schema";
-import { chapterPages, fetchLiveMangaChapters } from "./mangadex";
 import { parseChapterNumber } from "./parse";
 
-// In-memory cache for fallback chapters & pages
+// In-memory cache for chapters & pages
 const providerChaptersCache = new Map<string, { chapters: Chapter[]; timestamp: number }>();
 const providerPagesCache = new Map<string, { pages: string[]; timestamp: number }>();
 const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
@@ -23,8 +22,9 @@ function normalizeTitle(t: string): string {
 }
 
 /**
- * Fallback Provider 1: MangaPill
- * Fast, reliable, no Cloudflare blocks, extensive library including official rips.
+ * Primary Provider: MangaPill
+ * Comprehensive full chapter feeds (e.g. One Piece 1200+ chs, Naruto 700+ chs, Berserk 380+ chs, Spy x Family 175+ chs),
+ * high availability, no Cloudflare blocks.
  */
 async function fetchMangaPillChapters(title: string, seriesId: string): Promise<Chapter[]> {
   const MANGA = getConsumetManga();
@@ -32,10 +32,11 @@ async function fetchMangaPillChapters(title: string, seriesId: string): Promise<
 
   try {
     const pill = new MANGA.MangaPill();
-    const search = await pill.search(title);
+    const cleanQuery = title.replace(/×/g, " x ").replace(/[:\-]/g, " ").trim();
+    const search = await pill.search(cleanQuery);
     if (!search?.results || search.results.length === 0) return [];
 
-    const norm = normalizeTitle(title);
+    const norm = normalizeTitle(cleanQuery);
     const bestMatch =
       search.results.find((r: any) => normalizeTitle(r.title) === norm) ||
       search.results.find((r: any) => normalizeTitle(r.title).includes(norm)) ||
@@ -46,11 +47,8 @@ async function fetchMangaPillChapters(title: string, seriesId: string): Promise<
     const info = await pill.fetchMangaInfo(bestMatch.id);
     if (!info?.chapters || info.chapters.length === 0) return [];
 
-    // Map and deduplicate by chapter number
     const seen = new Set<number>();
     const mapped: Chapter[] = [];
-
-    // MangaPill chapters are typically ordered newest to oldest, reverse to get asc
     const rawChapters = [...info.chapters].reverse();
 
     for (let i = 0; i < rawChapters.length; i++) {
@@ -64,7 +62,7 @@ async function fetchMangaPillChapters(title: string, seriesId: string): Promise<
         mangaId: seriesId,
         chapterNumber: num,
         title: c.title?.trim() || `Chapter ${num}`,
-        pageCount: 20, // default placeholder until pages are retrieved
+        pageCount: 20,
         externalUrl: null,
         mangadexChapterId: `mangapill:${c.id}`,
         scanlationGroup: "MangaPill",
@@ -80,8 +78,8 @@ async function fetchMangaPillChapters(title: string, seriesId: string): Promise<
 }
 
 /**
- * Fallback Provider 2: WeebCentral
- * High-definition official digital scans for major manga.
+ * Secondary Provider: WeebCentral
+ * High-definition official digital scans archive.
  */
 async function fetchWeebCentralChapters(title: string, seriesId: string): Promise<Chapter[]> {
   const MANGA = getConsumetManga();
@@ -89,10 +87,11 @@ async function fetchWeebCentralChapters(title: string, seriesId: string): Promis
 
   try {
     const wc = new MANGA.WeebCentral();
-    const search = await wc.search(title);
+    const cleanQuery = title.replace(/×/g, " x ").replace(/[:\-]/g, " ").trim();
+    const search = await wc.search(cleanQuery);
     if (!search?.results || search.results.length === 0) return [];
 
-    const norm = normalizeTitle(title);
+    const norm = normalizeTitle(cleanQuery);
     const bestMatch =
       search.results.find((r: any) => normalizeTitle(r.title) === norm) ||
       search.results.find((r: any) => normalizeTitle(r.title).includes(norm)) ||
@@ -134,10 +133,8 @@ async function fetchWeebCentralChapters(title: string, seriesId: string): Promis
 }
 
 /**
- * Multi-source chapter resolver:
- * 1. Primary: MangaDex (community scanlations, exact AniList ID matching).
- * 2. Fallback 1: MangaPill (unblocked, full archives, official rips).
- * 3. Fallback 2: WeebCentral (high-res official digital scans).
+ * Fetches all readable chapters for a manga using comprehensive manga providers (MangaPill & WeebCentral).
+ * MangaDex is not used for chapters due to missing and restricted/external-only chapters.
  */
 export async function fetchMangaChaptersWithFallback(
   title: string,
@@ -150,31 +147,10 @@ export async function fetchMangaChaptersWithFallback(
     return cached.chapters;
   }
 
-  // 1. Try MangaDex
-  let chapters: Chapter[] = [];
-  try {
-    chapters = await fetchLiveMangaChapters(title, anilistId, seriesId);
-  } catch (e: any) {
-    console.warn(`[MangaProviders] MangaDex error for "${title}":`, e?.message || e);
-  }
-
-  // Check if MangaDex results are usable:
-  // If MangaDex returned 0 chapters OR all/most chapters are external-only (e.g. Manga Plus restrictions)
-  const nonExternalCount = chapters.filter((c) => !c.externalUrl && c.mangadexChapterId).length;
-  const isUsableMangaDex = chapters.length > 0 && nonExternalCount >= Math.min(chapters.length * 0.4, 5);
-
-  if (isUsableMangaDex) {
-    providerChaptersCache.set(cacheKey, { chapters, timestamp: Date.now() });
-    return chapters;
-  }
-
-  console.log(`[MangaProviders] MangaDex insufficient for "${title}" (${nonExternalCount}/${chapters.length} readable). Trying MangaPill...`);
-
-  // 2. Try MangaPill
+  // 1. Try MangaPill (complete archives, all chapters, unblocked)
   try {
     const pillChapters = await fetchMangaPillChapters(title, seriesId);
     if (pillChapters.length > 0) {
-      console.log(`[MangaProviders] MangaPill resolved ${pillChapters.length} chapters for "${title}".`);
       providerChaptersCache.set(cacheKey, { chapters: pillChapters, timestamp: Date.now() });
       return pillChapters;
     }
@@ -182,12 +158,10 @@ export async function fetchMangaChaptersWithFallback(
     console.warn(`[MangaProviders] MangaPill error for "${title}":`, e?.message || e);
   }
 
-  // 3. Try WeebCentral
-  console.log(`[MangaProviders] Trying WeebCentral for "${title}"...`);
+  // 2. Fallback to WeebCentral (official high-res digital scans)
   try {
     const wcChapters = await fetchWeebCentralChapters(title, seriesId);
     if (wcChapters.length > 0) {
-      console.log(`[MangaProviders] WeebCentral resolved ${wcChapters.length} chapters for "${title}".`);
       providerChaptersCache.set(cacheKey, { chapters: wcChapters, timestamp: Date.now() });
       return wcChapters;
     }
@@ -195,17 +169,11 @@ export async function fetchMangaChaptersWithFallback(
     console.warn(`[MangaProviders] WeebCentral error for "${title}":`, e?.message || e);
   }
 
-  // Fallback to whatever MangaDex had (even if partial or external)
-  if (chapters.length > 0) {
-    providerChaptersCache.set(cacheKey, { chapters, timestamp: Date.now() });
-    return chapters;
-  }
-
   return [];
 }
 
 /**
- * Universal chapter page fetcher across MangaDex, MangaPill, and WeebCentral.
+ * Universal chapter page fetcher across MangaPill and WeebCentral.
  */
 export async function fetchChapterPagesWithFallback(providerChapterId: string): Promise<string[]> {
   if (!providerChapterId) return [];
@@ -234,9 +202,6 @@ export async function fetchChapterPagesWithFallback(providerChapterId: string): 
         const rawPages = await wc.fetchChapterPages(chapterId);
         pages = (rawPages || []).map((p: any) => p.img || p.url).filter(Boolean);
       }
-    } else {
-      // Standard MangaDex chapter ID
-      pages = await chapterPages(providerChapterId);
     }
   } catch (err: any) {
     console.error(`[MangaProviders] Failed to fetch pages for ${providerChapterId}:`, err?.message || err);

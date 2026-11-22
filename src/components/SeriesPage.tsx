@@ -76,14 +76,15 @@ export interface SeriesPageProps {
 
 const NOUN = {
   anime: { unit: "episode", units: "episodes", done: "watched", start: "Play episode 1", group: "Season" },
-  manga: { unit: "chapter", units: "chapters", done: "read", start: "Read chapter 1", group: "Volume" },
+  manga: { unit: "chapter", units: "chapters", done: "read", start: "Read chapter 1", group: "Chapters" },
 };
 
-const PAGE = 12; // episodes or chapters shown per "Show more"
+const getPageSize = (kind: "anime" | "manga") => (kind === "manga" ? 48 : 12);
 
 export function SeriesPage(props: SeriesPageProps) {
   const { kind, groups, showProgress } = props;
   const noun = NOUN[kind];
+  const pageSize = getPageSize(kind);
 
   // Resume point: the furthest unit with progress; once it's finished, the one after it.
   const all = groups.flatMap((g) => g.units);
@@ -96,7 +97,7 @@ export function SeriesPage(props: SeriesPageProps) {
   const [hideDone, setHideDone] = useState(false);
   const listEntry = useListEntry(props.seriesId);
   const listStatus = listEntry?.status;
-  const [shown, setShown] = useState(PAGE);
+  const [shown, setShown] = useState(pageSize);
 
   // Saved progress arrives after hydration: jump to the resume season/volume once, the first time it's known.
   const jumped = useRef(false);
@@ -118,8 +119,8 @@ export function SeriesPage(props: SeriesPageProps) {
   // New season or order: start from one page, but far enough to show where the user stopped.
   useEffect(() => {
     const at = resume ? units.findIndex((u) => u.id === resume.id) : -1;
-    setShown(Math.max(PAGE, Math.ceil((at + 1) / PAGE) * PAGE));
-  }, [activeId, newestFirst, hideDone, resume?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    setShown(Math.max(pageSize, Math.ceil((at + 1) / pageSize) * pageSize));
+  }, [activeId, newestFirst, hideDone, resume?.id, pageSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const groupLabel = (g: SeriesGroup) => {
     const done = g.units.filter((u) => u.progress >= 100).length;
@@ -278,17 +279,24 @@ export function SeriesPage(props: SeriesPageProps) {
                   </li>
                 ))}
               </ul>
-              {(left > 0 || shown > PAGE) && (
-                <div className="mt-8 flex justify-center gap-2">
+              {(left > 0 || shown > pageSize) && (
+                <div className="mt-8 flex flex-wrap justify-center gap-2">
                   {left > 0 && (
-                    <Button variant="outline" size="lg" onClick={() => setShown((s) => s + PAGE)}>
-                      <ChevronDown />
-                      Show {Math.min(PAGE, left)} more
-                      <span className="text-muted-foreground">· {left} left</span>
-                    </Button>
+                    <>
+                      <Button variant="outline" size="lg" onClick={() => setShown((s) => s + pageSize)}>
+                        <ChevronDown />
+                        Show {Math.min(pageSize, left)} more
+                        <span className="text-muted-foreground">· {left} left</span>
+                      </Button>
+                      {left > pageSize && (
+                        <Button variant="secondary" size="lg" onClick={() => setShown(units.length)}>
+                          Show all ({units.length})
+                        </Button>
+                      )}
+                    </>
                   )}
-                  {shown > PAGE && (
-                    <Button variant="ghost" size="lg" onClick={() => setShown(PAGE)}>
+                  {shown > pageSize && (
+                    <Button variant="ghost" size="lg" onClick={() => setShown(pageSize)}>
                       Show less
                     </Button>
                   )}
