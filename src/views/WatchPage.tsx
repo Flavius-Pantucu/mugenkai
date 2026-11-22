@@ -35,7 +35,7 @@ import { NotFoundPage } from "./NotFoundPage";
 const SERVERS = [
   { id: "flow", label: "Flow (HD-1)", tip: "Fastest stream, OP/ED auto-skip" },
   { id: "kitty", label: "Kitty (HD-2)", tip: "Backup mirror for Flow" },
-  { id: "yuri", label: "Yuri (Multi-Sub)", tip: "Soft subtitles, 16 languages" },
+  { id: "yuri", label: "Yuri (Multi-Sub)", tip: "Soft subtitles in several languages" },
   { id: "zuri", label: "Zuri (Raw/Sub)", tip: "Japanese audio fallback" },
   { id: "buzz", label: "Buzz (HD-3)", tip: "Extra backup server" },
 ] as const;
