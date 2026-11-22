@@ -39,15 +39,15 @@ function seriesLinks(s: Series) {
   }
   const m = s.item;
   const isOngoing = m.status === "ONGOING";
-  const hasCount = typeof m.chapterCount === "number" && m.chapterCount > 0 && m.chapterCount !== 150;
+  const count = typeof m.chapterCount === "number" && m.chapterCount > 0 ? m.chapterCount : null;
   return {
     details: `/manga/${m.id}`,
     primary: m.firstChapterId ? `/read/${m.id}/${m.firstChapterId}` : `/manga/${m.id}`,
     primaryLabel: `Read ${m.title}`,
     PrimaryIcon: BookOpen,
     count: isOngoing
-      ? (hasCount ? `${m.chapterCount} chs · Ongoing` : "Ongoing")
-      : (hasCount ? `${m.chapterCount} chapters` : "Completed"),
+      ? (count ? `${count} chs · Ongoing` : "Ongoing")
+      : (count ? `${count} chapters` : "Completed"),
     by: m.author,
     ongoingLabel: "Ongoing",
   };

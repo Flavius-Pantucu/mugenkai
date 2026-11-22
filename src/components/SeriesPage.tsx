@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { BookOpen, Check, CheckCheck, ChevronDown, EyeOff, Play, Plus, Star, X } from "lucide-react";
+import { BookOpen, Check, CheckCheck, ChevronDown, EyeOff, LayoutGrid, List, Play, Plus, Star, X } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -95,6 +95,7 @@ export function SeriesPage(props: SeriesPageProps) {
   const [activeId, setActiveId] = useState(resumeGroup?.id ?? groups[0]?.id ?? "");
   const [newestFirst, setNewestFirst] = useState(false);
   const [hideDone, setHideDone] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const listEntry = useListEntry(props.seriesId);
   const listStatus = listEntry?.status;
   const [shown, setShown] = useState(pageSize);
@@ -246,6 +247,37 @@ export function SeriesPage(props: SeriesPageProps) {
                 <SelectItem value="newest">Newest first</SelectItem>
               </SelectContent>
             </Select>
+
+            {/* View Mode Switcher (Grid vs Simplified Text List) */}
+            <div className="flex items-center rounded-lg border border-white/10 bg-ink-raised p-0.5" role="group" aria-label="Display mode">
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
+                  viewMode === "grid" ? "bg-white/15 text-white shadow-sm" : "text-zinc-400 hover:text-white",
+                )}
+                aria-label="Grid view"
+                title="Grid view"
+              >
+                <LayoutGrid className="size-3.5" />
+                <span className="hidden sm:inline">Grid</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("list")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
+                  viewMode === "list" ? "bg-white/15 text-white shadow-sm" : "text-zinc-400 hover:text-white",
+                )}
+                aria-label="Simplified text list"
+                title="Simplified text list"
+              >
+                <List className="size-3.5" />
+                <span className="hidden sm:inline">List</span>
+              </button>
+            </div>
+
             {showProgress && (
               <Toggle variant="outline" pressed={hideDone} onPressedChange={setHideDone} className="data-[state=on]:bg-lagoon-400/15 data-[state=on]:text-lagoon-200">
                 <EyeOff />
@@ -272,13 +304,78 @@ export function SeriesPage(props: SeriesPageProps) {
             </Card>
           ) : (
             <>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
-                {units.slice(0, shown).map((u) => (
-                  <li key={u.id}>
-                    <UnitCard unit={u} showProgress={showProgress} current={u.id === resume?.id} doneWord={noun.done} />
-                  </li>
-                ))}
-              </ul>
+              {viewMode === "grid" ? (
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
+                  {units.slice(0, shown).map((u) => (
+                    <li key={u.id}>
+                      <UnitCard unit={u} showProgress={showProgress} current={u.id === resume?.id} doneWord={noun.done} />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="divide-y divide-white/5 rounded-xl border border-white/10 bg-ink-raised/60 shadow-lg backdrop-blur-sm overflow-hidden">
+                  {units.slice(0, shown).map((u) => {
+                    const done = showProgress && u.progress >= 100;
+                    const partial = showProgress && u.progress > 0 && u.progress < 100;
+                    const isCurrent = u.id === resume?.id;
+                    return (
+                      <Link
+                        key={u.id}
+                        href={u.href}
+                        className={cn(
+                          "group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-white/5",
+                          isCurrent && "bg-primary/10 hover:bg-primary/15",
+                        )}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "shrink-0 font-bold tabular-nums text-xs px-2.5 py-0.5 border-white/10",
+                              isCurrent
+                                ? "bg-primary/20 text-primary border-primary/40"
+                                : "bg-white/5 text-zinc-300",
+                            )}
+                          >
+                            {u.label}
+                          </Badge>
+                          <div className="min-w-0">
+                            <p
+                              className={cn(
+                                "truncate text-[14px] font-semibold transition-colors group-hover:text-primary",
+                                isCurrent ? "text-primary" : "text-white",
+                              )}
+                            >
+                              {u.title}
+                            </p>
+                            {partial && (
+                              <p className="text-[11px] text-amber-400 font-medium">
+                                {u.remaining || `${Math.round(u.progress)}% completed`}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="text-xs text-zinc-400 tabular-nums">
+                            {u.length}
+                          </span>
+                          {done ? (
+                            <span className="flex items-center gap-1 text-xs text-primary font-medium">
+                              <Check className="size-3.5" />
+                              <span className="hidden sm:inline">{noun.done}</span>
+                            </span>
+                          ) : (
+                            <span className="text-xs text-zinc-400 group-hover:text-white transition-colors">
+                              {kind === "manga" ? "Read →" : "Play →"}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
               {(left > 0 || shown > pageSize) && (
                 <div className="mt-8 flex flex-wrap justify-center gap-2">
                   {left > 0 && (
