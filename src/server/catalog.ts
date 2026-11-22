@@ -459,6 +459,7 @@ export async function getChapterPages(manga: Manga, chapter: Chapter): Promise<M
     try {
       const urls = await fetchChapterPagesWithFallback(chapter.mangadexChapterId);
       if (urls.length > 0) {
+        chapter.pageCount = urls.length;
         return urls.map((imageUrl, i) => ({
           id: `${chapter.id}-pg-${i + 1}`,
           chapterId: chapter.id,

@@ -159,17 +159,25 @@ export function NavSearch({ index: { anime, manga } }: { index: SearchIndex }) {
   };
 
   const isLive = query.trim().length >= 2;
-  // Catalog matches shown instantly while the server answers.
-  const shown: LiveSearchResult[] =
-    liveResults.length > 0 || !loading
-      ? liveResults
-      : [
-          ...(filterType === "MANGA" ? [] : anime.map((r) => ({ ...r, type: "ANIME" as const }))),
-          ...(filterType === "ANIME" ? [] : manga.map((r) => ({ ...r, type: "MANGA" as const }))),
-        ]
-          .filter((r) => matchScore(r.title, query, r.keywords) > 0)
-          .slice(0, 8)
-          .map((r) => ({ ...r, nativeTitle: r.title }));
+  const localMatches: LiveSearchResult[] = [
+    ...(filterType === "MANGA" ? [] : anime.map((r) => ({ ...r, type: "ANIME" as const }))),
+    ...(filterType === "ANIME" ? [] : manga.map((r) => ({ ...r, type: "MANGA" as const }))),
+  ]
+    .filter((r) => matchScore(r.title, query, r.keywords) > 0)
+    .slice(0, 8)
+    .map((r) => ({ ...r, nativeTitle: r.title }));
+
+  // Combine live results and local matches, deduplicating by href so good matches never disappear
+  const shownMap = new Map<string, LiveSearchResult>();
+  for (const r of liveResults) {
+    shownMap.set(r.href, r);
+  }
+  for (const r of localMatches) {
+    if (!shownMap.has(r.href)) {
+      shownMap.set(r.href, r);
+    }
+  }
+  const shown: LiveSearchResult[] = shownMap.size > 0 ? Array.from(shownMap.values()) : localMatches;
 
   const filteredRecent = recent
     .filter((r) => {

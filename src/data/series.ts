@@ -54,15 +54,23 @@ export function searchIndex(anime: AnimeSummary[], manga: MangaSummary[]): Searc
       }))
       .sort(byRatingDesc),
     manga: manga
-      .map((m) => ({
-        id: m.id,
-        title: m.title,
-        cover: m.coverImage,
-        href: `/manga/${m.id}`,
-        meta: `${m.chapterCount} chapters · ${m.author}`,
-        keywords: [m.nativeTitle, m.author, ...m.genres],
-        rating: m.rating,
-      }))
+      .map((m) => {
+        const countStr =
+          m.chapterCount && m.chapterCount > 0
+            ? `${m.chapterCount} chs`
+            : m.status === "ONGOING"
+            ? "Ongoing"
+            : "";
+        return {
+          id: m.id,
+          title: m.title,
+          cover: m.coverImage,
+          href: `/manga/${m.id}`,
+          meta: [m.year, countStr, m.author].filter(Boolean).join(" · "),
+          keywords: [m.nativeTitle, m.author, ...m.genres],
+          rating: m.rating,
+        };
+      })
       .sort(byRatingDesc),
   };
 }

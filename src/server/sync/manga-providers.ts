@@ -99,7 +99,7 @@ async function fetchMangaPillChapters(title: string, seriesId: string, nativeTit
           mangaId: seriesId,
           chapterNumber: num,
           title: c.title?.trim() || `Chapter ${num}`,
-          pageCount: 20,
+          pageCount: 0,
           externalUrl: null,
           mangadexChapterId: `mangapill:${c.id}`,
           scanlationGroup: "MangaPill",
@@ -167,7 +167,7 @@ async function fetchWeebCentralChapters(title: string, seriesId: string, nativeT
           mangaId: seriesId,
           chapterNumber: num,
           title: c.title?.trim() || `Chapter ${num}`,
-          pageCount: 20,
+          pageCount: 0,
           externalUrl: null,
           mangadexChapterId: `weebcentral:${c.id}`,
           scanlationGroup: "WeebCentral / Digital",
@@ -248,7 +248,13 @@ export async function fetchChapterPagesWithFallback(providerChapterId: string): 
       if (MANGA?.MangaPill) {
         const pill = new MANGA.MangaPill();
         const rawPages = await pill.fetchChapterPages(chapterId);
-        pages = (rawPages || []).map((p: any) => p.img || p.url).filter(Boolean);
+        pages = (rawPages || [])
+          .map((p: any) => {
+            const u = p.img || p.url;
+            if (!u) return null;
+            return `/api/proxy?url=${encodeURIComponent(u)}&referer=${encodeURIComponent("https://mangapill.com/")}`;
+          })
+          .filter(Boolean);
       }
     } else if (providerChapterId.startsWith("weebcentral:")) {
       const chapterId = providerChapterId.replace("weebcentral:", "");
@@ -256,7 +262,13 @@ export async function fetchChapterPagesWithFallback(providerChapterId: string): 
       if (MANGA?.WeebCentral) {
         const wc = new MANGA.WeebCentral();
         const rawPages = await wc.fetchChapterPages(chapterId);
-        pages = (rawPages || []).map((p: any) => p.img || p.url).filter(Boolean);
+        pages = (rawPages || [])
+          .map((p: any) => {
+            const u = p.img || p.url;
+            if (!u) return null;
+            return `/api/proxy?url=${encodeURIComponent(u)}&referer=${encodeURIComponent("https://weebcentral.com/")}`;
+          })
+          .filter(Boolean);
       }
     }
   } catch (err: any) {

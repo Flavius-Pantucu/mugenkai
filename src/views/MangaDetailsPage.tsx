@@ -19,7 +19,8 @@ export function MangaDetailsPage({ manga, related, extras }: { manga: Manga; rel
     range: `Chapters 1–${manga.chapters.length}`,
     units: manga.chapters.map((ch) => {
       const progress = chapterProgress(progressState, ch);
-      const pagesLeft = Math.max(1, Math.round(ch.pageCount * (1 - progress / 100)));
+      const hasPageCount = ch.pageCount && ch.pageCount > 0 && ch.pageCount !== 20;
+      const pagesLeft = hasPageCount ? Math.max(1, Math.round(ch.pageCount * (1 - progress / 100))) : 0;
       return {
         id: ch.id,
         number: ch.chapterNumber,
@@ -28,8 +29,8 @@ export function MangaDetailsPage({ manga, related, extras }: { manga: Manga; rel
         image: manga.bannerImage || manga.coverImage,
         href: `/read/${manga.id}/${ch.id}`,
         pageCount: ch.pageCount,
-        length: `${ch.pageCount || 20} pages`,
-        remaining: `${pagesLeft} ${pagesLeft === 1 ? "page" : "pages"} left`,
+        length: hasPageCount ? `${ch.pageCount} pages` : "Chapter",
+        remaining: pagesLeft > 0 ? `${pagesLeft} ${pagesLeft === 1 ? "page" : "pages"} left` : `${Math.round(progress)}% read`,
         progress,
         isNew: manga.status === "ONGOING" && ch === lastChapter,
       };
