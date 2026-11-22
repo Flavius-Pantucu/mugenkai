@@ -140,7 +140,15 @@ export const RegisterSchema = z
   })
   .refine((v) => v.password === v.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });
 
-export const ProfileSettingsSchema = UserProfileSchema.pick({ username: true, email: true, bio: true, matureContent: true, notifications: true });
+// Avatars are AniList character portraits only, so users can't point everyone's browser at arbitrary URLs.
+export const AVATAR_PREFIX = "https://s4.anilist.co/file/anilistcdn/character/";
+export const ProfileSettingsSchema = UserProfileSchema.pick({ username: true, email: true, bio: true, matureContent: true, notifications: true }).extend({
+  avatarUrl: z
+    .url()
+    .refine((u) => u.startsWith(AVATAR_PREFIX), "Pick an avatar from the character list")
+    .nullable()
+    .optional(),
+});
 
 // Viewing progress, persisted in the browser until there is an API. Validated on every read.
 export const ProgressStateSchema = z.object({

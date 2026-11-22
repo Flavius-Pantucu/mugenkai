@@ -13,6 +13,7 @@ export interface MediaRef {
 export interface Character {
   name: string;
   image: string;
+  imageLarge: string;
   role: string; // MAIN / SUPPORTING
   voiceActor: string | null;
 }
@@ -28,7 +29,7 @@ const QUERY = `query ($id: Int) {
   Media(id: $id) {
     type
     characters(sort: [ROLE, RELEVANCE], perPage: 12) {
-      edges { role node { name { full } image { medium } } voiceActors(language: JAPANESE) { name { full } } }
+      edges { role node { name { full } image { medium large } } voiceActors(language: JAPANESE) { name { full } } }
     }
     recommendations(sort: RATING_DESC, perPage: 15) {
       nodes { mediaRecommendation { ...ref } }
@@ -75,9 +76,10 @@ export async function getSeriesDetails(id: string): Promise<SeriesDetails> {
     if (!m) return empty;
 
     const characters: Character[] = m.characters.edges.map(
-      (e: { role: string; node: { name: { full: string }; image: { medium: string } }; voiceActors: { name: { full: string } }[] }) => ({
+      (e: { role: string; node: { name: { full: string }; image: { medium: string; large: string } }; voiceActors: { name: { full: string } }[] }) => ({
         name: e.node.name.full,
         image: e.node.image.medium,
+        imageLarge: e.node.image.large,
         role: e.role,
         voiceActor: e.voiceActors[0]?.name.full ?? null,
       }),

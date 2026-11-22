@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BookOpen, Clock, Heart, LogOut, Settings, Shield, Star, Tv, User } from "lucide-react";
+import { BookOpen, Camera, Clock, Heart, LogOut, Settings, Shield, Star, Tv, User } from "lucide-react";
 import { toast } from "sonner";
+import { AvatarPicker } from "@/components/AvatarPicker";
 import { AnimeCard, MangaCard } from "@/components/ContentCard";
 import { Footer } from "@/components/Footer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,6 +34,7 @@ export function ProfilePage({ anime, manga }: { anime: AnimeSummary[]; manga: Ma
   const progress = useProgress();
   const list = useList();
   const [listFilter, setListFilter] = useState<ListStatus | "ALL">("ALL");
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const watching = continueWatching(progress, anime);
 
   // Stats from what was actually watched/read (saved progress), not placeholders.
@@ -83,10 +85,16 @@ export function ProfilePage({ anime, manga }: { anime: AnimeSummary[]; manga: Ma
         <div className="relative mx-auto -mt-20 w-[90%]">
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:gap-6">
             <div className="relative">
-              <Avatar className="size-28 rounded-2xl border-4 border-ink shadow-2xl sm:size-32">
-                {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.username} className="object-cover" />}
-                <AvatarFallback className="rounded-2xl text-2xl">{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
+              <button type="button" onClick={() => setAvatarOpen(true)} className="group relative block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="Change avatar">
+                <Avatar className="size-28 rounded-2xl border-4 border-ink shadow-2xl sm:size-32">
+                  {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.username} className="object-cover object-top" />}
+                  <AvatarFallback className="rounded-2xl text-2xl">{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <span className="absolute inset-1 flex items-center justify-center rounded-xl bg-black/60 opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <Camera className="size-6 text-white" />
+                </span>
+              </button>
+              <AvatarPicker user={user} series={[...anime, ...manga]} open={avatarOpen} onOpenChange={setAvatarOpen} />
               {user.role === "ADMIN" && (
                 <Badge className="absolute -right-2 -top-2 rounded-lg p-1.5" aria-label="Admin">
                   <Shield className="size-3.5" />
