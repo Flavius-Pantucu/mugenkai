@@ -959,6 +959,29 @@ export function EmbedPlayer({
     };
   }, [activeSubtitleTrack, allAvailableSubtitles]);
 
+  // iPhone fullscreen is Safari's native player (webkitEnterFullscreen): it hides our overlay and
+  // only draws the video's own text tracks. Mirror the cues into one, shown only while native
+  // fullscreen is up so it never doubles the overlay. Custom subtitle styles don't apply there.
+  const nativeTrackRef = useRef<TextTrack | null>(null);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || typeof VTTCue === "undefined" || !/iPhone|iPod/.test(navigator.userAgent)) return;
+    const track = (nativeTrackRef.current ??= video.addTextTrack("subtitles", "Subtitles", "en"));
+    track.mode = "hidden"; // cues are only readable/editable when not "disabled"
+    while (track.cues?.length) track.removeCue(track.cues[0]);
+    for (const c of cues) track.addCue(new VTTCue(c.start, c.end, c.text));
+
+    const show = () => (track.mode = "showing");
+    const hide = () => (track.mode = "hidden");
+    if ((video as HTMLVideoElement & { webkitDisplayingFullscreen?: boolean }).webkitDisplayingFullscreen) show();
+    video.addEventListener("webkitbeginfullscreen", show);
+    video.addEventListener("webkitendfullscreen", hide);
+    return () => {
+      video.removeEventListener("webkitbeginfullscreen", show);
+      video.removeEventListener("webkitendfullscreen", hide);
+    };
+  }, [cues]);
+
   // Video Time Update & Subtitle Cue Sync
   const handleTimeUpdate = () => {
     const video = videoRef.current;
