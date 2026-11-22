@@ -13,6 +13,10 @@ const EnvSchema = z.object({
     .string()
     .default("")
     .transform((s) => s.split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)),
+  RESEND_API_KEY: optional,
+  EMAIL_FROM: z.string().default("Mugenkai <onboarding@resend.dev>"),
+  /** Public origin for links in emails, e.g. https://mugenkai.app. Falls back to the request's origin. */
+  APP_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().optional()),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
 

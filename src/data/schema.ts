@@ -121,6 +121,11 @@ export const LoginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
+const NewPassword = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-Z]/, "Include at least one uppercase letter");
+
 export const RegisterSchema = z
   .object({
     username: z
@@ -129,10 +134,7 @@ export const RegisterSchema = z
       .max(24, "At most 24 characters")
       .regex(/^[a-zA-Z0-9_]+$/, "Letters, numbers and underscores only"),
     email: z.email("Enter a valid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(/[A-Z]/, "Include at least one uppercase letter"),
+    password: NewPassword,
     confirmPassword: z.string(),
     acceptTerms: z.boolean().refine((v) => v, "Accept the terms to continue"),
   })
@@ -274,5 +276,13 @@ export type AnimeSeason = z.infer<typeof AnimeSeasonSchema>;
 export type Chapter = z.infer<typeof ChapterSchema>;
 export type MangaPage = z.infer<typeof MangaPageSchema>;
 export type UserProfile = z.infer<typeof UserProfileSchema>;
+export const ForgotPasswordSchema = z.object({ email: z.email("Enter a valid email address") });
+
+export const ResetPasswordSchema = z
+  .object({ token: z.string().min(1), password: NewPassword, confirmPassword: z.string() })
+  .refine((v) => v.password === v.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });
+
+export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type RegisterInput = z.infer<typeof RegisterSchema>;

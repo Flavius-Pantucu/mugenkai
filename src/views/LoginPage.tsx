@@ -71,9 +71,9 @@ export function LoginPage({ backdrop }: { backdrop: string }) {
               <FormItem>
                 <div className="flex items-center justify-between">
                   <FormLabel>Password</FormLabel>
-                  <Button type="button" variant="link" size="sm" className="h-auto p-0 text-xs" onClick={() => toast("Password reset is not wired up yet")}>
+                  <Link href="/forgot-password" className="text-xs font-medium text-primary hover:underline">
                     Forgot password?
-                  </Button>
+                  </Link>
                 </div>
                 <FormControl>
                   <PasswordInput autoComplete="current-password" placeholder="Your password" {...field} />

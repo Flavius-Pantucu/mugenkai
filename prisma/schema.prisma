@@ -51,6 +51,7 @@ model User {
   updatedAt     DateTime @updatedAt
 
   sessions        Session[]
+  passwordResets  PasswordReset[]
   episodeProgress EpisodeProgress[]
   chapterProgress ChapterProgress[]
   comments        Comment[]
@@ -60,6 +61,18 @@ model User {
 
 /// id is the SHA-256 of the cookie token, so a leaked database cannot be replayed as sessions.
 model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// id is the SHA-256 of the emailed token, like Session. Single use: deleted when the password changes.
+model PasswordReset {
   id        String   @id
   userId    String
   expiresAt DateTime

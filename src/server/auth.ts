@@ -12,7 +12,7 @@ export { hashPassword, verifyPassword } from "./password";
 
 const COOKIE = "mk_session";
 const SESSION_DAYS = 30;
-const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
+export const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
 
 export async function createSession(userId: string) {
   const token = randomBytes(32).toString("base64url");
