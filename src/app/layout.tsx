@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import "@/styles/index.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { Navbar } from "@/components/Navbar";
 import { CustomCursor } from "@/components/CustomCursor";
+import { NavigationProgressBar } from "@/components/NavigationProgressBar";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { searchIndex } from "@/data/series";
@@ -31,6 +33,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <AuthProvider>
           <TooltipProvider>
             <div className="min-h-screen bg-ink">
+              <Suspense fallback={null}>
+                <NavigationProgressBar />
+              </Suspense>
               <CustomCursor />
               <Navbar searchIndex={searchIndex(anime, manga)} />
               <main>{children}</main>

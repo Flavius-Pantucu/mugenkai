@@ -410,7 +410,7 @@ export async function getManga(id: string): Promise<Manga | null> {
   if (!manga) return null;
 
   try {
-    const liveChapters = await fetchMangaChaptersWithFallback(manga.title, manga.id, manga.id);
+    const liveChapters = await fetchMangaChaptersWithFallback(manga.title, manga.id, manga.id, manga.nativeTitle);
     if (liveChapters.length > 0) {
       return {
         ...manga,

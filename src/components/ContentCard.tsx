@@ -38,12 +38,16 @@ function seriesLinks(s: Series) {
     };
   }
   const m = s.item;
+  const isOngoing = m.status === "ONGOING";
+  const hasCount = typeof m.chapterCount === "number" && m.chapterCount > 0 && m.chapterCount !== 150;
   return {
     details: `/manga/${m.id}`,
     primary: m.firstChapterId ? `/read/${m.id}/${m.firstChapterId}` : `/manga/${m.id}`,
     primaryLabel: `Read ${m.title}`,
     PrimaryIcon: BookOpen,
-    count: `${m.chapterCount} chapters`,
+    count: isOngoing
+      ? (hasCount ? `${m.chapterCount} chs · Ongoing` : "Ongoing")
+      : (hasCount ? `${m.chapterCount} chapters` : "Completed"),
     by: m.author,
     ongoingLabel: "Ongoing",
   };
@@ -72,7 +76,7 @@ function PosterCard({ series, fluid }: { series: Series; fluid?: boolean }) {
         onMouseEnter={scheduleOpen}
         onMouseLeave={cancelOpen}
         className={cn(
-          "group block shrink-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "group block shrink-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98] transition-transform",
           fluid ? "w-full" : "w-[42vw] sm:w-[clamp(168px,15.2vw,232px)]",
         )}
       >
@@ -229,7 +233,7 @@ function ResumeCard({ href, image, title, meta, progress, Icon }: { href: string
   return (
     <Link
       href={href}
-      className="group block w-[78vw] shrink-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[clamp(280px,24vw,360px)]"
+      className="group block w-[78vw] shrink-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[clamp(280px,24vw,360px)] active:scale-[0.98] transition-transform"
     >
       <div className="relative aspect-video overflow-hidden rounded-xl bg-ink-raised ring-1 ring-white/5">
         <img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
