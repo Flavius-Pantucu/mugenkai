@@ -287,7 +287,7 @@ let ffmpegAvailable: boolean | null = null;
 export function hasFfmpeg(): boolean {
   if (ffmpegAvailable === null) {
     try {
-      const res = spawnSync(process.env.FFMPEG_PATH || "ffmpeg", ["-version"], { timeout: 5000 });
+      const res = spawnSync(/*turbopackIgnore: true*/ process.env.FFMPEG_PATH || "ffmpeg", ["-version"], { timeout: 5000 });
       ffmpegAvailable = res.status === 0;
     } catch {
       ffmpegAvailable = false;
@@ -335,7 +335,7 @@ export function streamDownload(plan: DownloadPlan, signal?: AbortSignal): { stre
     "pipe:1"
   );
 
-  const proc = spawn(process.env.FFMPEG_PATH || "ffmpeg", args, {
+  const proc = spawn(/*turbopackIgnore: true*/ process.env.FFMPEG_PATH || "ffmpeg", args, {
     stdio: ["pipe", "pipe", "pipe", "pipe"],
   });
 
