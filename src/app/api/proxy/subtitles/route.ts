@@ -130,9 +130,14 @@ export async function GET(request: NextRequest) {
         targetUrl.includes("megaplay") ||
         targetUrl.includes("broforgotsave") ||
         targetUrl.includes("eclipseharbor") ||
-        targetUrl.includes("nexabloom")
+        targetUrl.includes("nexabloom") ||
+        targetUrl.includes("goldenanchor") ||
+        targetUrl.includes("mysubsplay") ||
+        targetUrl.includes("emeralddrift")
       ) {
         effectiveReferer = "https://megaplay.buzz/";
+      } else if (targetUrl.includes("krussdomi") || targetUrl.includes("kaas.ro") || targetUrl.includes("kaa.lt")) {
+        effectiveReferer = "https://kaa.lt/";
       } else {
         try {
           effectiveReferer = new URL(targetUrl).origin + "/";

@@ -18,16 +18,34 @@ export interface Character {
   voiceActor: string | null;
 }
 
+export interface FranchiseSeason {
+  id: string;
+  number: number;
+  title: string;
+  year?: number;
+  episodes?: number | null;
+  cover?: string;
+  format?: string | null;
+}
+
 export interface SeriesDetails {
   characters: Character[];
   recommendations: MediaRef[];
   /** Anime page: the manga it adapts. Manga page: its anime adaptations. */
   adaptations: MediaRef[];
+  /** Anime franchise: all related seasons (prequels, current, sequels) */
+  franchiseSeasons: FranchiseSeason[];
 }
 
 const QUERY = `query ($id: Int) {
   Media(id: $id) {
+    id
     type
+    format
+    seasonYear
+    episodes
+    title { english romaji }
+    coverImage { large }
     characters(sort: [ROLE, RELEVANCE], perPage: 12) {
       edges { role node { name { full } image { medium large } } voiceActors(language: JAPANESE) { name { full } } }
     }
@@ -37,7 +55,7 @@ const QUERY = `query ($id: Int) {
     relations { edges { relationType node { ...ref } } }
   }
 }
-fragment ref on Media { id type format isAdult title { english romaji } coverImage { large } averageScore }`;
+fragment ref on Media { id type format isAdult title { english romaji } coverImage { large } averageScore seasonYear episodes }`;
 
 interface RawRef {
   id: number;
@@ -47,6 +65,8 @@ interface RawRef {
   title: { english: string | null; romaji: string };
   coverImage: { large: string };
   averageScore: number | null;
+  seasonYear?: number | null;
+  episodes?: number | null;
 }
 
 const toRef = (m: RawRef): MediaRef => ({
@@ -61,19 +81,98 @@ const toRef = (m: RawRef): MediaRef => ({
 // Formats we can open: series pages exist for these only.
 const OPENABLE = new Set(["TV", "ONA", "MOVIE", "OVA", "MANGA", "ONE_SHOT"]);
 
+const franchiseCache = new Map<string, { seasons: FranchiseSeason[]; timestamp: number }>();
+const FRANCHISE_CACHE_TTL = 24 * 60 * 60 * 1000;
+
+export async function getFranchiseSeasons(id: string): Promise<FranchiseSeason[]> {
+  if (!/^\d+$/.test(id)) return [];
+  const cached = franchiseCache.get(id);
+  if (cached && Date.now() - cached.timestamp < FRANCHISE_CACHE_TTL) {
+    return cached.seasons;
+  }
+
+  try {
+    const visited = new Map<number, { id: number; title: string; year: number; episodes: number | null; cover?: string; format?: string }>();
+    let currentIds = [Number(id)];
+
+    for (let hop = 0; hop < 5 && currentIds.length > 0; hop++) {
+      const nextIds: number[] = [];
+      for (const curId of currentIds) {
+        if (visited.has(curId)) continue;
+        const res = await fetch("https://graphql.anilist.co", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ query: QUERY, variables: { id: curId } }),
+          next: { revalidate: 86400 },
+        });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const m = data.data?.Media;
+        if (!m || m.type !== "ANIME") continue;
+
+        visited.set(curId, {
+          id: m.id,
+          title: m.title?.english || m.title?.romaji || `Season`,
+          year: m.seasonYear || 0,
+          episodes: m.episodes ?? null,
+          cover: m.coverImage?.large,
+          format: m.format,
+        });
+
+        for (const edge of m.relations?.edges || []) {
+          if (edge.node?.type === "ANIME" && ["SEQUEL", "PREQUEL"].includes(edge.relationType)) {
+            const nodeFormat = edge.node.format || "";
+            if (!visited.has(edge.node.id) && ["TV", "ONA", "OVA", "MOVIE"].includes(nodeFormat)) {
+              nextIds.push(edge.node.id);
+            }
+          }
+        }
+      }
+      currentIds = [...new Set(nextIds)];
+    }
+
+    const all = Array.from(visited.values());
+    if (all.length === 0) return [];
+
+    all.sort((a, b) => (a.year || 0) - (b.year || 0) || a.id - b.id);
+    const seasons: FranchiseSeason[] = all.map((m, idx) => ({
+      id: String(m.id),
+      number: idx + 1,
+      title: m.title,
+      year: m.year || undefined,
+      episodes: m.episodes,
+      cover: m.cover,
+      format: m.format,
+    }));
+
+    // Cache for every season in this franchise
+    for (const s of seasons) {
+      franchiseCache.set(s.id, { seasons, timestamp: Date.now() });
+    }
+
+    return seasons;
+  } catch (err) {
+    console.warn(`[getFranchiseSeasons] ${id}:`, err);
+    return [];
+  }
+}
+
 export async function getSeriesDetails(id: string): Promise<SeriesDetails> {
-  const empty = { characters: [], recommendations: [], adaptations: [] };
+  const empty = { characters: [], recommendations: [], adaptations: [], franchiseSeasons: [] };
   if (!/^\d+$/.test(id)) return empty; // demo catalog ids aren't AniList ids
   try {
-    const res = await fetch("https://graphql.anilist.co", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ query: QUERY, variables: { id: Number(id) } }),
-      next: { revalidate: 86400 },
-    });
-    if (!res.ok) return empty;
+    const [res, franchiseSeasons] = await Promise.all([
+      fetch("https://graphql.anilist.co", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ query: QUERY, variables: { id: Number(id) } }),
+        next: { revalidate: 86400 },
+      }),
+      getFranchiseSeasons(id),
+    ]);
+    if (!res.ok) return { ...empty, franchiseSeasons };
     const m = (await res.json()).data?.Media;
-    if (!m) return empty;
+    if (!m) return { ...empty, franchiseSeasons };
 
     const characters: Character[] = m.characters.edges.map(
       (e: { role: string; node: { name: { full: string }; image: { medium: string; large: string } }; voiceActors: { name: { full: string } }[] }) => ({
@@ -92,7 +191,7 @@ export async function getSeriesDetails(id: string): Promise<SeriesDetails> {
     const adaptations = (m.relations.edges as { relationType: string; node: RawRef }[])
       .filter((e) => (e.relationType === "SOURCE" || e.relationType === "ADAPTATION") && e.node.type === other && OPENABLE.has(e.node.format ?? ""))
       .map((e) => toRef(e.node));
-    return { characters, recommendations, adaptations };
+    return { characters, recommendations, adaptations, franchiseSeasons };
   } catch (err) {
     console.warn(`[getSeriesDetails] ${id}:`, err);
     return empty;

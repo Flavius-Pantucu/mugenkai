@@ -14,7 +14,6 @@ const XOR_KEY = "10b06cdc1ca48c9fb0b94af97cc040cf";
 // Providers that are non-functional, expired, or banned in sandboxed iframes
 export const BLOCKED_ANIMEX_PROVIDERS = new Set([
   "loli",
-  "sora",
   "imgnex",
   "megaplay",
   "vidwish",
@@ -78,7 +77,7 @@ import {
   resilientFetch,
   hasOutboundProxy,
   isCloudflareChallenge,
-} from "./proxy-agent";
+} from "./proxy-agent.ts";
 
 // Pre-seeded slugs for popular anime to bypass cloud scraping latency/Cloudflare blocks
 const PRESEEDED_SLUGS: Array<[number, string]> = [
@@ -439,6 +438,8 @@ export async function resolveAnimexPlayStream({
     const norm = provider.toLowerCase();
     if (norm === "yuri" || norm === "yuki") {
       candidateProviders.push("yuki", "yuri");
+    } else if (norm === "sora" || norm === "kaa") {
+      candidateProviders.push("sora", "yuki");
     } else if (norm === "zuri" || norm === "zuna") {
       // Zuri / zuna is only valid for SUB
       if (type === "sub") {
@@ -461,13 +462,16 @@ export async function resolveAnimexPlayStream({
     candidateProviders.push("yuki");
   }
 
-  // Optimize speed: for SUB, only prioritize 'zuna' (Zuri) first if no specific provider was requested
+  // Optimize speed: prioritize reliable providers (yuki/Yuri first, then sora, then zuna/Zuri)
   if (!provider && type === "sub") {
-    const zIdx = candidateProviders.indexOf("zuna");
-    if (zIdx > -1) {
-      candidateProviders.splice(zIdx, 1);
+    const preferred = ["yuki", "sora", "zuna"];
+    for (let i = preferred.length - 1; i >= 0; i--) {
+      const idx = candidateProviders.indexOf(preferred[i]);
+      if (idx > -1) {
+        candidateProviders.splice(idx, 1);
+        candidateProviders.unshift(preferred[i]);
+      }
     }
-    candidateProviders.unshift("zuna");
   }
 
   let lastError: any = null;
@@ -477,7 +481,13 @@ export async function resolveAnimexPlayStream({
   const seenMapped = new Set<string>();
   for (const prov of candidateProviders) {
     const mappedProv =
-      prov.toLowerCase() === "yuri" ? "yuki" : prov.toLowerCase() === "zuri" ? "zuna" : prov.toLowerCase();
+      prov.toLowerCase() === "yuri"
+        ? "yuki"
+        : prov.toLowerCase() === "sora" || prov.toLowerCase() === "kaa"
+        ? "sora"
+        : prov.toLowerCase() === "zuri"
+        ? "zuna"
+        : prov.toLowerCase();
     if (seenMapped.has(mappedProv)) continue;
     seenMapped.add(mappedProv);
 
@@ -497,6 +507,8 @@ export async function resolveAnimexPlayStream({
         selectedProvider =
           pNorm === "yuri" || pNorm === "yuki"
             ? "Yuri"
+            : pNorm === "sora" || pNorm === "kaa"
+            ? "Sora"
             : pNorm === "zuri" || pNorm === "zuna"
             ? "Zuri"
             : prov.charAt(0).toUpperCase() + prov.slice(1);
@@ -516,9 +528,16 @@ export async function resolveAnimexPlayStream({
 
   const source = result.sources[0];
 
+  const effRef =
+    result.headers?.Referer ||
+    (source.url.includes("krussdomi") || source.url.includes("kaa") ? "https://kaa.lt/" : "https://megaplay.buzz/");
+  const effOrig =
+    result.headers?.Origin ||
+    (source.url.includes("krussdomi") || source.url.includes("kaa") ? "https://kaa.lt" : "https://megaplay.buzz");
+
   const params = new URLSearchParams({ url: source.url });
-  if (result.headers?.Referer) params.set("referer", result.headers.Referer);
-  if (result.headers?.Origin) params.set("origin", result.headers.Origin);
+  params.set("referer", effRef);
+  params.set("origin", effOrig);
   if (result.headers?.["User-Agent"]) params.set("ua", result.headers["User-Agent"]);
   const proxyM3u8 = `/api/proxy/m3u8?${params.toString()}`;
 
@@ -528,7 +547,7 @@ export async function resolveAnimexPlayStream({
     label: track.label || track.lang || "English",
     kind: track.kind || "captions",
     default: !!track.default,
-    url: `/api/proxy/subtitles?url=${encodeURIComponent(track.url)}&referer=${encodeURIComponent(result.headers?.Referer || "")}`,
+    url: `/api/proxy/subtitles?url=${encodeURIComponent(track.url)}&referer=${encodeURIComponent(effRef)}`,
     direct_url: track.url,
     format: "vtt",
   }));
@@ -584,10 +603,15 @@ export async function getAnimexEpisodeSources(
   try {
     const info = await getEmbedInfo(anilistId, episodeNumber);
 
-    // 1. Resolve SUB providers: Yuri and Zuri
+    // 1. Resolve SUB providers: Yuri, Sora, and Zuri
     const targetSubProviders: AnimexProvider[] = [];
     const existingYuri = info.subProviders.find((p) => p.id.toLowerCase() === "yuki" || p.id.toLowerCase() === "yuri");
     targetSubProviders.push(existingYuri || { id: "yuri", default: true, tip: "Yuri" });
+
+    const existingSora = info.subProviders.find((p) => p.id.toLowerCase() === "sora" || p.id.toLowerCase() === "kaa");
+    if (existingSora) {
+      targetSubProviders.push(existingSora);
+    }
 
     const existingZuri = info.subProviders.find((p) => p.id.toLowerCase() === "zuna" || p.id.toLowerCase() === "zuri");
     targetSubProviders.push(existingZuri || { id: "zuri", default: false, tip: "Zuri" });
@@ -597,11 +621,19 @@ export async function getAnimexEpisodeSources(
       const normId =
         p.id.toLowerCase() === "yuki" || p.id.toLowerCase() === "yuri"
           ? "yuri"
+          : p.id.toLowerCase() === "sora" || p.id.toLowerCase() === "kaa"
+          ? "sora"
           : p.id.toLowerCase() === "zuna" || p.id.toLowerCase() === "zuri"
           ? "zuri"
           : p.id;
       const displayName =
-        normId === "yuri" ? "Yuri" : normId === "zuri" ? "Zuri" : p.id.charAt(0).toUpperCase() + p.id.slice(1);
+        normId === "yuri"
+          ? "Yuri"
+          : normId === "sora"
+          ? "Sora"
+          : normId === "zuri"
+          ? "Zuri"
+          : p.id.charAt(0).toUpperCase() + p.id.slice(1);
 
       sources.push({
         id: `animex-${normId}-sub`,

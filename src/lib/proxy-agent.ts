@@ -1,6 +1,6 @@
 import http from "http";
 import https from "https";
-import axios, { AxiosRequestConfig, AxiosProxyConfig } from "axios";
+import axios, { type AxiosRequestConfig, type AxiosProxyConfig } from "axios";
 import { HttpsProxyAgent } from "https-proxy-agent";
 
 /**

@@ -7,7 +7,19 @@ import type { Anime, AnimeSummary } from "@/data/schema";
 import { episodeLabel, getSeasons } from "@/data/series";
 import { episodeProgress, useProgress } from "@/lib/progress";
 
-export function AnimeDetailsPage({ anime, related, extras }: { anime: Anime; related: AnimeSummary[]; extras?: React.ReactNode }) {
+import type { FranchiseSeason } from "@/server/details";
+
+export function AnimeDetailsPage({
+  anime,
+  related,
+  franchiseSeasons,
+  extras,
+}: {
+  anime: Anime;
+  related: AnimeSummary[];
+  franchiseSeasons?: FranchiseSeason[];
+  extras?: React.ReactNode;
+}) {
   const progressState = useProgress();
   const seasons = getSeasons(anime);
   const lastEpisode = anime.episodes.at(-1);
@@ -30,6 +42,7 @@ export function AnimeDetailsPage({ anime, related, extras }: { anime: Anime; rel
       showProgress
       seriesId={anime.id}
       threadId={`anime:${anime.id}`}
+      franchiseSeasons={franchiseSeasons}
       groups={seasons.map((s) => ({
         id: s.id,
         title: s.title,

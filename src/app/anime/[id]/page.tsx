@@ -16,6 +16,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     <AnimeDetailsPage
       anime={anime}
       related={related(catalog.anime, summary)}
+      franchiseSeasons={details.franchiseSeasons}
       extras={<SeriesExtras kind="anime" details={details} trailerYoutubeId={anime.trailerYoutubeId} />}
     />
   );

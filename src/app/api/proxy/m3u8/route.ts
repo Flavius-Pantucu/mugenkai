@@ -119,8 +119,19 @@ export async function GET(request: NextRequest) {
         effectiveReferer = "https://animeparadise.moe/";
       } else if (targetUrl.includes("vixcloud")) {
         effectiveReferer = "https://vixcloud.co/";
-      } else if (targetUrl.includes("megaplay") || targetUrl.includes("akirax")) {
+      } else if (
+        targetUrl.includes("megaplay") ||
+        targetUrl.includes("akirax") ||
+        targetUrl.includes("nexabloom") ||
+        targetUrl.includes("goldenanchor") ||
+        targetUrl.includes("mysubsplay") ||
+        targetUrl.includes("emeralddrift") ||
+        targetUrl.includes("broforgotsave") ||
+        targetUrl.includes("eclipseharbor")
+      ) {
         effectiveReferer = "https://megaplay.buzz/";
+      } else if (targetUrl.includes("krussdomi") || targetUrl.includes("kaas.ro") || targetUrl.includes("kaa.lt")) {
+        effectiveReferer = "https://kaa.lt/";
       } else if (targetUrl.includes("megacloud") || targetUrl.includes("rapid-cloud") || targetUrl.includes("rabbitstream")) {
         effectiveReferer = "https://megacloud.tv/";
       } else {
@@ -242,7 +253,10 @@ export async function GET(request: NextRequest) {
           if (audioLine.includes('URI="')) {
             audioLine = audioLine.replace(/URI="([^"]+)"/, (m, uri) => {
               const abs = resolveUrlWithBase(uri);
-              return `URI="/api/proxy/m3u8?url=${encodeURIComponent(abs)}&pk=${encodeURIComponent(pk || "")}&audio=${audio}${aid ? `&aid=${encodeURIComponent(aid)}` : ""}${v ? `&v=${v}` : ""}${qParam}${epParam}${srvParam}"`;
+              const refParam = effectiveReferer ? `&referer=${encodeURIComponent(effectiveReferer)}` : "";
+              const origParam = effectiveOrigin ? `&origin=${encodeURIComponent(effectiveOrigin)}` : "";
+              const uaParam = ua ? `&ua=${encodeURIComponent(ua)}` : "";
+              return `URI="/api/proxy/m3u8?url=${encodeURIComponent(abs)}&pk=${encodeURIComponent(pk || "")}&audio=${audio}${aid ? `&aid=${encodeURIComponent(aid)}` : ""}${v ? `&v=${v}` : ""}${qParam}${epParam}${srvParam}${refParam}${origParam}${uaParam}"`;
             });
           }
 
@@ -301,7 +315,10 @@ export async function GET(request: NextRequest) {
         if (trimmed.startsWith("#EXT-X-MEDIA:") && trimmed.includes('URI="')) {
           const rewrittenMedia = line.replace(/URI="([^"]+)"/, (m, uri) => {
             const abs = resolveUrlWithBase(uri);
-            return `URI="/api/proxy/m3u8?url=${encodeURIComponent(abs)}&pk=${encodeURIComponent(pk || "")}"`;
+            const refParam = effectiveReferer ? `&referer=${encodeURIComponent(effectiveReferer)}` : "";
+            const origParam = effectiveOrigin ? `&origin=${encodeURIComponent(effectiveOrigin)}` : "";
+            const uaParam = ua ? `&ua=${encodeURIComponent(ua)}` : "";
+            return `URI="/api/proxy/m3u8?url=${encodeURIComponent(abs)}&pk=${encodeURIComponent(pk || "")}${refParam}${origParam}${uaParam}"`;
           });
           rewrittenLines.push(rewrittenMedia);
           continue;

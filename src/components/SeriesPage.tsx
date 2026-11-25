@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BookOpen, Check, CheckCheck, ChevronDown, EyeOff, LayoutGrid, List, Play, Plus, Star, X } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -72,6 +73,14 @@ export interface SeriesPageProps {
   showProgress: boolean;
   seriesId: string;
   threadId: string; // comment thread for the whole series, e.g. "anime:16498"
+  /** All seasons in the franchise (for anime split across AniList entries) */
+  franchiseSeasons?: Array<{
+    id: string;
+    number: number;
+    title: string;
+    year?: number;
+    episodes?: number | null;
+  }>;
   related: React.ReactNode;
   /** Above the episode/chapter grid, e.g. "16 of 201 chapters here, read the rest on Tapas". */
   notice?: React.ReactNode;
@@ -87,7 +96,8 @@ const NOUN = {
 const getPageSize = (kind: "anime" | "manga") => (kind === "manga" ? 48 : 12);
 
 export function SeriesPage(props: SeriesPageProps) {
-  const { kind, groups, showProgress } = props;
+  const router = useRouter();
+  const { kind, groups, showProgress, franchiseSeasons } = props;
   const noun = NOUN[kind];
   const pageSize = getPageSize(kind);
 
@@ -210,7 +220,30 @@ export function SeriesPage(props: SeriesPageProps) {
         {groups.length > 0 && (
         <div className="mt-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3 sm:mt-10">
           <div>
-            {groups.length > 1 ? (
+            {franchiseSeasons && franchiseSeasons.length > 1 ? (
+              <Select
+                value={props.seriesId}
+                onValueChange={(seasonId) => {
+                  if (seasonId !== props.seriesId) {
+                    router.push(`/anime/${seasonId}`);
+                  }
+                }}
+              >
+                <SelectTrigger aria-label="Season" className="min-w-[240px] bg-ink-raised text-base font-bold text-white data-[size=default]:h-11">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-80">
+                  {franchiseSeasons.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      Season {s.number}
+                      <span className="ml-2 text-xs font-normal text-muted-foreground">
+                        · {s.title} {s.year ? `(${s.year})` : ""}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : groups.length > 1 ? (
               <Select value={active?.id} onValueChange={setActiveId}>
                 <SelectTrigger aria-label={noun.group} className="min-w-[220px] bg-ink-raised text-base font-bold text-white data-[size=default]:h-11">
                   <SelectValue />

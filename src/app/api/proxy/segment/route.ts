@@ -145,9 +145,14 @@ export async function GET(request: NextRequest) {
       targetUrl.includes("broforgotsave") ||
       targetUrl.includes("eclipseharbor") ||
       targetUrl.includes("nexabloom") ||
+      targetUrl.includes("goldenanchor") ||
+      targetUrl.includes("mysubsplay") ||
+      targetUrl.includes("emeralddrift") ||
       targetUrl.includes("akirax")
     ) {
       effectiveReferer = "https://megaplay.buzz/";
+    } else if (targetUrl.includes("krussdomi") || targetUrl.includes("kaas.ro") || targetUrl.includes("kaa.lt")) {
+      effectiveReferer = "https://kaa.lt/";
     } else {
       try {
         const parsed = new URL(targetUrl);

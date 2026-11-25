@@ -22,10 +22,18 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { CommentSection } from "@/components/CommentSection";
 
 import type { Anime } from "@/data/schema";
+import type { FranchiseSeason } from "@/server/details";
 import { episodeLabel } from "@/data/series";
 import {
   episodeProgress,
@@ -39,11 +47,12 @@ import { createLocalStore } from "@/lib/local-store";
 import { NotFoundPage } from "./NotFoundPage";
 
 const SERVERS = [
+  { id: "yuri", label: "Yuri (Multi-Sub)", tip: "Soft subtitles in several languages" },
+  { id: "sora", label: "Sora (Fast HD)", tip: "Ultra-fast stream, high quality" },
   { id: "flow", label: "Flow (HD-1)", tip: "Fastest stream, OP/ED auto-skip" },
   { id: "kitty", label: "Kitty (HD-2)", tip: "Backup mirror for Flow" },
-  { id: "yuri", label: "Yuri (Multi-Sub)", tip: "Soft subtitles in several languages" },
-  { id: "zuri", label: "Zuri (Raw/Sub)", tip: "Japanese audio fallback" },
   { id: "buzz", label: "Buzz (HD-3)", tip: "Extra backup server" },
+  { id: "zuri", label: "Zuri (Raw/Sub)", tip: "Japanese audio fallback" },
 ] as const;
 
 type ServerId = (typeof SERVERS)[number]["id"];
@@ -56,20 +65,22 @@ const AUTO_NEXT_SECONDS = 8;
 
 /**
  * Episodes are embedded through AniFlow's multi-source engine.
- * Supports 5 streaming backends (Flow, Kitty, Yuri, Zuri, MegaPlay Buzz),
+ * Supports 6 streaming backends (Yuri, Sora, Flow, Kitty, Buzz, Zuri),
  * Sub/Dub switching, auto-skip intro/outro, and automated progress tracking.
  */
 export function WatchPage({
   anime,
   episodeId,
+  franchiseSeasons,
 }: {
   anime: Anime;
   episodeId: string;
+  franchiseSeasons?: FranchiseSeason[];
 }) {
   const router = useRouter();
   const progress = useProgress();
 
-  const [server, setServer] = useState<ServerId>("buzz");
+  const [server, setServer] = useState<ServerId>("yuri");
   // What the player reports it is actually playing; it can switch servers on its own (menu or failover).
   const [playing, setPlaying] = useState<ServerId | null>(null);
   const [reloads, setReloads] = useState(0);
@@ -130,8 +141,8 @@ export function WatchPage({
   const handleAudioChange = (newAudio: "sub" | "dub") => {
     setPlaying(null);
     setAudio(newAudio);
-    if (newAudio === "dub" && server === "zuri") {
-      setServer("buzz");
+    if (newAudio === "dub" && (server === "zuri" || server === "sora")) {
+      setServer("yuri");
     }
   };
 
@@ -508,6 +519,60 @@ export function WatchPage({
 
             {/* Episode list */}
             <div>
+              {franchiseSeasons && franchiseSeasons.length > 1 ? (
+                <div className="mb-3 flex items-center justify-between gap-2 px-1">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Season
+                  </span>
+                  <Select
+                    value={anime.id}
+                    onValueChange={(selectedId) => {
+                      if (selectedId !== anime.id) {
+                        router.push(`/watch/${selectedId}/${selectedId}-s1-e1`);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="h-8 min-w-[170px] max-w-[240px] border-white/10 bg-white/5 text-xs font-semibold text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-80 border-white/10 bg-ink-raised text-white">
+                      {franchiseSeasons.map((s) => (
+                        <SelectItem key={s.id} value={s.id} className="text-xs">
+                          Season {s.number} · {s.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : multiSeason ? (
+                <div className="mb-3 flex items-center justify-between gap-2 px-1">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Season
+                  </span>
+                  <Select
+                    value={String(episode.seasonNumber)}
+                    onValueChange={(seasonNumStr) => {
+                      const targetSeasonNum = parseInt(seasonNumStr, 10);
+                      const targetEp = anime.episodes.find((e) => e.seasonNumber === targetSeasonNum);
+                      if (targetEp) {
+                        router.push(`/watch/${anime.id}/${targetEp.id}`);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="h-8 min-w-[150px] border-white/10 bg-white/5 text-xs font-semibold text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-80 border-white/10 bg-ink-raised text-white">
+                      {anime.seasons.map((s) => (
+                        <SelectItem key={s.number} value={String(s.number)} className="text-xs">
+                          Season {s.number} {s.title !== anime.title ? `· ${s.title}` : ""}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : null}
+
               <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {multiSeason ? `Season ${episode.seasonNumber}` : "Episodes"} ·{" "}
                 {seasonEpisodes.length}

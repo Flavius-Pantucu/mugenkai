@@ -499,9 +499,10 @@ export function EmbedPlayer({
         // Build standard 5-provider roster for Sub only (never synthesize fake DUB)
         const idParams = `${anilistId ? `anilistId=${anilistId}&` : ""}${malId ? `malId=${malId}&` : ""}episode=${episodeNumber}`;
         const standardFallbackProviders: VideoSourceData[] = [
+          { id: "animex-yuri-sub", type: "SUB", language: "Japanese", videoUrl: `/api/play?${idParams}&audio=sub&server=yuri&format=m3u8`, quality: "1080p", isHls: true, serverName: "Yuri (Sub)" },
+          { id: "animex-sora-sub", type: "SUB", language: "Japanese", videoUrl: `/api/play?${idParams}&audio=sub&server=sora&format=m3u8`, quality: "1080p", isHls: true, serverName: "Sora (Sub)" },
           { id: "flow-sub", type: "SUB", language: "Japanese", videoUrl: `/api/play?${idParams}&audio=sub&server=flow&format=m3u8`, quality: "1080p", isHls: true, serverName: "Flow (Sub)" },
           { id: "kitty-sub", type: "SUB", language: "Japanese", videoUrl: `/api/play?${idParams}&audio=sub&server=kitty&format=m3u8`, quality: "1080p", isHls: true, serverName: "Kitty (Sub)" },
-          { id: "animex-yuri-sub", type: "SUB", language: "Japanese", videoUrl: `/api/play?${idParams}&audio=sub&server=yuri&format=m3u8`, quality: "1080p", isHls: true, serverName: "Yuri (Sub)" },
           { id: "animex-zuri-sub", type: "SUB", language: "Japanese", videoUrl: `/api/play?${idParams}&audio=sub&server=zuri&format=m3u8`, quality: "1080p", isHls: true, serverName: "Zuri (Sub)" },
           { id: "buzz-sub", type: "SUB", language: "Japanese", videoUrl: `/api/play?${idParams}&audio=sub&server=buzz&format=m3u8`, quality: "1080p", isHls: true, serverName: "Buzz (Sub)" },
         ];
@@ -591,6 +592,8 @@ export function EmbedPlayer({
           selectedSource = allAvailableSources.find((s) => (s.id?.includes("zuri") || s.id?.includes("zuna") || s.serverName?.toLowerCase().includes("zuri")) && typeMatch(s));
         } else if (sNorm.includes("yuri") || sNorm.includes("yuki")) {
           selectedSource = allAvailableSources.find((s) => (s.id?.includes("yuri") || s.id?.includes("yuki") || s.serverName?.toLowerCase().includes("yuri")) && typeMatch(s));
+        } else if (sNorm.includes("sora") || sNorm.includes("kaa")) {
+          selectedSource = allAvailableSources.find((s) => (s.id?.includes("sora") || s.id?.includes("kaa") || s.serverName?.toLowerCase().includes("sora")) && typeMatch(s));
         } else if (sNorm.includes("kitty") || sNorm.includes("flow-2") || sNorm.includes("hd-2")) {
           selectedSource = allAvailableSources.find((s) => (s.id?.includes("kitty") || s.serverName?.toLowerCase().includes("kitty") || s.id?.includes("flow-2") || s.serverName?.toLowerCase().includes("hd-2")) && typeMatch(s));
         } else if (sNorm.includes("flow") || sNorm.includes("reanime")) {

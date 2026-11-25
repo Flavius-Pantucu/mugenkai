@@ -218,6 +218,8 @@ export async function GET(request: NextRequest) {
       (audio === "sub" && isZuriParam) ||
       serverParam === "yuri" ||
       serverParam === "yuki" ||
+      serverParam === "sora" ||
+      serverParam === "kaa" ||
       serverParam === "animex" ||
       serverParam === "aniembed"
     );
@@ -633,11 +635,12 @@ export async function GET(request: NextRequest) {
       const buzzDubAvailable = Boolean(buzzDubData?.m3u8);
 
       const standardProviders = [
+        { prov: "Yuri", srv: "yuri", subId: "animex-yuri-sub", dubId: "animex-yuri-dub", canDub: yuriDubAvailable },
+        { prov: "Sora", srv: "sora", subId: "animex-sora-sub", dubId: null, canDub: false },
         { prov: "Flow", srv: "flow", subId: "flow-sub", dubId: "flow-dub", canDub: flowDubAvailable },
         { prov: "Kitty", srv: "kitty", subId: "kitty-sub", dubId: "kitty-dub", canDub: kittyDubAvailable },
-        { prov: "Yuri", srv: "yuri", subId: "animex-yuri-sub", dubId: "animex-yuri-dub", canDub: yuriDubAvailable },
-        { prov: "Zuri", srv: "zuri", subId: "animex-zuri-sub", dubId: null, canDub: false },
         { prov: "Buzz", srv: "buzz", subId: "buzz-sub", dubId: "buzz-dub", canDub: buzzDubAvailable },
+        { prov: "Zuri", srv: "zuri", subId: "animex-zuri-sub", dubId: null, canDub: false },
       ];
 
       for (const sp of standardProviders) {
@@ -758,6 +761,9 @@ export async function GET(request: NextRequest) {
             if (targetServerNorm.includes("yuri") || targetServerNorm.includes("yuki")) {
               return sId.includes("yuri") || sName.includes("yuri") || sId.includes("yuki") || sName.includes("yuki");
             }
+            if (targetServerNorm.includes("sora") || targetServerNorm.includes("kaa")) {
+              return sId.includes("sora") || sName.includes("sora") || sId.includes("kaa") || sName.includes("kaa");
+            }
             if (targetServerNorm.includes("flow") || targetServerNorm.includes("reanime")) {
               return (sId.includes("flow") || sName.includes("flow") || sName.includes("hd-1") || sId.includes("reanime")) && !sId.includes("kitty") && !sName.includes("kitty") && !sId.includes("2");
             }
@@ -810,9 +816,15 @@ export async function GET(request: NextRequest) {
 
             matchingRequested.subtitles = normalizedSubs;
 
+            const directAvailable = allServersFormatted.find(
+              (s) => s.m3u8 && !s.m3u8.includes("format=m3u8") && s.type === (audio === "dub" ? "DUB" : "SUB")
+            );
+
             const chosenStream = (result?.m3u8 && !result.m3u8.includes("format=m3u8"))
               ? result.m3u8
-              : matchingRequested.videoUrl;
+              : (matchingRequested.videoUrl && !matchingRequested.videoUrl.includes("format=m3u8"))
+              ? matchingRequested.videoUrl
+              : directAvailable?.m3u8 || matchingRequested.videoUrl;
 
             result = {
               server: resolvedServerName,

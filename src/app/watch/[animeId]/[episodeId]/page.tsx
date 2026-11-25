@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getAnime } from "@/server/catalog";
+import { getFranchiseSeasons } from "@/server/details";
 import { WatchPage } from "@/views/WatchPage";
 
 export default async function Page({
@@ -9,11 +10,14 @@ export default async function Page({
 }) {
   const { animeId, episodeId } = await params;
 
-  const anime = await getAnime(animeId);
+  const [anime, franchiseSeasons] = await Promise.all([
+    getAnime(animeId),
+    getFranchiseSeasons(animeId),
+  ]);
 
   if (!anime || !anime.episodes.some((e) => e.id === episodeId)) {
     notFound();
   }
 
-  return <WatchPage anime={anime} episodeId={episodeId} />;
+  return <WatchPage anime={anime} episodeId={episodeId} franchiseSeasons={franchiseSeasons} />;
 }
