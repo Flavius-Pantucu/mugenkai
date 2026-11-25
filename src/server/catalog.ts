@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { connection } from "next/server";
 import { animeList, getPages, mangaList } from "@/data/mock-data";
-import type { Anime, AnimeSummary, Chapter, Manga, MangaPage, MangaSummary } from "@/data/schema";
+import type { Anime, AnimeSummary, Chapter, Episode, Manga, MangaPage, MangaSummary } from "@/data/schema";
 import { db } from "./db";
 import { backendEnabled } from "./env";
 import { fetchChapterPagesWithFallback, fetchMangaChaptersWithFallback } from "./sync/manga-providers";
@@ -197,6 +197,50 @@ const liveAnimeCache = new Map<string, { anime: Anime; timestamp: number }>();
 const liveMangaCache = new Map<string, { manga: Manga; timestamp: number }>();
 const LIVE_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 const ANILIST_GRAPHQL = "https://graphql.anilist.co";
+
+/**
+ * Episodes of the last season that have not aired yet, with air dates where AniList schedules them.
+ * Kept out of `anime.episodes` so the player, progress and "next episode" never reach them.
+ */
+export async function getUpcomingEpisodes(anime: Anime): Promise<Episode[]> {
+  const season = anime.seasons.at(-1);
+  if (!season || !/^\d+$/.test(season.id)) return [];
+  try {
+    const res = await fetch(ANILIST_GRAPHQL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        query: `query ($id: Int) { Media(id: $id, type: ANIME) { status episodes airingSchedule(notYetAired: true, perPage: 50) { nodes { episode airingAt } } } }`,
+        variables: { id: Number(season.id) },
+      }),
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const m = (await res.json()).data?.Media;
+    if (!m || m.status === "FINISHED" || m.status === "CANCELLED") return [];
+    const dates = new Map<number, number>(m.airingSchedule.nodes.map((n: { episode: number; airingAt: number }) => [n.episode, n.airingAt]));
+    const aired = Math.max(0, ...anime.episodes.filter((e) => e.seasonNumber === season.number).map((e) => e.episodeNumber));
+    const total = Math.max(m.episodes ?? 0, ...dates.keys());
+    return Array.from({ length: Math.max(0, total - aired) }, (_, i) => {
+      const n = aired + i + 1;
+      const at = dates.get(n);
+      return {
+        id: `${anime.id}-s${season.number}-e${n}`,
+        animeId: anime.id,
+        seasonNumber: season.number,
+        episodeNumber: n,
+        title: `Episode ${n}`,
+        videoUrl: "",
+        duration: anime.episodeDuration,
+        thumbnail: season.bannerImage,
+        links: [],
+        releasedAt: at ? new Date(at * 1000).toISOString() : null,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
 
 async function fetchLiveAniListAnime(id: string): Promise<Anime | null> {
   const numId = Number(id);

@@ -32,6 +32,7 @@ test("aired episode count follows the airing schedule", () => {
   assert.equal(airedEpisodes({ status: "RELEASING", episodes: 24, nextAiringEpisode: { episode: 8 } }), 7);
   assert.equal(airedEpisodes({ status: "RELEASING", episodes: null, nextAiringEpisode: { episode: 1 } }), 1);
   assert.equal(airedEpisodes({ status: "FINISHED", episodes: null, nextAiringEpisode: null }), 12);
+  assert.equal(airedEpisodes({ status: "NOT_YET_RELEASED", episodes: 12, nextAiringEpisode: null }), 0);
 });
 
 test("descriptions lose HTML and source credits", () => {

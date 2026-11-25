@@ -11,9 +11,10 @@ export const cleanDescription = (html: string | null) =>
 
 export const toStatus = (s: string | null) => (s === "RELEASING" || s === "HIATUS" ? "ONGOING" : "COMPLETED") as "ONGOING" | "COMPLETED";
 
-/** Aired episodes: the final count, or (while airing) the one before the next to air. */
+/** Aired episodes: the final count, (while airing) the one before the next to air, or none when announced. */
 export const airedEpisodes = (m: { episodes: number | null; status: string | null; nextAiringEpisode: { episode: number } | null }) =>
-  m.status === "RELEASING" && m.nextAiringEpisode ? Math.max(m.nextAiringEpisode.episode - 1, 1) : (m.episodes ?? 12);
+  m.status === "NOT_YET_RELEASED" ? 0
+  : m.status === "RELEASING" && m.nextAiringEpisode ? Math.max(m.nextAiringEpisode.episode - 1, 1) : (m.episodes ?? 12);
 
 /** "Episode 5 - The Title" → { number: 5, title: "The Title" }. */
 export function parseStreamingTitle(title: string | null): { number: number; title: string } | null {

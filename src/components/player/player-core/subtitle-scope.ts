@@ -148,6 +148,9 @@ const DUMMY_URL_MARKERS = [
   "sample.vtt",
   "sample-subs",
   "dummy",
+  // Seek-preview tracks (kind "thumbnails") ship as VTT too; their cues are sprite image paths.
+  "thumbnail",
+  "sprite",
 ];
 
 export function isDummySubtitleUrl(url?: string | null): boolean {

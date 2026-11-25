@@ -46,11 +46,32 @@ export interface SeriesUnit {
   releasedAt?: string | null; // ISO date it aired / was published
   progress: number; // 0-100
   isNew: boolean;
+  upcoming?: boolean; // announced but not aired: shown greyed, not clickable
+}
+
+const airs = (u: SeriesUnit) => (u.releasedAt ? `Airs ${released(u.releasedAt)}` : "Not aired yet");
+
+/** Link for released units; a plain, non-interactive block for upcoming ones. */
+function UnitLink({ unit, className, children }: { unit: SeriesUnit; className: string; children: React.ReactNode }) {
+  if (unit.upcoming) {
+    return (
+      <div aria-disabled="true" title={airs(unit)} className={cn(className, "pointer-events-none cursor-default opacity-50 grayscale")}>
+        {children}
+      </div>
+    );
+  }
+  return (
+    <Link href={unit.href} className={className}>
+      {children}
+    </Link>
+  );
 }
 
 /** A season or a volume. */
 export interface SeriesGroup {
   id: string;
+  seasonNumber?: number;
+  seasonId?: string;
   title: string; // "Season 2", "Volume 4"
   subtitle?: string; // the season's own name
   year?: number;
@@ -72,6 +93,7 @@ export interface SeriesPageProps {
   groups: SeriesGroup[];
   showProgress: boolean;
   seriesId: string;
+  initialSeasonId?: string;
   threadId: string; // comment thread for the whole series, e.g. "anime:16498"
   /** All seasons in the franchise (for anime split across AniList entries) */
   franchiseSeasons?: Array<{
@@ -102,12 +124,23 @@ export function SeriesPage(props: SeriesPageProps) {
   const pageSize = getPageSize(kind);
 
   // Resume point: the furthest unit with progress; once it's finished, the one after it.
-  const all = groups.flatMap((g) => g.units);
+  const all = groups.flatMap((g) => g.units).filter((u) => !u.upcoming);
   const furthest = showProgress ? all.findLastIndex((u) => u.progress > 0) : -1;
   const resume = furthest < 0 ? undefined : all[furthest].progress < 100 ? all[furthest] : all[furthest + 1];
   const resumeGroup = resume ? groups.find((g) => g.units.includes(resume)) : undefined;
 
-  const [activeId, setActiveId] = useState(resumeGroup?.id ?? groups[0]?.id ?? "");
+  const initialGroup = useMemo(() => {
+    if (!props.initialSeasonId) return undefined;
+    const target = props.initialSeasonId.trim();
+    return (
+      groups.find((g) => g.id === target) ??
+      groups.find((g) => g.seasonId === target) ??
+      groups.find((g) => g.seasonNumber === parseInt(target, 10)) ??
+      groups.find((g) => g.id.includes(`-s${target}`))
+    );
+  }, [props.initialSeasonId, groups]);
+
+  const [activeId, setActiveId] = useState(initialGroup?.id ?? resumeGroup?.id ?? groups[0]?.id ?? "");
   const [newestFirst, setNewestFirst] = useState(false);
   const [hideDone, setHideDone] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -115,14 +148,20 @@ export function SeriesPage(props: SeriesPageProps) {
   const listStatus = listEntry?.status;
   const [shown, setShown] = useState(pageSize);
 
+  useEffect(() => {
+    if (initialGroup) {
+      setActiveId(initialGroup.id);
+    }
+  }, [initialGroup]);
+
   // Saved progress arrives after hydration: jump to the resume season/volume once, the first time it's known.
   const jumped = useRef(false);
   const resumeGroupId = resumeGroup?.id;
   useEffect(() => {
-    if (jumped.current || !resumeGroupId) return;
+    if (jumped.current || !resumeGroupId || props.initialSeasonId) return;
     jumped.current = true;
     setActiveId(resumeGroupId);
-  }, [resumeGroupId]);
+  }, [resumeGroupId, props.initialSeasonId]);
 
   const active = groups.find((g) => g.id === activeId) ?? groups[0];
 
@@ -143,12 +182,52 @@ export function SeriesPage(props: SeriesPageProps) {
     return showProgress && done > 0 ? `${done} of ${g.units.length} ${noun.done}` : `${g.units.length} ${noun.units}`;
   };
 
+  const seasonOptions = useMemo(() => {
+    const options: Array<{
+      id: string;
+      title: string;
+      subtitle?: string;
+      isExternal: boolean;
+      externalId?: string;
+    }> = groups.map((g) => ({
+      id: g.id,
+      title: g.title,
+      subtitle: groupLabel(g),
+      isExternal: false,
+    }));
+
+    if (franchiseSeasons && franchiseSeasons.length > 0) {
+      for (const fs of franchiseSeasons) {
+        const isRepresented = groups.some(
+          (g) =>
+            g.seasonId === fs.id ||
+            g.id === fs.id ||
+            (g.seasonNumber !== undefined && g.seasonNumber === fs.number) ||
+            g.id.includes(`-s${fs.number}`) ||
+            (props.seriesId === fs.id && groups.length > 0),
+        );
+
+        if (!isRepresented) {
+          options.push({
+            id: `ext:${fs.id}`,
+            title: `Season ${fs.number}`,
+            subtitle: `· ${fs.title}${fs.year ? ` (${fs.year})` : ""}`,
+            isExternal: true,
+            externalId: fs.id,
+          });
+        }
+      }
+    }
+
+    return options;
+  }, [groups, franchiseSeasons, props.seriesId, showProgress, noun.done, noun.units]);
+
   const primary = resume
     ? { href: resume.href, label: `Continue ${resume.label}` }
     : all[0] && { href: all[0].href, label: noun.start };
   const PrimaryIcon = kind === "anime" ? Play : BookOpen;
   const left = units.length - shown;
-  const unfinished = active?.units.filter((u) => u.progress < 100) ?? [];
+  const unfinished = active?.units.filter((u) => !u.upcoming && u.progress < 100) ?? [];
 
   const markGroupDone = () => {
     if (!active) return;
@@ -220,39 +299,33 @@ export function SeriesPage(props: SeriesPageProps) {
         {groups.length > 0 && (
         <div className="mt-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3 sm:mt-10">
           <div>
-            {franchiseSeasons && franchiseSeasons.length > 1 ? (
+            {seasonOptions.length > 1 ? (
               <Select
-                value={props.seriesId}
-                onValueChange={(seasonId) => {
-                  if (seasonId !== props.seriesId) {
-                    router.push(`/anime/${seasonId}`);
+                value={active?.id}
+                onValueChange={(val) => {
+                  const opt = seasonOptions.find((o) => o.id === val);
+                  if (opt?.isExternal && opt.externalId) {
+                    router.push(`/anime/${opt.externalId}`);
+                  } else {
+                    setActiveId(val);
+                    const targetGroup = groups.find((g) => g.id === val);
+                    const seasonParam = targetGroup?.seasonNumber ? `?season=${targetGroup.seasonNumber}` : "";
+                    if (typeof window !== "undefined") {
+                      window.history.replaceState(null, "", `${window.location.pathname}${seasonParam}`);
+                    }
                   }
                 }}
               >
-                <SelectTrigger aria-label="Season" className="min-w-[240px] bg-ink-raised text-base font-bold text-white data-[size=default]:h-11">
+                <SelectTrigger aria-label={noun.group} className="min-w-[220px] max-w-[360px] bg-ink-raised text-base font-bold text-white data-[size=default]:h-11">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="max-h-80">
-                  {franchiseSeasons.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      Season {s.number}
-                      <span className="ml-2 text-xs font-normal text-muted-foreground">
-                        · {s.title} {s.year ? `(${s.year})` : ""}
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : groups.length > 1 ? (
-              <Select value={active?.id} onValueChange={setActiveId}>
-                <SelectTrigger aria-label={noun.group} className="min-w-[220px] bg-ink-raised text-base font-bold text-white data-[size=default]:h-11">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="max-h-80">
-                  {groups.map((g) => (
-                    <SelectItem key={g.id} value={g.id}>
-                      {g.title}
-                      <span className="text-xs font-normal text-muted-foreground">{groupLabel(g)}</span>
+                  {seasonOptions.map((opt) => (
+                    <SelectItem key={opt.id} value={opt.id}>
+                      {opt.title}
+                      {opt.subtitle && (
+                        <span className="ml-2 text-xs font-normal text-muted-foreground">{opt.subtitle}</span>
+                      )}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -357,9 +430,9 @@ export function SeriesPage(props: SeriesPageProps) {
                     const partial = showProgress && u.progress > 0 && u.progress < 100;
                     const isCurrent = u.id === resume?.id;
                     return (
-                      <Link
+                      <UnitLink
                         key={u.id}
-                        href={u.href}
+                        unit={u}
                         className={cn(
                           "group flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-white/5",
                           isCurrent && "bg-primary/10 hover:bg-primary/15",
@@ -386,7 +459,9 @@ export function SeriesPage(props: SeriesPageProps) {
                             >
                               {u.title}
                             </p>
-                            {u.releasedAt && (
+                            {u.upcoming ? (
+                              <p className="text-[11px] tabular-nums text-zinc-500">{airs(u)}</p>
+                            ) : u.releasedAt && (
                               <p className="text-[11px] tabular-nums text-zinc-500">
                                 <time dateTime={u.releasedAt}>{released(u.releasedAt)}</time>
                               </p>
@@ -403,7 +478,9 @@ export function SeriesPage(props: SeriesPageProps) {
                           <span className="text-xs text-zinc-400 tabular-nums">
                             {u.length}
                           </span>
-                          {done ? (
+                          {u.upcoming ? (
+                            <span className="text-xs text-zinc-500">Upcoming</span>
+                          ) : done ? (
                             <span className="flex items-center gap-1 text-xs text-primary font-medium">
                               <Check className="size-3.5" />
                               <span className="hidden sm:inline">{noun.done}</span>
@@ -414,7 +491,7 @@ export function SeriesPage(props: SeriesPageProps) {
                             </span>
                           )}
                         </div>
-                      </Link>
+                      </UnitLink>
                     );
                   })}
                 </div>
@@ -534,7 +611,7 @@ function UnitCard({ unit, showProgress, current, doneWord }: { unit: SeriesUnit;
   const done = showProgress && unit.progress >= 100;
   const partial = showProgress && unit.progress > 0 && unit.progress < 100;
   return (
-    <Link href={unit.href} className="group block rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background">
+    <UnitLink unit={unit} className="group block rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background">
       <span
         className={cn(
           "relative block aspect-video overflow-hidden rounded-lg ring-1 transition-shadow",
@@ -558,11 +635,11 @@ function UnitCard({ unit, showProgress, current, doneWord }: { unit: SeriesUnit;
       </span>
       <span className={cn("mt-2.5 block truncate text-[14px] font-bold", current ? "text-lagoon-200" : "text-white")}>{unit.title}</span>
       <span className="mt-0.5 block text-[12.5px] tabular-nums text-muted-foreground">
-        {unit.length}
-        {unit.releasedAt ? ` · ${released(unit.releasedAt)}` : ""}
+        {unit.upcoming ? airs(unit) : unit.length}
+        {!unit.upcoming && unit.releasedAt ? ` · ${released(unit.releasedAt)}` : ""}
         {partial && unit.remaining ? ` · ${unit.remaining}` : ""}
         {done ? ` · ${doneWord[0].toUpperCase()}${doneWord.slice(1)}` : ""}
       </span>
-    </Link>
+    </UnitLink>
   );
 }

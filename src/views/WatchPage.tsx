@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
@@ -136,6 +136,40 @@ export function WatchPage({
 
   // Find the selected episode's season.
   const season = anime.seasons.find((s) => s.number === episode.seasonNumber);
+  const currentSeasonId = season?.id ?? anime.id;
+
+  const watchSeasonOptions = useMemo(() => {
+    const opts: Array<{
+      id: string;
+      title: string;
+      isExternal: boolean;
+      externalId?: string;
+      seasonNumber?: number;
+    }> = anime.seasons.map((s) => ({
+      id: s.id,
+      title: `Season ${s.number}${s.title && s.title !== anime.title ? ` · ${s.title}` : ""}`,
+      isExternal: false,
+      seasonNumber: s.number,
+    }));
+
+    if (franchiseSeasons && franchiseSeasons.length > 0) {
+      for (const fs of franchiseSeasons) {
+        const isRepresented = opts.some(
+          (o) => o.id === fs.id || (o.seasonNumber !== undefined && o.seasonNumber === fs.number),
+        );
+        if (!isRepresented) {
+          opts.push({
+            id: fs.id,
+            title: `Season ${fs.number} · ${fs.title}`,
+            isExternal: true,
+            externalId: fs.id,
+          });
+        }
+      }
+    }
+
+    return opts;
+  }, [anime.seasons, anime.title, franchiseSeasons]);
 
   // Sync audio with server (zuri is sub-only)
   const handleAudioChange = (newAudio: "sub" | "dub") => {
@@ -519,59 +553,39 @@ export function WatchPage({
 
             {/* Episode list */}
             <div>
-              {franchiseSeasons && franchiseSeasons.length > 1 ? (
+              {watchSeasonOptions.length > 1 && (
                 <div className="mb-3 flex items-center justify-between gap-2 px-1">
                   <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Season
                   </span>
                   <Select
-                    value={anime.id}
+                    value={currentSeasonId}
                     onValueChange={(selectedId) => {
-                      if (selectedId !== anime.id) {
-                        router.push(`/watch/${selectedId}/${selectedId}-s1-e1`);
+                      if (selectedId === currentSeasonId) return;
+                      const opt = watchSeasonOptions.find((o) => o.id === selectedId);
+                      if (opt?.isExternal && opt.externalId) {
+                        router.push(`/watch/${opt.externalId}/${opt.externalId}-s1-e1`);
+                      } else if (opt?.seasonNumber) {
+                        const targetEp = anime.episodes.find((e) => e.seasonNumber === opt.seasonNumber);
+                        if (targetEp) {
+                          router.push(`/watch/${anime.id}/${targetEp.id}`);
+                        }
                       }
                     }}
                   >
-                    <SelectTrigger className="h-8 min-w-[170px] max-w-[240px] border-white/10 bg-white/5 text-xs font-semibold text-white">
+                    <SelectTrigger className="h-8 min-w-[170px] max-w-[260px] border-white/10 bg-white/5 text-xs font-semibold text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="max-h-80 border-white/10 bg-ink-raised text-white">
-                      {franchiseSeasons.map((s) => (
+                      {watchSeasonOptions.map((s) => (
                         <SelectItem key={s.id} value={s.id} className="text-xs">
-                          Season {s.number} · {s.title}
+                          {s.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-              ) : multiSeason ? (
-                <div className="mb-3 flex items-center justify-between gap-2 px-1">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Season
-                  </span>
-                  <Select
-                    value={String(episode.seasonNumber)}
-                    onValueChange={(seasonNumStr) => {
-                      const targetSeasonNum = parseInt(seasonNumStr, 10);
-                      const targetEp = anime.episodes.find((e) => e.seasonNumber === targetSeasonNum);
-                      if (targetEp) {
-                        router.push(`/watch/${anime.id}/${targetEp.id}`);
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="h-8 min-w-[150px] border-white/10 bg-white/5 text-xs font-semibold text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-80 border-white/10 bg-ink-raised text-white">
-                      {anime.seasons.map((s) => (
-                        <SelectItem key={s.number} value={String(s.number)} className="text-xs">
-                          Season {s.number} {s.title !== anime.title ? `· ${s.title}` : ""}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              ) : null}
+              )}
 
               <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {multiSeason ? `Season ${episode.seasonNumber}` : "Episodes"} ·{" "}
