@@ -183,44 +183,30 @@ export function SeriesPage(props: SeriesPageProps) {
   };
 
   const seasonOptions = useMemo(() => {
-    const options: Array<{
-      id: string;
-      title: string;
-      subtitle?: string;
-      isExternal: boolean;
-      externalId?: string;
-    }> = groups.map((g) => ({
-      id: g.id,
-      title: g.title,
-      subtitle: groupLabel(g),
-      isExternal: false,
-    }));
+    type Option = { id: string; title: string; subtitle?: string; isExternal: boolean; externalId?: string };
+    const local: Option[] = groups.map((g) => ({ id: g.id, title: g.title, subtitle: groupLabel(g), isExternal: false }));
+    if (!franchiseSeasons?.length) return local;
 
-    if (franchiseSeasons && franchiseSeasons.length > 0) {
-      for (const fs of franchiseSeasons) {
-        const isRepresented = groups.some(
-          (g) =>
-            g.seasonId === fs.id ||
-            g.id === fs.id ||
-            (g.seasonNumber !== undefined && g.seasonNumber === fs.number) ||
-            g.id.includes(`-s${fs.number}`) ||
-            (props.seriesId === fs.id && groups.length > 0),
-        );
-
-        if (!isRepresented) {
-          options.push({
-            id: `ext:${fs.id}`,
-            title: `Season ${fs.number}`,
-            subtitle: `· ${fs.title}${fs.year ? ` (${fs.year})` : ""}`,
-            isExternal: true,
-            externalId: fs.id,
-          });
-        }
+    // Franchise order and numbering win. Match by AniList id only: a page that holds one later
+    // season numbers it "Season 1" locally, so matching by number would hide the real Season 1.
+    const used = new Set<string>();
+    const options = franchiseSeasons.flatMap((fs): Option[] => {
+      const own = groups.filter((g) => g.seasonId === fs.id);
+      if (own.length === 0) {
+        return [{ id: `ext:${fs.id}`, title: `Season ${fs.number}`, subtitle: `· ${fs.title}${fs.year ? ` (${fs.year})` : ""}`, isExternal: true, externalId: fs.id }];
       }
-    }
-
-    return options;
+      own.forEach((g) => used.add(g.id));
+      return own.map((g) => ({
+        id: g.id,
+        // Seasons over 100 episodes are split into ranges; keep the range after the franchise number.
+        title: own.length > 1 ? `Season ${fs.number} · ${g.title.replace(/^(Season \d+ · |Episodes )/, "")}` : `Season ${fs.number}`,
+        subtitle: groupLabel(g),
+        isExternal: false,
+      }));
+    });
+    return [...options, ...local.filter((o) => !used.has(o.id))];
   }, [groups, franchiseSeasons, props.seriesId, showProgress, noun.done, noun.units]);
+  const activeTitle = seasonOptions.find((o) => o.id === active?.id)?.title ?? active?.title;
 
   const primary = resume
     ? { href: resume.href, label: `Continue ${resume.label}` }
@@ -233,7 +219,7 @@ export function SeriesPage(props: SeriesPageProps) {
     if (!active) return;
     if (kind === "anime") markFinished(unfinished.map((u) => u.id), []);
     else markFinished([], unfinished.map((u) => ({ id: u.id, pageCount: u.pageCount ?? 1 })));
-    toast.success(`${active.title} marked ${noun.done}`);
+    toast.success(`${activeTitle} marked ${noun.done}`);
   };
 
   return (
@@ -332,7 +318,7 @@ export function SeriesPage(props: SeriesPageProps) {
               </Select>
             ) : (
               <h2 className="text-white" style={{ fontFamily: "var(--font-family-heading)", fontSize: "clamp(1.15rem, 1.8vw, 1.4rem)", fontWeight: 700 }}>
-                {active?.title}
+                {activeTitle}
               </h2>
             )}
             <p className="mt-2 text-[13px] text-muted-foreground">
@@ -406,7 +392,7 @@ export function SeriesPage(props: SeriesPageProps) {
             <Card className="bg-transparent text-center">
               <CardContent className="py-8">
                 <p className="text-[15px] text-zinc-200">
-                  You have {noun.done} every {noun.unit} in {active?.title}.
+                  You have {noun.done} every {noun.unit} in {activeTitle}.
                 </p>
                 <Button variant="link" onClick={() => setHideDone(false)} className="mt-2">
                   Show {noun.done} {noun.units}
