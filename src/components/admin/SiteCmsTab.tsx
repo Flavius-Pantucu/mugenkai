@@ -7,6 +7,7 @@ import { updateSiteConfig, type SiteConfigInput } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { SiteSettings } from "@/server/site-config";
@@ -162,16 +163,19 @@ export function SiteCmsTab({ initial }: { initial: SiteSettings }) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="ann-type">Tone</Label>
-            <select
-              id="ann-type"
+            <Select
               value={form.announcementType}
-              onChange={(e) => setForm({ ...form, announcementType: e.target.value as SiteConfigInput["announcementType"] })}
-              className="flex h-9 w-full rounded-md border border-white/10 bg-ink px-3 text-sm text-white"
+              onValueChange={(v) => setForm({ ...form, announcementType: v as SiteConfigInput["announcementType"] })}
             >
-              <option value="info">Info</option>
-              <option value="success">Success</option>
-              <option value="warning">Warning</option>
-            </select>
+              <SelectTrigger id="ann-type" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="info">Info</SelectItem>
+                <SelectItem value="success">Success</SelectItem>
+                <SelectItem value="warning">Warning</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
@@ -182,19 +186,19 @@ export function SiteCmsTab({ initial }: { initial: SiteSettings }) {
           <Sparkles className="size-4 text-lagoon-300" />
           <h3 className="font-medium text-white">Homepage Hero Banner</h3>
         </div>
-        <div className="grid gap-4 md:grid-cols-[200px_1fr]">
+        <div className="grid gap-4 md:grid-cols-[220px_1fr]">
           <div className="space-y-1.5">
             <Label htmlFor="heroMode">Selection mode</Label>
-            <select
-              id="heroMode"
-              value={form.heroMode}
-              onChange={(e) => setForm({ ...form, heroMode: e.target.value as SiteConfigInput["heroMode"] })}
-              className="flex h-9 w-full rounded-md border border-white/10 bg-ink px-3 text-sm text-white"
-            >
-              <option value="auto">Auto (Random Top 40)</option>
-              <option value="pinned">Pinned only</option>
-              <option value="mixed">Pinned + Auto fill</option>
-            </select>
+            <Select value={form.heroMode} onValueChange={(v) => setForm({ ...form, heroMode: v as SiteConfigInput["heroMode"] })}>
+              <SelectTrigger id="heroMode" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Auto (Random Top 40)</SelectItem>
+                <SelectItem value="pinned">Pinned only</SelectItem>
+                <SelectItem value="mixed">Pinned + Auto fill</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="pinnedIds">Pinned Series IDs (comma-separated)</Label>

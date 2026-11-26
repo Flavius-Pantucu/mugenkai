@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
@@ -417,14 +418,15 @@ function SeriesEditorDialog({ series, onClose }: { series: UpsertSeriesInput | n
             </div>
             <div className="space-y-1">
               <Label>Kind</Label>
-              <select
-                value={current.kind}
-                onChange={(e) => setForm({ ...current, kind: e.target.value as "ANIME" | "MANGA" })}
-                className="flex h-9 w-full rounded-md border border-white/10 bg-ink px-3 text-sm text-white"
-              >
-                <option value="ANIME">ANIME</option>
-                <option value="MANGA">MANGA</option>
-              </select>
+              <Select value={current.kind} onValueChange={(v) => setForm({ ...current, kind: v as "ANIME" | "MANGA" })}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ANIME">ANIME</SelectItem>
+                  <SelectItem value="MANGA">MANGA</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1">
               <Label>Title</Label>
@@ -448,14 +450,15 @@ function SeriesEditorDialog({ series, onClose }: { series: UpsertSeriesInput | n
             </div>
             <div className="space-y-1">
               <Label>Status</Label>
-              <select
-                value={current.status}
-                onChange={(e) => setForm({ ...current, status: e.target.value as "ONGOING" | "COMPLETED" })}
-                className="flex h-9 w-full rounded-md border border-white/10 bg-ink px-3 text-sm text-white"
-              >
-                <option value="ONGOING">ONGOING</option>
-                <option value="COMPLETED">COMPLETED</option>
-              </select>
+              <Select value={current.status} onValueChange={(v) => setForm({ ...current, status: v as "ONGOING" | "COMPLETED" })}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ONGOING">ONGOING</SelectItem>
+                  <SelectItem value="COMPLETED">COMPLETED</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1">
               <Label>Genres (comma-separated)</Label>
