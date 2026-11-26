@@ -14,6 +14,7 @@ import {
   RotateCw,
   FastForward,
   SkipForward,
+  ListVideo,
   Settings,
   Captions,
   PictureInPicture2,
@@ -105,6 +106,15 @@ export function isNativePlayerSource(s: VideoSourceData): boolean {
     url.includes("/api/play") ||
     url.includes("/api/proxy/m3u8")
   );
+}
+
+/** Episode the watch page offers to the player, so it can jump without leaving fullscreen controls. */
+interface EpisodeNavItem {
+  id: string;
+  label: string;
+  title: string;
+  watched?: boolean;
+  current?: boolean;
 }
 
 export interface EmbedPlayerProps {
@@ -248,6 +258,9 @@ export function EmbedPlayer({
     side: "left" | "right";
     amount: number;
   } | null>(null);
+  // Sent by the watch page (none when embedded elsewhere): next episode and the season list.
+  const [episodeNav, setEpisodeNav] = useState<{ next: EpisodeNavItem | null; list: EpisodeNavItem[] } | null>(null);
+  const [showEpisodes, setShowEpisodes] = useState(false);
   const [activeStreamToast, setActiveStreamToast] = useState<{
     type: "refreshing" | "success" | "info" | "error";
     message: string;
@@ -2134,6 +2147,11 @@ export function EmbedPlayer({
           break;
         }
 
+        case "episodes": {
+          if (Array.isArray(cmdData?.list)) setEpisodeNav({ next: cmdData.next ?? null, list: cmdData.list });
+          break;
+        }
+
         case "getState":
         case "getStatus": {
           sendResult(true);
@@ -2149,6 +2167,16 @@ export function EmbedPlayer({
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   }, [getPlayerState, handleSeek, handleSelectSource, sources, postToParent]);
+
+  // Ask the watch page for episode navigation once the listener above is in place.
+  useEffect(() => {
+    postToParent("episodes-request", {});
+  }, [postToParent]);
+
+  const goToEpisode = (episodeId: string) => {
+    setShowEpisodes(false);
+    postToParent("navigate", { episodeId });
+  };
 
   return (
     <div
@@ -2513,6 +2541,73 @@ export function EmbedPlayer({
               S
             </kbd>
           </button>
+        </div>
+      )}
+
+      {/* Top-right episode controls: restart, next episode, episode list (list hidden on phones) */}
+      {!fatalError && (
+        <div
+          data-controls-bar="true"
+          onMouseEnter={() => (overControlsRef.current = true)}
+          onMouseLeave={() => {
+            overControlsRef.current = false;
+            handleUserActivity();
+          }}
+          onClick={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => e.stopPropagation()}
+          className={cn(
+            "absolute top-2.5 right-3 sm:top-4 sm:right-5 z-30 flex flex-col items-end gap-2 transition-opacity duration-300 font-product-sans",
+            showControls ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          )}
+        >
+          <div className="flex items-center h-10 px-1.5 py-1 rounded-full bg-zinc-950/65 backdrop-blur-md backdrop-saturate-150 shadow-[0_16px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.22)] gap-1">
+            <button type="button" onClick={() => handleSeek(0)} className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full inline-flex items-center justify-center text-zinc-300 hover:text-white active:scale-95 transition-all cursor-pointer touch-manipulation shrink-0" title="Play from beginning">
+              <RotateCcw className="w-4 h-4" />
+            </button>
+            {episodeNav?.next && (
+              <button type="button" onClick={() => goToEpisode(episodeNav.next!.id)} className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full inline-flex items-center justify-center text-zinc-300 hover:text-white active:scale-95 transition-all cursor-pointer touch-manipulation shrink-0" title={`Next: ${episodeNav.next.label} · ${episodeNav.next.title}`}>
+                <SkipForward className="w-4 h-4" />
+              </button>
+            )}
+            {episodeNav && episodeNav.list.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setShowEpisodes((v) => !v)}
+                className={cn("w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full inline-flex items-center justify-center text-zinc-300 hover:text-white active:scale-95 transition-all cursor-pointer touch-manipulation shrink-0 !hidden sm:!inline-flex", showEpisodes && "bg-white/15 text-white")}
+                title="Episodes"
+                aria-expanded={showEpisodes}
+              >
+                <ListVideo className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {showEpisodes && episodeNav && (
+            <div className="relative hidden sm:block w-72 max-h-[min(20rem,60vh)] overflow-y-auto rounded-2xl bg-zinc-950/85 backdrop-blur-md p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+              {episodeNav.list.map((ep) => (
+                <button
+                  key={ep.id}
+                  type="button"
+                  disabled={ep.current}
+                  // Scroll only the list (scrollIntoView would also move the parent page).
+                  ref={ep.current ? (el) => { if (el?.parentElement) el.parentElement.scrollTop = el.offsetTop - el.parentElement.clientHeight / 2; } : undefined}
+                  onClick={() => goToEpisode(ep.id)}
+                  className={cn(
+                    "flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] transition-colors",
+                    ep.current ? "bg-white/15 text-white cursor-default" : "text-zinc-300 hover:bg-white/10 hover:text-white cursor-pointer"
+                  )}
+                >
+                  <span className="shrink-0 font-bold tabular-nums text-white/80">{ep.label}</span>
+                  <span className="min-w-0 flex-1 truncate">{ep.title}</span>
+                  {ep.current ? (
+                    <Play className="w-3.5 h-3.5 shrink-0 fill-current" />
+                  ) : ep.watched ? (
+                    <Check className="w-3.5 h-3.5 shrink-0 text-white/50" />
+                  ) : null}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

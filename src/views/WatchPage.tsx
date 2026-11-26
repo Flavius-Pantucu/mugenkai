@@ -207,6 +207,28 @@ export function WatchPage({
       const msg = event.data;
       if (msg?.source !== "aniembed") return;
 
+      // Player's episode controls: send it the season list, follow its picks (own iframe only).
+      if (event.origin !== window.location.origin) return;
+      if (msg.name === "episodes-request") {
+        const item = (e: typeof episode) => ({
+          id: e.id,
+          label: episodeLabel(anime, e),
+          title: e.title,
+          watched: episodeProgress(progress, e) >= 100,
+          current: e.id === episode.id,
+        });
+        (event.source as Window | null)?.postMessage(
+          { name: "episodes", data: { next: nextEp ? item(nextEp) : null, list: seasonEpisodes.map(item) } },
+          window.location.origin,
+        );
+        return;
+      }
+      if (msg.name === "navigate") {
+        const target = anime.episodes.find((e) => e.id === msg.data?.episodeId);
+        if (target) router.push(epHref(target.id));
+        return;
+      }
+
       if (msg.name === "PLAYER_EVENT" && (msg.data?.type === "ready" || msg.data?.type === "source_change")) {
         const reported = SERVERS.find((s) => s.id === msg.data.server);
         if (reported) setPlaying(reported.id);
@@ -229,7 +251,7 @@ export function WatchPage({
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [episode.id, anime, episode, nextEp]);
+  }, [episode.id, anime, episode, nextEp, progress]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const markWatched = (goNext: boolean) => {
     saveEpisodeProgress(episode.id, 100);
