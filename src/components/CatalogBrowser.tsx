@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, Search, X } from "lucide-react";
+import Link from "next/link";
+import { Check, ChevronDown, Loader2, Search, Star, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -62,6 +63,17 @@ const SCORES: Record<string, { label: string; min: number }> = {
 };
 const PAGE = 48; // grid items rendered per step of the infinite scroll
 
+interface RemoteSearchResult {
+  id: string;
+  type: "ANIME" | "MANGA";
+  title: string;
+  nativeTitle: string;
+  cover: string;
+  href: string;
+  meta: string;
+  rating: number;
+}
+
 const isSort = (v: string): v is Sort => v in SORTS;
 const isStatus = (v: string): v is StatusFilter => v === "ALL" || v === "ONGOING" || v === "COMPLETED";
 
@@ -73,6 +85,40 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
   const [era, setEra] = useState("any");
   const [score, setScore] = useState("any");
   const [shown, setShown] = useState(PAGE);
+  const [remoteResults, setRemoteResults] = useState<RemoteSearchResult[]>([]);
+  const [searchingRemote, setSearchingRemote] = useState(false);
+
+  // Global search fallback via /api/search (local SearchEntry + live AniList) whenever query >= 2 chars
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) {
+      setRemoteResults([]);
+      setSearchingRemote(false);
+      return;
+    }
+
+    const ctrl = new AbortController();
+    setSearchingRemote(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&type=${noun.toUpperCase()}`, {
+          signal: ctrl.signal,
+        });
+        if (!res.ok) throw new Error();
+        const data = (await res.json()) as { results?: RemoteSearchResult[] };
+        setRemoteResults(data.results ?? []);
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") setRemoteResults([]);
+      } finally {
+        if (!ctrl.signal.aborted) setSearchingRemote(false);
+      }
+    }, 250);
+
+    return () => {
+      clearTimeout(timer);
+      ctrl.abort();
+    };
+  }, [query, noun]);
 
   // Genres actually present, most common first.
   const genreOptions = useMemo(() => {
@@ -94,6 +140,16 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
       )
       .sort(SORTS[sort].compare);
   }, [items, query, status, genres, sort, era, score]);
+
+  const localIds = useMemo(() => new Set(results.map((r) => r.id)), [results]);
+  const extraRemote = useMemo(
+    () =>
+      query.trim().length >= 2 && status === "ALL" && genres.length === 0 && era === "any" && score === "any"
+        ? remoteResults.filter((r) => !localIds.has(r.id))
+        : [],
+    [query, status, genres.length, era, score, remoteResults, localIds],
+  );
+  const totalMatches = results.length + extraRemote.length;
 
   const filtered = query !== "" || status !== "ALL" || genres.length > 0 || era !== "any" || score !== "any";
   const clear = () => {
@@ -159,7 +215,13 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
             {title}
           </span>
           <span className="text-[14px] tabular-nums text-muted-foreground">
-            {filtered ? `${results.length} of ${items.length} titles` : `${items.length} titles`}
+            {filtered ? `${totalMatches} ${totalMatches === 1 ? "title" : "titles"} found` : `${items.length} titles`}
+            {searchingRemote && (
+              <span className="ml-2 inline-flex items-center gap-1 text-lagoon-300">
+                <Loader2 className="size-3.5 animate-spin" />
+                Searching all {noun}…
+              </span>
+            )}
           </span>
         </h1>
 
@@ -289,12 +351,12 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
           )}
         </div>
 
-        {results.length === 0 ? (
+        {totalMatches === 0 && !searchingRemote ? (
           <Card className="mt-10 bg-transparent text-center">
             <CardContent className="py-10">
               <p className="text-[15px] text-zinc-200">No {noun} matches these filters.</p>
               <p className="mt-1 text-[13px] text-muted-foreground">
-                Try fewer filters. This page lists the most popular titles; the search at the top finds everything else.
+                Try fewer filters or a different search term.
               </p>
               <Button onClick={clear} className="mt-4">
                 Clear filters
@@ -307,6 +369,26 @@ export function CatalogBrowser<T extends CatalogItem>({ title, noun, items, rend
               {results.slice(0, shown).map((i) => (
                 <li key={i.id}>{renderItem(i)}</li>
               ))}
+              {!more &&
+                extraRemote.map((r) => (
+                  <li key={`remote-${r.id}`}>
+                    <Link href={r.href} className="group block">
+                      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 transition-transform duration-300 group-hover:scale-[1.02] group-hover:ring-lagoon-400/50">
+                        {r.cover && <img src={r.cover} alt={r.title} className="h-full w-full object-cover" loading="lazy" />}
+                        {r.rating > 0 && (
+                          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md bg-ink/85 px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-amber-300 backdrop-blur-sm">
+                            <Star className="size-3 fill-current" />
+                            {r.rating.toFixed(1)}
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-2 line-clamp-2 text-[13px] font-medium leading-snug text-zinc-100 group-hover:text-lagoon-300">
+                        {r.title}
+                      </p>
+                      {r.meta && <p className="mt-0.5 truncate text-[11px] text-zinc-400">{r.meta}</p>}
+                    </Link>
+                  </li>
+                ))}
             </ul>
             {more && (
               <div ref={sentinel} className="mt-10 flex justify-center">
