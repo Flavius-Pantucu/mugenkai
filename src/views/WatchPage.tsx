@@ -308,19 +308,45 @@ export function WatchPage({
                   </div>
                 )}
                 {countdown !== null && nextEp && (
-                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-ink/85 p-6 text-center backdrop-blur-sm">
-                    <p className="text-sm text-zinc-300">Up next in {countdown}s</p>
-                    <p className="text-lg font-bold text-white">
-                      {episodeLabel(anime, nextEp)} · {nextEp.title}
-                    </p>
-                    <div className="flex gap-2">
-                      <Button onClick={() => setCountdown(0)}>
-                        <SkipForward />
-                        Play now
-                      </Button>
-                      <Button variant="outline" onClick={() => setCountdown(null)}>
-                        Cancel
-                      </Button>
+                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-ink/90 p-4 backdrop-blur-md">
+                    <div className="w-full max-w-md overflow-hidden rounded-2xl bg-ink-raised/95 p-5 shadow-2xl ring-1 ring-lagoon-400/30">
+                      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-lagoon-300">
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="size-2 animate-pulse rounded-full bg-lagoon-400" />
+                          Auto-Playing Next Episode
+                        </span>
+                        <span className="tabular-nums text-white">{countdown}s</span>
+                      </div>
+
+                      <div className="mt-3 flex items-center gap-3.5">
+                        <img
+                          src={nextEp.thumbnail || anime.coverImage}
+                          alt={nextEp.title}
+                          className="h-16 w-28 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
+                        />
+                        <div className="min-w-0 flex-1 text-left">
+                          <p className="text-xs font-medium text-lagoon-200">{episodeLabel(anime, nextEp)}</p>
+                          <p className="mt-0.5 line-clamp-2 text-sm font-semibold text-white">{nextEp.title}</p>
+                        </div>
+                      </div>
+
+                      {/* Countdown progress bar */}
+                      <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                        <div
+                          className="h-full bg-lagoon-400 transition-all duration-1000 ease-linear"
+                          style={{ width: `${Math.max(0, Math.min(100, ((AUTO_NEXT_SECONDS - countdown) / AUTO_NEXT_SECONDS) * 100))}%` }}
+                        />
+                      </div>
+
+                      <div className="mt-4 flex items-center justify-end gap-2">
+                        <Button variant="outline" size="sm" onClick={() => setCountdown(null)}>
+                          Cancel
+                        </Button>
+                        <Button size="sm" onClick={() => setCountdown(0)} className="bg-lagoon-500 text-ink hover:bg-lagoon-400">
+                          <SkipForward className="size-4" />
+                          Play Next Now
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -414,13 +440,16 @@ export function WatchPage({
                       onClick={() => setPref({ autoNext: !autoNext })}
                       aria-pressed={autoNext}
                       className={cn(
-                        "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-medium transition-colors ring-1 ring-white/10 cursor-pointer",
-                        autoNext ? "bg-primary/15 text-primary ring-primary/30" : "bg-black/40 text-zinc-400 hover:text-white",
+                        "inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ring-1 cursor-pointer",
+                        autoNext
+                          ? "bg-lagoon-500/20 text-lagoon-200 ring-lagoon-400/50 shadow-sm shadow-lagoon-500/10"
+                          : "bg-black/40 text-zinc-400 ring-white/10 hover:text-white",
                       )}
-                      title="Play the next episode when this one ends"
+                      title="Automatically play the next episode when this one ends"
                     >
+                      <span className={cn("size-2 rounded-full", autoNext ? "bg-lagoon-400" : "bg-zinc-500")} />
                       <SkipForward className="size-3.5" />
-                      Auto-Next: {autoNext ? "ON" : "OFF"}
+                      Auto-Play Next: {autoNext ? "ON" : "OFF"}
                     </button>
 
                     <button
@@ -435,10 +464,22 @@ export function WatchPage({
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/5 pt-2 text-xs text-muted-foreground">
-                  <p>
-                    Switch servers if a title is missing or buffering.
-                  </p>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/5 pt-2.5 text-xs text-muted-foreground">
+                  <p>Switch servers if a title is missing or buffering.</p>
+                  {nextEp && (
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-zinc-400">
+                        Up next: <strong className="text-zinc-200">{episodeLabel(anime, nextEp)}</strong>
+                      </span>
+                      <Link
+                        href={epHref(nextEp.id)}
+                        className="inline-flex items-center gap-1 font-medium text-lagoon-300 hover:text-lagoon-200"
+                      >
+                        Play next
+                        <SkipForward className="size-3" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             </Card>
