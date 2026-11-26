@@ -97,41 +97,49 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
           scrolled ? "border-b border-white/5 bg-ink/95 backdrop-blur-xl" : "bg-gradient-to-b from-ink/70 to-transparent",
         )}
       >
-        <div className="mx-auto grid h-16 w-[92%] sm:w-[90%] grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
-          {/* Mobile hamburger menu button + Logo */}
+        <div className="mx-auto grid h-16 w-[92%] sm:w-[90%] grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
+          {/* Left: Mobile Menu button (with text) / Desktop Logo */}
           <div className="flex items-center gap-1.5 sm:gap-0 justify-self-start">
             <Button
               variant="ghost"
-              size="icon"
+              size="sm"
               onClick={() => setSidebarOpen(true)}
-              className="size-9 rounded-full text-zinc-300 hover:bg-white/10 sm:hidden"
+              className="h-9 gap-1.5 rounded-full px-2.5 text-xs font-medium text-zinc-200 hover:bg-white/10 sm:hidden"
               aria-label="Open navigation menu"
             >
-              <Menu className="size-5" />
+              <Menu className="size-4" />
+              <span>Menu</span>
             </Button>
-            <Link href="/" aria-label="Mugenkai home" className="rounded-full transition-opacity hover:opacity-90">
+            <Link href="/" aria-label="Mugenkai home" className="hidden rounded-full transition-opacity hover:opacity-90 sm:inline-flex">
               <LogoMark className="h-9 w-12" />
             </Link>
           </div>
 
-          {/* Desktop Nav Links (Hidden on mobile to avoid crowded bar) */}
-          <div className="hidden sm:flex items-center justify-center gap-1">
-            {navLinks.map((link) => (
-              <Button
-                key={link.label}
-                asChild
-                variant="ghost"
-                className={cn(
-                  "px-4 text-[14px] font-normal hover:bg-white/5 hover:text-white",
-                  isActive(link.to) ? "bg-white/10 text-white" : "text-zinc-400",
-                )}
-              >
-                <Link href={link.to} aria-label={link.label} aria-current={isActive(link.to) ? "page" : undefined}>
-                  <link.icon className="size-4" />
-                  <span>{link.label}</span>
-                </Link>
-              </Button>
-            ))}
+          {/* Center: Mobile centered Logo (when sidebar is closed) / Desktop Nav Links */}
+          <div className="flex items-center justify-center justify-self-center">
+            {!sidebarOpen && (
+              <Link href="/" aria-label="Mugenkai home" className="rounded-full transition-opacity hover:opacity-90 sm:hidden">
+                <LogoMark className="h-9 w-12" />
+              </Link>
+            )}
+            <div className="hidden sm:flex items-center justify-center gap-1">
+              {navLinks.map((link) => (
+                <Button
+                  key={link.label}
+                  asChild
+                  variant="ghost"
+                  className={cn(
+                    "px-4 text-[14px] font-normal hover:bg-white/5 hover:text-white",
+                    isActive(link.to) ? "bg-white/10 text-white" : "text-zinc-400",
+                  )}
+                >
+                  <Link href={link.to} aria-label={link.label} aria-current={isActive(link.to) ? "page" : undefined}>
+                    <link.icon className="size-4" />
+                    <span>{link.label}</span>
+                  </Link>
+                </Button>
+              ))}
+            </div>
           </div>
 
           {/* Right Actions: Search, Notifications, Account */}
@@ -177,14 +185,39 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild variant="ghost" size="icon" className="size-10 rounded-full text-zinc-300 hover:bg-white/10 hover:text-white">
+              <Button asChild variant="ghost" size="sm" className="h-9 gap-1.5 rounded-full px-2.5 text-xs font-medium text-zinc-200 hover:bg-white/10 hover:text-white">
                 <Link href="/login" aria-label="Sign in or create an account">
-                  <User className="size-5" />
+                  <User className="size-4" />
+                  <span>Sign in</span>
                 </Link>
               </Button>
             )}
           </div>
         </div>
+      </nav>
+
+      {/* Mobile Bottom Nav Bar (icons + text labels) */}
+      <nav
+        aria-label="Mobile quick navigation"
+        className="fixed inset-x-0 bottom-0 z-40 flex h-14 items-center justify-around border-t border-white/10 bg-ink/90 px-2 backdrop-blur-xl sm:hidden"
+      >
+        {navLinks.map((link) => {
+          const active = isActive(link.to);
+          return (
+            <Link
+              key={`bottom-${link.label}`}
+              href={link.to}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "flex flex-1 flex-col items-center justify-center gap-0.5 py-1 text-[11px] font-medium transition-colors",
+                active ? "text-lagoon-300" : "text-zinc-400 hover:text-white",
+              )}
+            >
+              <link.icon className="size-4" />
+              <span>{link.label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Mobile Drawer Sidebar */}
