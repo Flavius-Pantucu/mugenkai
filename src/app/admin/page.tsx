@@ -6,6 +6,7 @@ import { backendEnabled } from "@/server/env";
 import { AdminPage } from "@/views/AdminPage";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
+export const maxDuration = 300;
 
 export default async function Page() {
   if (!backendEnabled) return <AdminPage data={null} />;

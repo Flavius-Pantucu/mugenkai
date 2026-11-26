@@ -95,7 +95,7 @@ const nextTvSequel = (m: Media) => nextSequelOf(m, "TV") ?? nextSequelOf(m, "ONA
 
 async function topMedia(type: "ANIME" | "MANGA", formats: string[], n: number) {
   const out: Media[] = [];
-  for (let page = 1; out.length < n && page <= 10; page++) {
+  for (let page = 1; out.length < n && page <= 25; page++) {
     for (const m of pageOf(await gql(TOP_QUERY, { type, page }))) {
       if (!formats.includes(m.format ?? "") || m.relations.edges.some(isSequelOf(formats))) continue;
       out.push(m);
