@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Bell, BookOpen, Bookmark, Newspaper, Play, Search, Star, Trash2, Tv } from "lucide-react";
 import { toast } from "sonner";
 import { Footer } from "@/components/Footer";
@@ -23,12 +23,21 @@ const STATUS_LABELS: Record<ListStatus, string> = {
 
 type SortKey = "updated" | "score" | "title" | "progress";
 
+const PAGE_SIZE = 12;
+const NEWS_PAGE_SIZE = 8;
+
 export function MyListPage({ data, signedIn }: { data: MyListData | null; signedIn: boolean }) {
   const [items, setItems] = useState(data?.items ?? []);
   const [kind, setKind] = useState<"ALL" | "ANIME" | "MANGA">("ALL");
   const [status, setStatus] = useState<"ALL" | ListStatus>("ALL");
   const [sort, setSort] = useState<SortKey>("updated");
   const [query, setQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [newsCount, setNewsCount] = useState(NEWS_PAGE_SIZE);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [kind, status, sort, query]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -197,7 +206,7 @@ export function MyListPage({ data, signedIn }: { data: MyListData | null; signed
               </div>
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
-                {filtered.map((item) => {
+                {filtered.slice(0, visibleCount).map((item) => {
                   const pct = item.totalCount > 0 ? Math.min(100, Math.round((item.progressCount / item.totalCount) * 100)) : 0;
                   return (
                     <div
@@ -304,6 +313,13 @@ export function MyListPage({ data, signedIn }: { data: MyListData | null; signed
                 })}
               </div>
             )}
+            {filtered.length > visibleCount && (
+              <div className="flex justify-center pt-2">
+                <Button variant="outline" onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}>
+                  Show more ({filtered.length - visibleCount} remaining)
+                </Button>
+              </div>
+            )}
           </section>
 
           {/* News & Updates */}
@@ -319,7 +335,7 @@ export function MyListPage({ data, signedIn }: { data: MyListData | null; signed
               </div>
             ) : (
               <ul className="divide-y divide-white/[0.06] overflow-hidden rounded-xl bg-ink-raised/60 ring-1 ring-white/[0.06]">
-                {data.news.map((n) => (
+                {data.news.slice(0, newsCount).map((n) => (
                   <li key={n.id}>
                     <Link href={n.href} className="flex items-start gap-3 p-3.5 transition-colors hover:bg-white/[0.03]">
                       <img src={n.coverImage} alt={n.seriesTitle} className="h-14 w-10 shrink-0 rounded object-cover bg-white/5" />
@@ -349,6 +365,11 @@ export function MyListPage({ data, signedIn }: { data: MyListData | null; signed
                   </li>
                 ))}
               </ul>
+            )}
+            {data.news.length > newsCount && (
+              <Button variant="outline" size="sm" className="w-full" onClick={() => setNewsCount((c) => c + NEWS_PAGE_SIZE)}>
+                Show more news ({data.news.length - newsCount} left)
+              </Button>
             )}
           </aside>
         </div>

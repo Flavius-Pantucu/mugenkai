@@ -1,6 +1,7 @@
 import { getCatalog } from "./catalog";
 import { db } from "./db";
 import { getWeekSchedule } from "./schedule";
+import { fetchMangaChaptersWithFallback } from "./sync/manga-providers";
 
 const ANILIST_UPDATES_QUERY = `query ($ids: [Int]) {
   Page(perPage: 25) {
@@ -20,7 +21,7 @@ export interface SavedNewsItem {
   seriesTitle: string;
   kind: "ANIME" | "MANGA";
   coverImage: string;
-  badge: "Airing Soon" | "Next Episode" | "New Episode" | "New Chapter";
+  badge: "Airing Soon" | "Next Episode" | "New Episode" | "New Chapter" | "Publishing";
   headline: string;
   subtext: string;
   timestamp: string | null;
@@ -239,6 +240,61 @@ export async function getMyListData(userId: string) {
       timestamp: ch.publishedAt?.toISOString() ?? null,
       href: `/read/${ch.seriesId}/${ch.id}`,
     });
+  }
+
+  // 5. Live chapter fallback for saved manga that have 0 chapters stored in DB (e.g. searched/non-curated manga like Boruto)
+  const mangaNeedingLiveNews = entries
+    .filter((e) => e.series.kind === "MANGA" && e.series._count.chapters === 0)
+    .slice(0, 6);
+
+  if (mangaNeedingLiveNews.length > 0) {
+    const liveMangaResults = await Promise.all(
+      mangaNeedingLiveNews.map(async (e) => {
+        try {
+          const chs = await Promise.race([
+            fetchMangaChaptersWithFallback(e.series.title, e.seriesId, e.seriesId, e.series.nativeTitle),
+            new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 3000)),
+          ]);
+          return { entry: e, latest: chs.at(-1) ?? null };
+        } catch {
+          return { entry: e, latest: null };
+        }
+      }),
+    );
+
+    for (const { entry, latest } of liveMangaResults) {
+      if (latest) {
+        const key = `ch:${entry.seriesId}:${latest.chapterNumber}`;
+        if (seenKeys.has(key)) continue;
+        seenKeys.add(key);
+        news.push({
+          id: `live-ch-${entry.seriesId}-${latest.chapterNumber}`,
+          seriesId: entry.seriesId,
+          seriesTitle: entry.series.title,
+          kind: "MANGA",
+          coverImage: entry.series.coverImage,
+          badge: "New Chapter",
+          headline: `Chapter ${latest.chapterNumber}${latest.title && latest.title !== `Chapter ${latest.chapterNumber}` ? ` — ${latest.title}` : ""}`,
+          subtext: latest.scanlationGroup ? `Latest on ${latest.scanlationGroup}` : "Available to read now",
+          timestamp: latest.releasedAt ?? entry.updatedAt.toISOString(),
+          href: `/read/${entry.seriesId}/${latest.id}`,
+        });
+      } else if (entry.series.status === "ONGOING") {
+        const live = liveUpdates.get(entry.seriesId);
+        news.push({
+          id: `pub-${entry.seriesId}`,
+          seriesId: entry.seriesId,
+          seriesTitle: entry.series.title,
+          kind: "MANGA",
+          coverImage: entry.series.coverImage,
+          badge: "Publishing",
+          headline: live?.chapters ? `${live.chapters} chapters published` : "Ongoing serialization",
+          subtext: "View manga details",
+          timestamp: entry.updatedAt.toISOString(),
+          href: `/manga/${entry.seriesId}`,
+        });
+      }
+    }
   }
 
   // Upcoming airing soonest first, then recent releases newest first
