@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, ChevronUp, EyeOff, Heart, MessageSquare, Reply, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, EyeOff, Flag, Heart, MessageSquare, Reply, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -260,6 +260,29 @@ function CommentItem({ comment: c, me, depth }: { comment: ThreadComment; me: Au
                   <Button variant="ghost" size="sm" onClick={() => attempt(() => remove(c.id))} className="h-7 px-2 text-muted-foreground hover:text-destructive">
                     <Trash2 className="size-3.5" />
                     Delete
+                  </Button>
+                )}
+                {!c.mine && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      attempt(async () => {
+                        const reason = window.prompt("Why are you reporting this comment?");
+                        if (!reason || reason.trim().length < 3) return;
+                        const res = await fetch(`/api/comments/${c.id}/report`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ reason: reason.trim() }),
+                        });
+                        if (!res.ok) throw new Error("Failed to submit report");
+                        toast.success("Report submitted for review");
+                      })
+                    }
+                    className="h-7 px-2 text-muted-foreground hover:text-amber-300"
+                  >
+                    <Flag className="size-3.5" />
+                    Report
                   </Button>
                 )}
               </div>

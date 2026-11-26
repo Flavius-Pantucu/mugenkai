@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrRefreshDecryptionKey } from "@/lib/token-refresher";
+import { checkRateLimit, clientIp, logSecurityEvent, tooManyRequestsResponse } from "@/server/http";
+import { isSafePublicUrl } from "@/shared/validators";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +19,9 @@ export async function OPTIONS() {
 }
 
 export async function GET(request: NextRequest) {
+  const rl = await checkRateLimit(request, "proxy", 300, 60_000);
+  if (!rl.ok) return tooManyRequestsResponse(rl.headers, CORS_HEADERS);
+
   const { searchParams } = new URL(request.url);
   const targetUrl = searchParams.get("url");
 
@@ -24,6 +29,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { error: "Missing url parameter" },
       { status: 400, headers: CORS_HEADERS }
+    );
+  }
+
+  if (!isSafePublicUrl(targetUrl)) {
+    logSecurityEvent("SSRF_BLOCKED", clientIp(request), "/api/proxy/key", targetUrl.slice(0, 200));
+    return NextResponse.json(
+      { error: "Prohibited URL (SSRF protection)" },
+      { status: 403, headers: CORS_HEADERS }
     );
   }
 

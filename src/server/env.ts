@@ -17,6 +17,8 @@ const EnvSchema = z.object({
   EMAIL_FROM: z.string().default("Mugenkai <onboarding@resend.dev>"),
   /** Public origin for links in emails, e.g. https://mugenkai.app. Falls back to the request's origin. */
   APP_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().optional()),
+  UPSTASH_REDIS_REST_URL: optional,
+  UPSTASH_REDIS_REST_TOKEN: optional,
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
 

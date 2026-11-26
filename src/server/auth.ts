@@ -40,7 +40,7 @@ export async function getCurrentUser(): Promise<User | null> {
   if (!token) return null;
   const session = await db().session.findUnique({ where: { id: sha256(token) }, include: { user: true } });
   if (!session) return null;
-  if (session.expiresAt < new Date()) {
+  if (session.expiresAt < new Date() || session.user.bannedAt) {
     await db().session.delete({ where: { id: session.id } }).catch(() => {});
     return null;
   }

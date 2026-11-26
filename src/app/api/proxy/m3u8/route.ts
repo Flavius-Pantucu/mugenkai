@@ -5,6 +5,7 @@ import https from "https";
 import { decryptFlixStream, findAndStream } from "@/lib/reanime";
 import { getFreshStreamToken } from "@/lib/token-refresher";
 import { isStreamTokenExpired } from "@/lib/token-utils";
+import { checkRateLimit, clientIp, logSecurityEvent, tooManyRequestsResponse } from "@/server/http";
 import { isSafePublicUrl } from "@/shared/validators";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +44,9 @@ export async function OPTIONS() {
 }
 
 export async function GET(request: NextRequest) {
+  const rl = await checkRateLimit(request, "proxy", 300, 60_000);
+  if (!rl.ok) return tooManyRequestsResponse(rl.headers, CORS_HEADERS);
+
   const { searchParams } = new URL(request.url);
   let targetUrl = searchParams.get("url");
   let pk = searchParams.get("pk") || "";

@@ -45,10 +45,13 @@ model User {
   role          Role     @default(USER)
   avatarUrl     String?
   bio           String   @default("")
-  matureContent Boolean  @default(false)
-  notifications Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  matureContent Boolean   @default(false)
+  notifications Boolean   @default(true)
+  bannedAt      DateTime?
+  banReason     String?
+  mutedUntil    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   sessions        Session[]
   passwordResets  PasswordReset[]
@@ -239,9 +242,10 @@ model Comment {
   deletedAt DateTime?
 
   user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parent  Comment?      @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies Comment[]     @relation("Replies")
+  parent  Comment?        @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[]       @relation("Replies")
   likes   CommentLike[]
+  reports CommentReport[]
 
   @@index([threadId, createdAt])
 }
@@ -301,4 +305,53 @@ model SearchEntry {
 
   @@index([kind, popularity(sort: Desc)])
   @@index([terms(ops: raw("gin_trgm_ops"))], type: Gin, map: "SearchEntry_terms_trgm_idx")
+}
+
+// ─── Site CMS, Moderation & Security ────────────────────────────────────────
+
+model SiteConfig {
+  id                 String   @id @default("default")
+  siteName           String   @default("Mugenkai")
+  tagline            String   @default("Your gateway to limitless anime and manga. Stream, read, and discover stories that move you.")
+  footerCopyright    String   @default("2026 Mugenkai. Titles and artwork belong to their owners.")
+  announcementText   String?
+  announcementLink   String?
+  announcementType   String   @default("info")
+  announcementActive Boolean  @default(false)
+  maintenanceMode    Boolean  @default(false)
+  maintenanceMessage String   @default("We are performing scheduled maintenance. Back shortly.")
+  registrationOpen   Boolean  @default(true)
+  commentsEnabled    Boolean  @default(true)
+  downloadsEnabled   Boolean  @default(true)
+  heroMode           String   @default("auto")
+  pinnedHeroIds      String[] @default([])
+  footerLinks        Json?
+  navLinks           Json?
+  updatedAt          DateTime @updatedAt
+}
+
+model CommentReport {
+  id         String   @id @default(uuid())
+  commentId  String
+  reporterId String?
+  reason     String
+  status     String   @default("OPEN")
+  createdAt  DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([commentId])
+}
+
+model SecurityEvent {
+  id        String   @id @default(uuid())
+  type      String
+  ip        String
+  path      String
+  detail    String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+  @@index([type, createdAt(sort: Desc)])
 }

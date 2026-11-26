@@ -2,6 +2,7 @@ import { CommentPostSchema, ThreadIdSchema, type ApiComment } from "@/data/schem
 import { getCurrentUser, requireUser } from "@/server/auth";
 import { db } from "@/server/db";
 import { HttpError, json, rateLimit, readJson, route } from "@/server/http";
+import { getSiteConfig } from "@/server/site-config";
 
 type Row = {
   id: string;
@@ -57,6 +58,13 @@ export const GET = route(async (req: Request) => {
 
 export const POST = route(async (req: Request) => {
   const user = await requireUser();
+  if (user.mutedUntil && user.mutedUntil > new Date()) {
+    throw new HttpError(403, "user_muted", "You are temporarily muted from posting comments.");
+  }
+  const cfg = await getSiteConfig();
+  if (!cfg.commentsEnabled) {
+    throw new HttpError(403, "comments_disabled", "Comments are currently disabled.");
+  }
   rateLimit(`comment:${user.id}`, 10, 60_000);
   const input = await readJson(req, CommentPostSchema);
 

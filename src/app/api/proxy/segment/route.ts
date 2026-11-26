@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import http from "http";
 import https from "https";
 import axios from "axios";
+import { checkRateLimit, tooManyRequestsResponse } from "@/server/http";
 import { isSafePublicUrl } from "@/shared/validators";
 import { findTsStartOffset, looksLikeTextErrorPayload } from "@/lib/stream-proxy/media-buffer";
 
@@ -101,6 +102,9 @@ export async function OPTIONS() {
 }
 
 export async function GET(request: NextRequest) {
+  const rl = await checkRateLimit(request, "proxy", 300, 60_000);
+  if (!rl.ok) return tooManyRequestsResponse(rl.headers, CORS_HEADERS);
+
   const { searchParams } = new URL(request.url);
   const targetUrl = searchParams.get("url");
   const referer = searchParams.get("referer") || "";

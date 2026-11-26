@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { BookOpen, Home, LayoutDashboard, LogOut, Menu, Tv, User, X } from "lucide-react";
+import { BookOpen, Calendar, Compass, Home, LayoutDashboard, LogOut, Menu, Tv, User, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,22 +17,37 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import { useSiteConfig } from "@/context/SiteConfigContext";
 import type { SearchIndex } from "@/data/series";
 import { LogoMark } from "./Logo";
 import { NavSearch } from "./NavSearch";
 import { NotificationBell } from "./NotificationBell";
 
-const navLinks = [
-  { label: "Home", to: "/", icon: Home },
-  { label: "Anime", to: "/anime", icon: Tv },
-  { label: "Manga", to: "/manga", icon: BookOpen },
+const defaultNavLinks = [
+  { label: "Home", to: "/" },
+  { label: "Anime", to: "/anime" },
+  { label: "Manga", to: "/manga" },
+  { label: "Schedule", to: "/schedule" },
 ];
+
+function iconFor(to: string) {
+  if (to === "/") return Home;
+  if (to.startsWith("/anime")) return Tv;
+  if (to.startsWith("/manga")) return BookOpen;
+  if (to.startsWith("/schedule")) return Calendar;
+  return Compass;
+}
 
 export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
   const [scrolled, setScrolled] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
+  const siteConfig = useSiteConfig();
   const pathname = usePathname();
+  const navLinks = (siteConfig.navLinks && siteConfig.navLinks.length > 0 ? siteConfig.navLinks : defaultNavLinks).map((l) => ({
+    ...l,
+    icon: iconFor(l.to),
+  }));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);

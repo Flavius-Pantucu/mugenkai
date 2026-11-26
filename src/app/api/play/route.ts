@@ -6,6 +6,7 @@ import { resolveBuzzStream } from "@/lib/buzz";
 import { getAniSkipTimes } from "@/lib/aniskip";
 
 import { ticketStore } from "@/lib/tickets";
+import { checkRateLimit, tooManyRequestsResponse } from "@/server/http";
 
 export const dynamic = "force-dynamic";
 
@@ -157,6 +158,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const rl = await checkRateLimit(request, "play", 60, 60_000);
+    if (!rl.ok) return tooManyRequestsResponse(rl.headers, CORS_HEADERS);
+
     const { searchParams } = new URL(request.url);
     const q = searchParams.get("q") || searchParams.get("query") || searchParams.get("title");
     let rawAnilistId = searchParams.get("anilistId") || searchParams.get("anilist_id");

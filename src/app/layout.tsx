@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import "@/styles/index.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { SiteConfigProvider } from "@/context/SiteConfigContext";
+import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { Navbar } from "@/components/Navbar";
 import { CustomCursor } from "@/components/CustomCursor";
 import { NavigationProgressBar } from "@/components/NavigationProgressBar";
@@ -9,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { searchIndex } from "@/data/series";
 import { getCatalog } from "@/server/catalog";
+import { getSiteConfig } from "@/server/site-config";
 
 // Android: the keyboard shrinks the layout instead of covering it (iOS ignores this; search pins to the top).
 export const viewport: Viewport = { interactiveWidget: "resizes-content", themeColor: "#061013" };
@@ -26,23 +29,26 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { anime, manga } = await getCatalog();
+  const [{ anime, manga }, siteConfig] = await Promise.all([getCatalog(), getSiteConfig()]);
   return (
     <html lang="en" className="dark">
       <body>
-        <AuthProvider>
-          <TooltipProvider>
-            <div className="min-h-screen bg-ink">
-              <Suspense fallback={null}>
-                <NavigationProgressBar />
-              </Suspense>
-              <CustomCursor />
-              <Navbar searchIndex={searchIndex(anime, manga)} />
-              <main>{children}</main>
-            </div>
-            <Toaster position="bottom-right" />
-          </TooltipProvider>
-        </AuthProvider>
+        <SiteConfigProvider value={siteConfig}>
+          <AuthProvider>
+            <TooltipProvider>
+              <div className="min-h-screen bg-ink">
+                <Suspense fallback={null}>
+                  <NavigationProgressBar />
+                </Suspense>
+                <CustomCursor />
+                <Navbar searchIndex={searchIndex(anime, manga)} />
+                <AnnouncementBanner />
+                <main>{children}</main>
+              </div>
+              <Toaster position="bottom-right" />
+            </TooltipProvider>
+          </AuthProvider>
+        </SiteConfigProvider>
       </body>
     </html>
   );

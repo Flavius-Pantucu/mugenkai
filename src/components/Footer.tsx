@@ -4,14 +4,34 @@ import Link from "next/link";
 import { cursorStore } from "./CustomCursor";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useSiteConfig } from "@/context/SiteConfigContext";
 import { LogoMark } from "./Logo";
 
-const columns = [
-  { title: "Browse", links: [{ label: "Home", href: "/" }, { label: "Anime", href: "/anime" }, { label: "Manga", href: "/manga" }] },
-  { title: "Account", links: [{ label: "Sign in", href: "/login" }, { label: "Create account", href: "/register" }, { label: "Profile", href: "/profile" }] },
+const defaultColumns = [
+  {
+    title: "Browse",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "Anime", href: "/anime" },
+      { label: "Manga", href: "/manga" },
+      { label: "Schedule", href: "/schedule" },
+    ],
+  },
+  {
+    title: "Platform",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "DMCA", href: "/dmca" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Terms", href: "/terms" },
+    ],
+  },
 ];
 
 export function Footer() {
+  const cfg = useSiteConfig();
+  const columns = cfg.footerLinks && cfg.footerLinks.length > 0 ? cfg.footerLinks : defaultColumns;
+
   return (
     <footer className="mt-16 border-t border-white/5 bg-[#06060a]">
       <div className="mx-auto w-[90%] py-12">
@@ -20,12 +40,10 @@ export function Footer() {
             <div className="mb-4 flex items-center gap-2">
               <LogoMark className="h-8 w-11" />
               <span className="tracking-wider text-white" style={{ fontFamily: "var(--font-family-heading)", fontSize: "16px", fontWeight: 700 }}>
-                MUGENKAI
+                {cfg.siteName.toUpperCase()}
               </span>
             </div>
-            <p className="max-w-sm text-[13px] leading-relaxed text-zinc-500">
-              Your gateway to limitless anime and manga. Stream, read, and discover stories that move you.
-            </p>
+            <p className="max-w-sm text-[13px] leading-relaxed text-zinc-500">{cfg.tagline}</p>
           </div>
 
           {columns.map((col) => (
@@ -46,7 +64,7 @@ export function Footer() {
 
         <Separator className="mt-10 bg-white/5" />
         <div className="flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
-          <p className="text-center text-xs text-zinc-600 sm:text-left">2026 Mugenkai. Titles and artwork belong to their owners.</p>
+          <p className="text-center text-xs text-zinc-600 sm:text-left">{cfg.footerCopyright}</p>
           <CursorToggle />
         </div>
       </div>

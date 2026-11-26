@@ -3,9 +3,14 @@ import { createSession, hashPassword, isAdminEmail, toProfile } from "@/server/a
 import { db } from "@/server/db";
 import { clientIp, HttpError, json, rateLimit, readJson, route } from "@/server/http";
 import { hasPrismaCode } from "@/server/prisma-errors";
+import { getSiteConfig } from "@/server/site-config";
 
 export const POST = route(async (req: Request) => {
   rateLimit(`register:${clientIp(req)}`, 5, 60_000);
+  const cfg = await getSiteConfig();
+  if (!cfg.registrationOpen) {
+    throw new HttpError(403, "registration_closed", "New account registration is currently closed");
+  }
   const input = await readJson(req, RegisterSchema);
   const email = input.email.toLowerCase();
 

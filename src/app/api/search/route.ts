@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/server/db";
 import { env } from "@/server/env";
+import { checkRateLimit, tooManyRequestsResponse } from "@/server/http";
 
 export const dynamic = "force-dynamic";
 
@@ -90,6 +91,9 @@ async function liveSearch(q: string, kind: Kind | null): Promise<Result[]> {
 }
 
 export async function GET(request: NextRequest) {
+  const rl = await checkRateLimit(request, "search", 45, 60_000);
+  if (!rl.ok) return tooManyRequestsResponse(rl.headers);
+
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q")?.trim().slice(0, 100) || "";
   const type = searchParams.get("type")?.toUpperCase();

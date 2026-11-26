@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { GET as playGET } from "@/app/api/play/route";
 import { resolveFromAniListId, resolveFromMalId } from "@/lib/anime-resolver";
 import { buildDownloadPlan, streamDownload } from "@/lib/episode-download";
+import { checkRateLimit, tooManyRequestsResponse } from "@/server/http";
+import { getSiteConfig } from "@/server/site-config";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -41,6 +43,14 @@ async function resolveTitle(anilistId: number | null, malId: number | null, fall
 }
 
 export async function GET(request: NextRequest) {
+  const rl = await checkRateLimit(request, "download", 10, 60_000);
+  if (!rl.ok) return tooManyRequestsResponse(rl.headers, CORS_HEADERS);
+
+  const cfg = await getSiteConfig();
+  if (!cfg.downloadsEnabled) {
+    return errorResponse(403, "DOWNLOADS_DISABLED", "Downloads are currently disabled by the administrator.");
+  }
+
   const { searchParams } = new URL(request.url);
   const anilistId = parseInt(searchParams.get("anilistId") || searchParams.get("anilist_id") || "", 10) || null;
   const malId = parseInt(searchParams.get("malId") || searchParams.get("mal_id") || "", 10) || null;
