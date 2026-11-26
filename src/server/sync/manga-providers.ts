@@ -194,8 +194,78 @@ async function fetchWeebCentralChapters(title: string, seriesId: string, nativeT
 }
 
 /**
- * Fetches all readable chapters for a manga using comprehensive manga providers (MangaPill & WeebCentral).
- * MangaDex is not used for chapters due to missing and restricted/external-only chapters.
+ * Generic Consumet manga provider fetcher (used for MangaHere / MangaKakalot fallbacks).
+ */
+async function fetchGenericConsumetChapters(
+  providerKey: "MangaHere" | "MangaKakalot",
+  prefix: string,
+  label: string,
+  title: string,
+  seriesId: string,
+  nativeTitle?: string,
+): Promise<Chapter[]> {
+  const MANGA = getConsumetManga();
+  const Provider = MANGA?.[providerKey];
+  if (!Provider) return [];
+
+  try {
+    const client = new Provider();
+    const cleanQuery = title.replace(/×/g, " x ").replace(/[:\-]/g, " ").trim();
+    const search = await client.search(cleanQuery);
+    let candidates = (search?.results || [])
+      .map((r: any) => ({ ...r, score: scoreCandidate(r.title, title, nativeTitle) }))
+      .filter((r: any) => r.score >= 50)
+      .sort((a: any, b: any) => b.score - a.score);
+
+    if (candidates.length === 0 && nativeTitle && nativeTitle !== title) {
+      const cleanNat = nativeTitle.replace(/×/g, " x ").replace(/[:\-]/g, " ").trim();
+      const searchNat = await client.search(cleanNat);
+      candidates = (searchNat?.results || [])
+        .map((r: any) => ({ ...r, score: scoreCandidate(r.title, title, nativeTitle) }))
+        .filter((r: any) => r.score >= 50)
+        .sort((a: any, b: any) => b.score - a.score);
+    }
+
+    for (const bestMatch of candidates.slice(0, 2)) {
+      if (!bestMatch?.id) continue;
+      const info = await client.fetchMangaInfo(bestMatch.id);
+      if (!info?.chapters || info.chapters.length === 0) continue;
+
+      const seen = new Set<number>();
+      const mapped: Chapter[] = [];
+      const rawChapters = [...info.chapters].reverse();
+      for (let i = 0; i < rawChapters.length; i++) {
+        const c = rawChapters[i];
+        const num = parseChapterNumber(c.title || c.id, i);
+        if (seen.has(num)) continue;
+        seen.add(num);
+        mapped.push({
+          id: `${seriesId}-ch-${num}`,
+          mangaId: seriesId,
+          chapterNumber: num,
+          title: c.title?.trim() || `Chapter ${num}`,
+          pageCount: 0,
+          externalUrl: null,
+          mangadexChapterId: `${prefix}:${c.id}`,
+          scanlationGroup: label,
+          releasedAt: toIso(c.releaseDate),
+        });
+      }
+      if (mapped.length > 0) {
+        mapped.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        return dropBulkDates(mapped);
+      }
+    }
+    return [];
+  } catch (err: any) {
+    console.warn(`[MangaProviders] ${providerKey} failed for "${title}":`, err?.message || err);
+    return [];
+  }
+}
+
+/**
+ * Fetches all readable chapters for a manga using comprehensive manga providers
+ * (MangaPill -> WeebCentral -> MangaHere -> MangaKakalot).
  */
 export async function fetchMangaChaptersWithFallback(
   title: string,
@@ -209,15 +279,23 @@ export async function fetchMangaChaptersWithFallback(
     return cached.chapters;
   }
 
-  // Both in parallel: MangaPill is the primary chapter source (complete archives), WeebCentral the
-  // fallback, and also the only one with chapter dates, which are borrowed by chapter number.
-  // (Both fetchers already catch and return [] on failure.)
+  // Primary: MangaPill & WeebCentral in parallel
   const [pillChapters, wcChapters] = await Promise.all([
     fetchMangaPillChapters(title, seriesId, nativeTitle),
     fetchWeebCentralChapters(title, seriesId, nativeTitle),
   ]);
   const dates = new Map(wcChapters.map((c) => [c.chapterNumber, c.releasedAt]));
-  const chapters = pillChapters.length > 0 ? pillChapters.map((c) => ({ ...c, releasedAt: dates.get(c.chapterNumber) ?? null })) : wcChapters;
+  let chapters = pillChapters.length > 0 ? pillChapters.map((c) => ({ ...c, releasedAt: dates.get(c.chapterNumber) ?? null })) : wcChapters;
+
+  // Secondary fallbacks: MangaHere & MangaKakalot when primary providers return nothing
+  if (chapters.length === 0) {
+    const hereChapters = await fetchGenericConsumetChapters("MangaHere", "mangahere", "MangaHere", title, seriesId, nativeTitle);
+    chapters = hereChapters;
+  }
+  if (chapters.length === 0) {
+    const kakalotChapters = await fetchGenericConsumetChapters("MangaKakalot", "mangakakalot", "MangaKakalot", title, seriesId, nativeTitle);
+    chapters = kakalotChapters;
+  }
 
   if (chapters.length > 0) providerChaptersCache.set(cacheKey, { chapters, timestamp: Date.now() });
   return chapters;
@@ -262,6 +340,32 @@ export async function fetchChapterPagesWithFallback(providerChapterId: string): 
             const u = p.img || p.url;
             if (!u) return null;
             return `/api/proxy?url=${encodeURIComponent(u)}&referer=${encodeURIComponent("https://weebcentral.com/")}`;
+          })
+          .filter(Boolean);
+      }
+    } else if (providerChapterId.startsWith("mangahere:")) {
+      const chapterId = providerChapterId.replace("mangahere:", "");
+      const MANGA = getConsumetManga();
+      if (MANGA?.MangaHere) {
+        const mh = new MANGA.MangaHere();
+        const rawPages = await mh.fetchChapterPages(chapterId);
+        pages = (rawPages || [])
+          .map((p: any) => {
+            const u = p.img || p.url;
+            return u ? `/api/proxy?url=${encodeURIComponent(u)}&referer=${encodeURIComponent("https://www.mangahere.cc/")}` : null;
+          })
+          .filter(Boolean);
+      }
+    } else if (providerChapterId.startsWith("mangakakalot:")) {
+      const chapterId = providerChapterId.replace("mangakakalot:", "");
+      const MANGA = getConsumetManga();
+      if (MANGA?.MangaKakalot) {
+        const mk = new MANGA.MangaKakalot();
+        const rawPages = await mk.fetchChapterPages(chapterId);
+        pages = (rawPages || [])
+          .map((p: any) => {
+            const u = p.img || p.url;
+            return u ? `/api/proxy?url=${encodeURIComponent(u)}&referer=${encodeURIComponent("https://chapmanganato.to/")}` : null;
           })
           .filter(Boolean);
       }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
-import { Check, Edit3, Layers, Link2, Plus, Search, Trash2 } from "lucide-react";
+import { Check, Edit3, Layers, Link2, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   addStreamingLink,
@@ -11,6 +11,7 @@ import {
   deleteSeries,
   deleteStreamingLink,
   getSeriesDetailsForAdmin,
+  retryMissingMangaChapters,
   updateSeason,
   upsertChapter,
   upsertEpisode,
@@ -80,6 +81,55 @@ export function CatalogManagerTab({ data }: { data: AdminData }) {
 
   return (
     <div className="space-y-8 pt-6">
+      {/* Catalog vs Search Index vs AniList Upstream Totals */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-lg bg-ink-raised/60 p-4 ring-1 ring-white/[0.06]">
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Anime Reach</p>
+          <div className="mt-2 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+            <div>
+              <span className="text-2xl font-semibold tabular-nums text-white">{fmtNum.format(c.anime)}</span>
+              <span className="ml-1.5 text-xs text-zinc-400">curated in DB</span>
+            </div>
+            <div>
+              <span className="text-lg font-semibold tabular-nums text-lagoon-200">{fmtNum.format(c.searchAnimeEntries)}</span>
+              <span className="ml-1.5 text-xs text-zinc-400">indexed for search</span>
+            </div>
+            {c.anilistAnimeTotal !== null && (
+              <div>
+                <span className="text-lg font-semibold tabular-nums text-zinc-200">{fmtNum.format(c.anilistAnimeTotal)}</span>
+                <span className="ml-1.5 text-xs text-zinc-400">total on AniList</span>
+              </div>
+            )}
+          </div>
+          <p className="mt-2 text-xs text-zinc-500">
+            Curated rows preload the homepage &amp; browse shelves; users can search any of the {fmtNum.format(c.searchAnimeEntries)} indexed or live AniList titles.
+          </p>
+        </div>
+
+        <div className="rounded-lg bg-ink-raised/60 p-4 ring-1 ring-white/[0.06]">
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Manga Reach</p>
+          <div className="mt-2 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+            <div>
+              <span className="text-2xl font-semibold tabular-nums text-white">{fmtNum.format(c.manga)}</span>
+              <span className="ml-1.5 text-xs text-zinc-400">curated in DB</span>
+            </div>
+            <div>
+              <span className="text-lg font-semibold tabular-nums text-lagoon-200">{fmtNum.format(c.searchMangaEntries)}</span>
+              <span className="ml-1.5 text-xs text-zinc-400">indexed for search</span>
+            </div>
+            {c.anilistMangaTotal !== null && (
+              <div>
+                <span className="text-lg font-semibold tabular-nums text-zinc-200">{fmtNum.format(c.anilistMangaTotal)}</span>
+                <span className="ml-1.5 text-xs text-zinc-400">total on AniList</span>
+              </div>
+            )}
+          </div>
+          <p className="mt-2 text-xs text-zinc-500">
+            Curated rows preload the shelves; search covers all {fmtNum.format(c.searchMangaEntries)} local index entries plus live AniList search.
+          </p>
+        </div>
+      </div>
+
       {/* Totals */}
       <dl className="flex flex-wrap gap-x-8 gap-y-3">
         {totals.map(([n, label]) => (
@@ -94,9 +144,31 @@ export function CatalogManagerTab({ data }: { data: AdminData }) {
       <div className="grid gap-x-8 gap-y-8 lg:grid-cols-3">
         <GapList
           title="Manga without chapters"
-          why="No chapter source matched, or no English chapters."
+          why="No chapter source matched yet. Retry via MangaPill, WeebCentral, MangaHere & MangaKakalot."
           empty="Every manga has chapters."
           items={mangaWithoutChapters.map((m) => ({ id: m.id, href: `/manga/${m.id}`, title: m.title, meta: String(m.year) }))}
+          action={
+            mangaWithoutChapters.length > 0 ? (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={pending}
+                onClick={() =>
+                  start(async () => {
+                    try {
+                      const res = await retryMissingMangaChapters();
+                      toast.success(`Checked ${res.checked} manga: filled ${res.filled} (${res.chaptersAdded} chapters added)`);
+                    } catch (err) {
+                      toast.error(err instanceof Error ? err.message : "Failed to sync missing chapters");
+                    }
+                  })
+                }
+              >
+                <RefreshCw className={cn("size-3.5", pending && "animate-spin")} />
+                {pending ? "Searching providers…" : "Find & sync chapters"}
+              </Button>
+            ) : undefined
+          }
         />
         <GapList
           title="Anime without streaming links"
@@ -261,19 +333,24 @@ function GapList({
   empty,
   items,
   neutral,
+  action,
 }: {
   title: string;
   why: string;
   empty: string;
   items: { id: string; href: string; title: string; meta: string }[];
   neutral?: boolean;
+  action?: React.ReactNode;
 }) {
   return (
     <div className="min-w-0">
-      <h3 className="flex items-baseline gap-2 text-sm font-medium text-white">
-        {title}
-        <span className={cn("tabular-nums", items.length > 0 && !neutral ? "text-amber-200" : "text-zinc-400")}>{items.length}</span>
-      </h3>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="flex items-baseline gap-2 text-sm font-medium text-white">
+          {title}
+          <span className={cn("tabular-nums", items.length > 0 && !neutral ? "text-amber-200" : "text-zinc-400")}>{items.length}</span>
+        </h3>
+        {action}
+      </div>
       <p className="mt-1 text-[13px] leading-snug text-zinc-400">{why}</p>
       {items.length === 0 ? (
         <p className="mt-3 flex items-center gap-2 text-[13px] text-lagoon-200">

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { BookOpen, Calendar, Compass, Home, LayoutDashboard, LogOut, Menu, Tv, User, X } from "lucide-react";
+import { BookOpen, Bookmark, Compass, Home, LayoutDashboard, LogOut, Menu, Tv, User, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,14 +27,14 @@ const defaultNavLinks = [
   { label: "Home", to: "/" },
   { label: "Anime", to: "/anime" },
   { label: "Manga", to: "/manga" },
-  { label: "Schedule", to: "/schedule" },
+  { label: "My List", to: "/my-list" },
 ];
 
 function iconFor(to: string) {
   if (to === "/") return Home;
   if (to.startsWith("/anime")) return Tv;
   if (to.startsWith("/manga")) return BookOpen;
-  if (to.startsWith("/schedule")) return Calendar;
+  if (to.startsWith("/my-list")) return Bookmark;
   return Compass;
 }
 
@@ -44,10 +44,13 @@ export function Navbar({ searchIndex }: { searchIndex: SearchIndex }) {
   const { isAuthenticated, user, logout } = useAuth();
   const siteConfig = useSiteConfig();
   const pathname = usePathname();
-  const navLinks = (siteConfig.navLinks && siteConfig.navLinks.length > 0 ? siteConfig.navLinks : defaultNavLinks).map((l) => ({
-    ...l,
-    icon: iconFor(l.to),
-  }));
+  const rawLinks = siteConfig.navLinks && siteConfig.navLinks.length > 0 ? siteConfig.navLinks : defaultNavLinks;
+  const navLinks = rawLinks
+    .filter((l) => (l.to === "/my-list" ? isAuthenticated : true))
+    .map((l) => ({
+      ...l,
+      icon: iconFor(l.to),
+    }));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);

@@ -14,7 +14,7 @@ const defaultColumns = [
       { label: "Home", href: "/" },
       { label: "Anime", href: "/anime" },
       { label: "Manga", href: "/manga" },
-      { label: "Schedule", href: "/schedule" },
+      { label: "My List", href: "/my-list" },
     ],
   },
   {

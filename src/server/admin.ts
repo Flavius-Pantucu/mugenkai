@@ -1,7 +1,36 @@
+import { unstable_cache } from "next/cache";
 import { db } from "./db";
 import { getRecentSecurityEvents } from "./http";
 import { getSiteConfig } from "./site-config";
 import type { JobName } from "./sync/jobs";
+
+const TOTAL_QUERY = `query ($type: MediaType) {
+  Page(page: 1, perPage: 1) { pageInfo { total } media(type: $type, isAdult: false) { id } }
+}`;
+
+const getAnilistTotals = unstable_cache(
+  async (): Promise<{ anime: number | null; manga: number | null }> => {
+    const fetchTotal = async (type: "ANIME" | "MANGA") => {
+      try {
+        const res = await fetch("https://graphql.anilist.co", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ query: TOTAL_QUERY, variables: { type } }),
+          signal: AbortSignal.timeout(4000),
+        });
+        if (!res.ok) return null;
+        const json = (await res.json()) as { data?: { Page?: { pageInfo?: { total?: number } } } };
+        return json.data?.Page?.pageInfo?.total ?? null;
+      } catch {
+        return null;
+      }
+    };
+    const [anime, manga] = await Promise.all([fetchTotal("ANIME"), fetchTotal("MANGA")]);
+    return { anime, manga };
+  },
+  ["anilist-totals"],
+  { revalidate: 6 * 3600 },
+);
 
 /** Everything the admin console shows, read in one round of parallel queries. */
 export async function getAdminData(meId: string) {
@@ -17,6 +46,7 @@ export async function getAdminData(meId: string) {
     recentComments,
     openReports,
     dbSecurityEvents,
+    anilistTotals,
   ] = await Promise.all([
     getSiteConfig(),
     db().syncState.findMany(),
@@ -28,6 +58,8 @@ export async function getAdminData(meId: string) {
       db().chapter.count(),
       db().streamingLink.count(),
       db().searchEntry.count(),
+      db().searchEntry.count({ where: { kind: "ANIME" } }),
+      db().searchEntry.count({ where: { kind: "MANGA" } }),
       db().comment.count({ where: { deletedAt: null } }),
       db().commentReport.count({ where: { status: "OPEN" } }),
     ]),
@@ -133,9 +165,10 @@ export async function getAdminData(meId: string) {
       orderBy: { createdAt: "desc" },
       take: 60,
     }),
+    getAnilistTotals(),
   ]);
 
-  const [anime, seasons, episodes, manga, chapters, links, searchEntries, activeComments, openReportCount] = counts;
+  const [anime, seasons, episodes, manga, chapters, links, searchEntries, searchAnimeEntries, searchMangaEntries, activeComments, openReportCount] = counts;
 
   const memoryEvents = getRecentSecurityEvents().map((e, idx) => ({
     id: `mem-${idx}-${e.createdAt}`,
@@ -166,7 +199,21 @@ export async function getAdminData(meId: string) {
       lastError: j.lastError,
       summary: (j.summary ?? null) as Record<string, unknown> | null,
     })),
-    counts: { anime, seasons, episodes, manga, chapters, links, searchEntries, activeComments, openReportCount },
+    counts: {
+      anime,
+      seasons,
+      episodes,
+      manga,
+      chapters,
+      links,
+      searchEntries,
+      searchAnimeEntries,
+      searchMangaEntries,
+      anilistAnimeTotal: anilistTotals.anime,
+      anilistMangaTotal: anilistTotals.manga,
+      activeComments,
+      openReportCount,
+    },
     gaps: { mangaWithoutChapters, animeWithoutLinks, airing },
     series: series.map((s) => ({
       ...s,

@@ -2,6 +2,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import type { Chapter } from "@/data/schema";
 import { db } from "../db";
 import { env } from "../env";
+import { fetchMangaChaptersWithFallback } from "./manga-providers";
 import { pickChapters, type MdChapter } from "./parse";
 
 // MangaDex public API. Rules we follow (https://api.mangadex.org/docs): identify via User-Agent,
@@ -61,9 +62,30 @@ async function syncChapters(seriesId: string, mangadexId: string) {
   return count;
 }
 
-/** Daily: map new manga to MangaDex and add any chapters published since the last run. */
+async function saveFallbackChapters(seriesId: string, title: string, nativeTitle: string) {
+  const fallback = await fetchMangaChaptersWithFallback(title, seriesId, seriesId, nativeTitle);
+  if (fallback.length === 0) return 0;
+  const rows: Prisma.ChapterCreateManyInput[] = fallback.map((c) => ({
+    id: `${seriesId}-ch-${c.chapterNumber}`,
+    seriesId,
+    number: c.chapterNumber,
+    title: c.title,
+    pageCount: c.pageCount,
+    mangadexChapterId: c.mangadexChapterId ?? null,
+    externalUrl: c.externalUrl ?? null,
+    scanlationGroup: c.scanlationGroup ?? null,
+    publishedAt: c.releasedAt ? new Date(c.releasedAt) : null,
+  }));
+  const { count } = await db().chapter.createMany({ data: rows, skipDuplicates: true });
+  return count;
+}
+
+/** Daily: map new manga to MangaDex and add any chapters published since the last run, falling back to Consumet providers when MangaDex has none. */
 export async function syncMangaChapters() {
-  const manga = await db().series.findMany({ where: { kind: "MANGA" }, select: { id: true, title: true, mangadexId: true } });
+  const manga = await db().series.findMany({
+    where: { kind: "MANGA" },
+    select: { id: true, title: true, nativeTitle: true, mangadexId: true, _count: { select: { chapters: true } } },
+  });
   let mapped = 0;
   let added = 0;
   const unmatched: string[] = [];
@@ -71,16 +93,41 @@ export async function syncMangaChapters() {
     let mdId = m.mangadexId;
     if (!mdId) {
       mdId = await findMangadexId(m.title, m.id);
-      if (!mdId) {
-        unmatched.push(m.title);
-        continue;
+      if (mdId) {
+        await db().series.update({ where: { id: m.id }, data: { mangadexId: mdId } });
+        mapped++;
       }
-      await db().series.update({ where: { id: m.id }, data: { mangadexId: mdId } });
-      mapped++;
     }
-    added += await syncChapters(m.id, mdId);
+    let chAdded = mdId ? await syncChapters(m.id, mdId) : 0;
+    if (chAdded === 0 && m._count.chapters === 0) {
+      chAdded = await saveFallbackChapters(m.id, m.title, m.nativeTitle);
+    }
+    added += chAdded;
+    if (chAdded === 0 && m._count.chapters === 0) {
+      unmatched.push(m.title);
+    }
   }
   return { manga: manga.length, mapped, chaptersAdded: added, unmatched };
+}
+
+/** Targeted fallback sync for manga that currently have 0 chapters in the database. */
+export async function syncMissingMangaChapters(limit = 30) {
+  const missing = await db().series.findMany({
+    where: { kind: "MANGA", chapters: { none: {} } },
+    orderBy: { popularity: "desc" },
+    take: limit,
+    select: { id: true, title: true, nativeTitle: true },
+  });
+  let filled = 0;
+  let chaptersAdded = 0;
+  for (const m of missing) {
+    const count = await saveFallbackChapters(m.id, m.title, m.nativeTitle);
+    if (count > 0) {
+      filled++;
+      chaptersAdded += count;
+    }
+  }
+  return { checked: missing.length, filled, chaptersAdded };
 }
 
 /**

@@ -6,6 +6,7 @@ import { db } from "@/server/db";
 import { logSecurityEvent } from "@/server/http";
 import type { FooterColumnItem, NavLinkItem } from "@/server/site-config";
 import { isJobName, runJob } from "@/server/sync/jobs";
+import { syncMissingMangaChapters } from "@/server/sync/mangadex";
 
 function revalidateAllCatalog() {
   revalidateTag("catalog", "max");
@@ -23,6 +24,15 @@ export async function runSync(job: string) {
   logSecurityEvent("ADMIN_ACTION", "admin", "/admin", `${me.username} ran sync:${job}`);
   revalidatePath("/admin");
   return result.ok ? { ok: true as const, ms: result.ms } : { ok: false as const, error: result.error };
+}
+
+/** Retry fetching chapters from MangaPill / WeebCentral / MangaHere / MangaKakalot for manga with 0 chapters. */
+export async function retryMissingMangaChapters() {
+  const me = await requireAdmin();
+  const res = await syncMissingMangaChapters(30);
+  logSecurityEvent("ADMIN_ACTION", "admin", "/admin", `${me.username} retried missing manga chapters (${res.filled}/${res.checked})`);
+  revalidateAllCatalog();
+  return res;
 }
 
 /** Admins cannot act on their own account here, so nobody locks themselves out by accident. */

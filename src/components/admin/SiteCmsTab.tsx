@@ -20,7 +20,7 @@ export function SiteCmsTab({ initial }: { initial: SiteSettings }) {
         { label: "Home", to: "/" },
         { label: "Anime", to: "/anime" },
         { label: "Manga", to: "/manga" },
-        { label: "Schedule", to: "/schedule" },
+        { label: "My List", to: "/my-list" },
       ],
       null,
       2,
@@ -35,7 +35,7 @@ export function SiteCmsTab({ initial }: { initial: SiteSettings }) {
             { label: "Home", href: "/" },
             { label: "Anime", href: "/anime" },
             { label: "Manga", href: "/manga" },
-            { label: "Schedule", href: "/schedule" },
+            { label: "My List", href: "/my-list" },
           ],
         },
         {
