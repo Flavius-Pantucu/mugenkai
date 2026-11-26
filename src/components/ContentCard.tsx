@@ -3,8 +3,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import Hls from "hls.js";
 import { AnimatePresence, motion } from "motion/react";
-import { BookOpen, Check, ChevronDown, Clock, Play, Plus, Star } from "lucide-react";
+import { BookOpen, Check, ChevronDown, Clock, Play, Plus, Star, Volume2, VolumeX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -20,6 +21,9 @@ const OPEN_DELAY_MS = 450;
 const PREVIEW_WIDTH_RATIO = 2; // preview is twice the card's width
 const EDGE = 16; // keep the preview this far from the viewport edges
 const NAV_HEIGHT = 72;
+
+// Cache Episode 1 m3u8 URLs per anime ID so re-hovering is instant and doesn't re-hit /api/play.
+const previewStreamCache = new Map<string, string | null>();
 
 function seriesLinks(s: Series) {
   if (s.kind === "anime") {
@@ -157,16 +161,19 @@ function HoverPreview({ series, anchor, onClose }: { series: Series; anchor: DOM
       style={{ position: "fixed", top, left, width, transformOrigin: growLeft ? "right center" : "left center" }}
       className="z-[60] overflow-hidden rounded-xl bg-ink-raised shadow-[0_30px_80px_-20px_rgba(0,0,0,0.95)] ring-1 ring-white/10"
     >
-      <Link href={links.details} onClick={onClose} className="relative block aspect-video">
-        <img src={item.bannerImage} alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink-raised via-ink-raised/10 to-transparent" />
+      <div className="relative aspect-video overflow-hidden bg-black">
+        <Link href={links.details} onClick={onClose} className="block h-full w-full">
+          <img src={item.bannerImage} alt="" className="h-full w-full object-cover" />
+        </Link>
+        {series.kind === "anime" && <AnimeScenePreview anime={series.item} href={links.details} onNavigate={onClose} />}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-raised via-ink-raised/10 to-transparent" />
         <p
-          className="absolute inset-x-4 bottom-2 line-clamp-2 text-[19px] font-black leading-tight text-white"
+          className="pointer-events-none absolute inset-x-4 bottom-2 line-clamp-2 text-[19px] font-black leading-tight text-white"
           style={{ fontFamily: "var(--font-family-heading)" }}
         >
           {item.title}
         </p>
-      </Link>
+      </div>
 
       <div className="space-y-3 p-4 pt-3">
         <div className="flex items-center gap-2">
@@ -217,6 +224,144 @@ function HoverPreview({ series, anchor, onClose }: { series: Series; anchor: DOM
       </div>
     </motion.div>,
     document.body,
+  );
+}
+
+function AnimeScenePreview({ anime, href, onNavigate }: { anime: AnimeSummary; href: string; onNavigate: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [m3u8, setM3u8] = useState<string | null>(() => previewStreamCache.get(anime.id) ?? null);
+  const [useTrailer, setUseTrailer] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [muted, setMuted] = useState(true);
+
+  useEffect(() => {
+    if (previewStreamCache.has(anime.id)) {
+      const cached = previewStreamCache.get(anime.id) ?? null;
+      if (cached) setM3u8(cached);
+      else if (anime.trailerYoutubeId) setUseTrailer(true);
+      return;
+    }
+
+    const ctrl = new AbortController();
+    const timer = window.setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/play?anilistId=${encodeURIComponent(anime.id)}&episode=1&audio=sub`, {
+          signal: ctrl.signal,
+        });
+        if (!res.ok) throw new Error();
+        const data = (await res.json()) as { m3u8?: string };
+        const url = data.m3u8 && data.m3u8.length > 0 ? data.m3u8 : null;
+        previewStreamCache.set(anime.id, url);
+        if (url) setM3u8(url);
+        else if (anime.trailerYoutubeId) setUseTrailer(true);
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          previewStreamCache.set(anime.id, null);
+          if (anime.trailerYoutubeId) setUseTrailer(true);
+        }
+      }
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timer);
+      ctrl.abort();
+    };
+  }, [anime.id, anime.trailerYoutubeId]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!m3u8 || !video) return;
+
+    let hls: Hls | null = null;
+    const seekToScene = () => {
+      // Jump ~2 minutes into Episode 1 to skip black intros/OPs and show an actual scene.
+      if (Number.isFinite(video.duration) && video.duration > 180) {
+        video.currentTime = 120;
+      } else if (Number.isFinite(video.duration) && video.duration > 30) {
+        video.currentTime = Math.floor(video.duration * 0.25);
+      }
+      void video.play().catch(() => {});
+    };
+
+    const onCanPlay = () => setReady(true);
+    video.addEventListener("loadedmetadata", seekToScene, { once: true });
+    video.addEventListener("canplay", onCanPlay, { once: true });
+
+    if (Hls.isSupported()) {
+      hls = new Hls({ maxBufferLength: 10, maxMaxBufferLength: 15, startLevel: -1 });
+      hls.loadSource(m3u8);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.ERROR, (_e, data) => {
+        if (data.fatal) {
+          hls?.destroy();
+          if (anime.trailerYoutubeId) setUseTrailer(true);
+        }
+      });
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = m3u8;
+    }
+
+    return () => {
+      video.removeEventListener("loadedmetadata", seekToScene);
+      video.removeEventListener("canplay", onCanPlay);
+      hls?.destroy();
+    };
+  }, [m3u8, anime.trailerYoutubeId]);
+
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.muted = muted;
+  }, [muted]);
+
+  if (useTrailer && anime.trailerYoutubeId) {
+    return (
+      <div className="absolute inset-0">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${anime.trailerYoutubeId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&start=15&loop=1&playlist=${anime.trailerYoutubeId}`}
+          title={`${anime.title} preview`}
+          allow="autoplay; encrypted-media"
+          className="pointer-events-none h-full w-full scale-[1.18] border-0"
+        />
+        <Link href={href} onClick={onNavigate} className="absolute inset-0" aria-label={`Open ${anime.title}`} />
+        <span className="pointer-events-none absolute left-3 top-2.5 rounded bg-black/65 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-200 backdrop-blur-sm">
+          Trailer
+        </span>
+      </div>
+    );
+  }
+
+  if (!m3u8) return null;
+
+  return (
+    <div className={cn("absolute inset-0 transition-opacity duration-500", ready ? "opacity-100" : "opacity-0")}>
+      <video
+        ref={videoRef}
+        muted={muted}
+        autoPlay
+        playsInline
+        loop
+        className="h-full w-full object-cover"
+      />
+      <Link href={href} onClick={onNavigate} className="absolute inset-0" aria-label={`Open ${anime.title}`} />
+      {ready && (
+        <>
+          <span className="pointer-events-none absolute left-3 top-2.5 rounded bg-black/65 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lagoon-200 backdrop-blur-sm">
+            EP 1 Preview
+          </span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setMuted((m) => !m);
+            }}
+            aria-label={muted ? "Unmute preview" : "Mute preview"}
+            className="absolute right-3 top-2.5 z-10 flex size-7 items-center justify-center rounded-full bg-black/65 text-white ring-1 ring-white/20 backdrop-blur-sm transition-colors hover:bg-black/85"
+          >
+            {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+          </button>
+        </>
+      )}
+    </div>
   );
 }
 
